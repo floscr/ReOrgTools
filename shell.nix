@@ -1,8 +1,6 @@
 
 let
-  overlays = builtins.fetchTarball
-    https://github.com/anmonteiro/nix-overlays/archive/3d2d00a7.tar.gz;
-  pkgs = (import "${overlays}/sources.nix" {});
+  pkgs = (import ./nix/sources.nix {});
   ocamlPackages = pkgs.ocaml-ng.ocamlPackages_4_06;
 in
   with pkgs;

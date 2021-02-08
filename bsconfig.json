@@ -4,12 +4,7 @@
     "react-jsx": 3
   },
   "sources": {
-    "dir": "src",
-    "subdirs": [
-      "ReasonUsingJSUsingReason",
-      "ReducerFromReactJSDocs",
-      "BlinkingGreeting"
-    ]
+    "dir": "src"
   },
   "bsc-flags": [
     "-bs-super-errors"
@@ -22,8 +17,7 @@
   ],
   "suffix": ".bs.js",
   "bs-dependencies": [
-    "reason-react",
-    "fetched-dog-pictures"
+    "reason-react"
   ],
   "refmt": 3
 }
