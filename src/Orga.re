@@ -1,12 +1,24 @@
 type error;
 type unified;
 
+type position = {
+  line: int,
+  column: int,
+};
+
+type positionAst = {
+  start: position,
+  [@bs.as "end"]
+  end_: position,
+};
+
 type sectionAst = {
   level: int,
   [@bs.as "type"]
   type_: string,
   children: array(sectionAst),
   content: Js.nullable(string),
+  position: positionAst,
 };
 
 type propertiesAst = {
@@ -31,21 +43,29 @@ type orgItem =
   | Section({
       level: int,
       children: array(sectionAst),
+      position: positionAst,
     })
   | Headline({
       children: array(sectionAst),
       level: int,
       content: string,
+      position: positionAst,
     });
 
 let getItem = item =>
   switch (item.type_) {
-  | "section" => Section({level: item.level, children: item.children})
+  | "section" =>
+    Section({
+      level: item.level,
+      children: item.children,
+      position: item.position,
+    })
   | "headline" =>
     Headline({
       level: item.level,
       children: item.children,
       content: nullableOrEmptyStr(item.content),
+      position: item.position,
     })
   | _ => Unmatched
   };
