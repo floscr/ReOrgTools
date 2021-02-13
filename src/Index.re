@@ -4,7 +4,7 @@ open Orga;
 
 [@bs.val] external document: Js.t({..}) = "document";
 
-let orga = Org.parseOrga("* Headline");
+let orga = Org.parseOrga("* TODO Headline :FOO:FAA:");
 
 orga.children[0]
 |> Orga.getMainItem

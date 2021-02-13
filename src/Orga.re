@@ -1,3 +1,5 @@
+open Utils;
+
 type error;
 type unified;
 
@@ -13,10 +15,12 @@ type positionAst = {
 };
 
 type sectionAst = {
+  actionable: bool,
   children: array(sectionAst),
   content: Js.nullable(string),
   level: int,
   position: positionAst,
+  tags: Js.nullable(array(string)),
   [@bs.as "type"]
   type_: string,
 };
@@ -32,12 +36,6 @@ type orgAst = {
   properties: propertiesAst,
 };
 
-let nullableOrEmptyStr = x =>
-  switch (Js.Nullable.toOption(x)) {
-  | Some((x: string)) => x
-  | _ => ""
-  };
-
 type orgItem =
   | Unmatched
   | Section({
@@ -50,6 +48,7 @@ type orgItem =
       content: string,
       level: int,
       position: positionAst,
+      tags: array(string),
     });
 
 let getItem = item =>
@@ -66,6 +65,7 @@ let getItem = item =>
       content: nullableOrEmptyStr(item.content),
       level: item.level,
       position: item.position,
+      tags: nullableOrEmptyArray(item.tags),
     })
   | _ => Unmatched
   };
