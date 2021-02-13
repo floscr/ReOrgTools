@@ -8,6 +8,7 @@ let orga = Org.parseOrga("* Headline");
 
 orga.children[0]
 |> Orga.getMainItem
+|> Utils.log
 |> Array.map(x =>
      switch (getItem(x)) {
      | Headline({content}) => Js.log(content)
