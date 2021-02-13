@@ -41,14 +41,14 @@ let nullableOrEmptyStr = x =>
 type orgItem =
   | Unmatched
   | Section({
-      level: int,
       children: array(sectionAst),
+      level: int,
       position: positionAst,
     })
   | Headline({
       children: array(sectionAst),
-      level: int,
       content: string,
+      level: int,
       position: positionAst,
     });
 
