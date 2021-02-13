@@ -2,34 +2,34 @@ type error;
 type unified;
 
 type position = {
-  line: int,
   column: int,
+  line: int,
 };
 
 type positionAst = {
-  start: position,
   [@bs.as "end"]
   end_: position,
+  start: position,
 };
 
 type sectionAst = {
-  level: int,
-  [@bs.as "type"]
-  type_: string,
   children: array(sectionAst),
   content: Js.nullable(string),
+  level: int,
   position: positionAst,
+  [@bs.as "type"]
+  type_: string,
 };
 
 type propertiesAst = {
-  title: string,
   date: string,
   template: string,
+  title: string,
 };
 
 type orgAst = {
-  properties: propertiesAst,
   children: array(sectionAst),
+  properties: propertiesAst,
 };
 
 let nullableOrEmptyStr = x =>
@@ -56,15 +56,15 @@ let getItem = item =>
   switch (item.type_) {
   | "section" =>
     Section({
-      level: item.level,
       children: item.children,
+      level: item.level,
       position: item.position,
     })
   | "headline" =>
     Headline({
-      level: item.level,
       children: item.children,
       content: nullableOrEmptyStr(item.content),
+      level: item.level,
       position: item.position,
     })
   | _ => Unmatched
