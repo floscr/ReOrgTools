@@ -120,7 +120,14 @@ let renderParagraphs = xs => {
       let key = string_of_int(i);
       switch (getItem(x)) {
       | PlainText({value}) => <p key> {s(value)} </p>
-      | Link({value, description}) => <a href=value> {s(description)} </a>
+      | Link({value, description}) =>
+        <a href=value>
+          {s(
+             x.description
+             ->Js.Nullable.toOption
+             ->Belt.Option.getWithDefault(value),
+           )}
+        </a>
       | _ => React.null
       };
     },
