@@ -37,16 +37,32 @@ module Heading = {
   };
 };
 
-let renderHeadline = x =>
-  switch (x) {
-  | Headline({content, level}) => <Heading level> {s(content)} </Heading>
-  | _ => React.null
-  };
-
 let wrapWithKey = (level, index, children) => {
   let key = {j|$level-$index|j};
   <React.Fragment key> children </React.Fragment>;
 };
+
+let renderTags = xs =>
+  <ul>
+    {Belt.Array.mapWithIndex(
+       xs,
+       (i, x) => {
+         let key = string_of_int(i);
+         <li key> {s(x)} </li>;
+       },
+     )
+     |> React.array}
+  </ul>;
+
+let renderHeadline = x =>
+  switch (x) {
+  | Headline({content, level, tags}) =>
+    <header>
+      <Heading level> {s(content)} </Heading>
+      {renderTags(tags)}
+    </header>
+  | _ => React.null
+  };
 
 let renderParagraphs = xs => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
@@ -97,13 +113,6 @@ let rec renderItems = xs => {
 
 let render = () =>
   orga.children[0] |> Orga.getMainItem |> Utils.log |> renderItems;
-/* |> Array.mapi((i, x) => */
-/*      switch (getItem(x)) { */
-/*      | Headline({content}) => */
-/*        <span key={string_of_int(i)}> {React.string(content)} </span> */
-/*      | _ => React.null */
-/*      } */
-/*    ); */
 
 [@react.component]
 let make = () => <> {render()} </>;
