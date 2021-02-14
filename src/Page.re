@@ -94,7 +94,20 @@ let renderBlock = x => {
            | _ => <div> {xs |> React.array} </div>
            }
        )}
-      <code> {s(value)} </code>
+      <ReactSyntaxHighlighter
+        className=""
+        language={
+          switch (Belt.Array.get(params, 0)) {
+          | Some("elisp") => "lisp"
+          | Some("emacs-lisp") => "lisp"
+          | Some("js") => "javascript"
+          | Some(x) => x
+          | _ => ""
+          }
+        }
+        style=ReactSyntaxHighlighter.Style.tomorrow>
+        {s(value)}
+      </ReactSyntaxHighlighter>
     </section>
   | _ => React.null
   };

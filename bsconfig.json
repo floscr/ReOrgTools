@@ -4,7 +4,8 @@
     "react-jsx": 3
   },
   "sources": {
-    "dir": "src"
+    "dir": "src",
+    "subdirs": true
   },
   "bsc-flags": [
     "-bs-super-errors"
