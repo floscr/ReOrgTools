@@ -26,6 +26,8 @@ type sectionAst = {
   tags: Js.nullable(array(string)),
   // Plaintext
   value: Js.nullable(string),
+  // Todo
+  keyword: Js.nullable(string),
   // List
   indent: Js.nullable(int),
   ordered: Js.nullable(bool),
@@ -61,6 +63,9 @@ type orgItem =
       children: array(sectionAst),
       value: string,
     })
+  | Stars({level: int})
+  | Todo({keyword: string})
+  | Tags({tags: array(string)})
   | List({
       children: array(sectionAst),
       indent: int,
@@ -92,6 +97,9 @@ let getItem = item =>
       position: item.position,
       tags: nullableOrEmptyArray(item.tags),
     })
+  | "todo" => Todo({keyword: nullableOrEmptyStr(item.keyword)})
+  | "stars" => Stars({level: item.level})
+  | "tags" => Tags({tags: nullableOrEmptyArray(item.tags)})
   | "paragraph" => Paragraph({children: item.children})
   | "text.plain" =>
     PlainText({

@@ -54,23 +54,35 @@ let renderTags = xs =>
      |> React.array}
   </ul>;
 
-let renderHeadline = x =>
-  switch (x) {
-  | Headline({content, level, tags}) =>
-    <header>
-      <Heading level> {s(content)} </Heading>
-      {renderTags(tags)}
-    </header>
-  | _ => React.null
-  };
+let renderHeadline = (xs, level) =>
+  <header>
+    {Belt.Array.mapWithIndex(xs, (i, x) => {
+       (
+         switch (getItem(x)) {
+         | Stars({level}) =>
+           Belt.Array.makeBy(level, _ => "*") |> Js.Array.joinWith("") |> s
+         | Todo({keyword}) => s(keyword)
+         | PlainText({value}) => <Heading level> {s(value)} </Heading>
+         | Tags({tags}) => renderTags(tags)
+         | _ => React.null
+         }
+       )
+       |> wrapWithKey(x.level, i)
+     })
+     |> React.array}
+  </header>;
 
 let renderParagraphs = xs => {
-  Belt.Array.mapWithIndex(xs, (i, x) => {
-    switch (getItem(x)) {
-    | PlainText({value}) => <p key={string_of_int(i)}> {s(value)} </p>
-    | _ => React.null
-    }
-  })
+  Belt.Array.mapWithIndex(
+    xs,
+    (i, x) => {
+      let key = string_of_int(i);
+      switch (getItem(x)) {
+      | PlainText({value}) => <p key> {s(value)} </p>
+      | _ => React.null
+      };
+    },
+  )
   |> React.array;
 };
 
@@ -100,7 +112,8 @@ let rec renderList = (xs, ordered) => {
 let rec renderItems = xs => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
     switch (getItem(x)) {
-    | Headline({level}) as z => renderHeadline(z) |> wrapWithKey(level, i)
+    | Headline({children, level}) as z =>
+      renderHeadline(children, level) |> wrapWithKey(level, i)
     | Section({children, level}) =>
       renderItems(children) |> wrapWithKey(level, i)
     | Paragraph({children}) => renderParagraphs(children)
