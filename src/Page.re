@@ -1,35 +1,6 @@
 open Orga;
 open ReactUtils;
 
-let orga =
-  Org.parseOrga(
-    {j|
-* TODO Automatically delete bundle branches when deploying :WORK:LOW_EFFORT:COOL:BACKLOG:
-
-- If they're older than two weeks
-- If they're created by me
-
-* NOTE [[https://jsfiddle.net/prisoner849/v59g7jac/][RoundedCornerLine 2 - JSFiddle - Code Playground]]
-:PROPERTIES:
-:CREATED:  [2020-08-31 Mon 14:27]
-:END:
-
-|j},
-    {
-      todo:
-        Some([|
-          "ACTIVE",
-          "NEXT",
-          "DONE",
-          "WAITING",
-          "SOMEDAY",
-          "CANCELLED",
-          "PROJECT",
-          "NOTE",
-        |]),
-    },
-  );
-
 module Heading = {
   [@react.component]
   let make = (~level: int, ~children) => {
@@ -74,7 +45,7 @@ let renderHeadline = (xs, level) => {
         switch (getItem(cur)) {
         | Stars(x) => {...acc, stars: Some(x)}
         | Tags(x) => {...acc, tags: Some(x)}
-        | rest => {...acc, content: Js.Array.append(cur, acc.content)}
+        | _ => {...acc, content: Belt.Array.concat(acc.content, [|cur|])}
         },
       {stars: None, tags: None, content: [||]},
       xs,
@@ -163,7 +134,7 @@ let rec renderItems = xs => {
   |> React.array;
 };
 
-let render = () => orga.children |> Utils.log |> renderItems;
+let render = () => TestContent.orga.children |> Utils.log |> renderItems;
 
 [@react.component]
 let make = () => <> {render()} </>;
