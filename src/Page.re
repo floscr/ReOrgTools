@@ -1,4 +1,5 @@
 open Orga;
+open ReactUtils;
 
 let orga =
   Org.parseOrga(
@@ -12,23 +13,22 @@ Content
 |j},
   );
 
-/* let renderHeadline = x => */
-/*   switch (x) { */
-/*   | Headline({content}) => <h1> {React.string(content)} </h1> */
-/*   | _ => React.null */
-/*   }; */
-
 let renderHeadline = x =>
   switch (x) {
-  | Headline({content}) => <h1> {React.string(content)} </h1>
+  | Headline({content}) => <h1> {s(content)} </h1>
   | _ => React.null
   };
 
-let rec renderItems = xs =>
-  switch (xs |> Array.map(getItem) |> Array.to_list) {
-  | [Headline(_) as y, ...ys] => <> {renderHeadline(y)} </>
-  | _ => React.null
-  };
+let rec renderItems = xs => {
+  Belt.Array.mapWithIndex(xs, (i, x) => {
+    switch (getItem(x)) {
+    | Headline(_) as z => renderHeadline(z)
+    | Section({children}) => <> {renderItems(children)} </>
+    | _ => React.null
+    }
+  })
+  |> React.array;
+};
 
 let render = () =>
   orga.children[0] |> Orga.getMainItem |> Utils.log |> renderItems;
