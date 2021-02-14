@@ -9,6 +9,8 @@ let orga =
 Content
 
 - Foo
+  + Bar
+  + Bar
 - Bar
 - Baz
 
@@ -57,12 +59,18 @@ let renderParagraphs = xs => {
 };
 
 let rec renderList = (xs, ordered) => {
-  Belt.Array.mapWithIndex(xs, (i, x) => {
-    switch (getItem(x)) {
-    | ListItem({children}) => <li> {renderParagraphs(children)} </li>
-    | _ => React.null
-    }
-  })
+  Belt.Array.mapWithIndex(
+    xs,
+    (i, x) => {
+      let key = string_of_int(i);
+      switch (getItem(x)) {
+      | List({children, ordered}) =>
+        <li key> {renderList(children, ordered)} </li>
+      | ListItem({children}) => <li key> {renderParagraphs(children)} </li>
+      | _ => React.null
+      };
+    },
+  )
   |> React.array
   |> (
     xs =>
