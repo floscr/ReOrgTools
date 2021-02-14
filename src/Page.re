@@ -3,24 +3,31 @@ open ReactUtils;
 
 let orga =
   Org.parseOrga(
-    {j|* TODO Headline :FOO:FAA:
-** Child 1
+    {j|
+* TODO Automatically delete bundle branches when deploying :WORK:LOW_EFFORT:COOL:BACKLOG:
 
-Content
+- If they're older than two weeks
+- If they're created by me
 
-- Foo
-  + Bar
-  + Bar
-- Bar
-- Baz
-
-1. Foo
-2. Bar
-3. Baz
-
-*** Child2
+* NOTE [[https://jsfiddle.net/prisoner849/v59g7jac/][RoundedCornerLine 2 - JSFiddle - Code Playground]]
+:PROPERTIES:
+:CREATED:  [2020-08-31 Mon 14:27]
+:END:
 
 |j},
+    {
+      todo:
+        Some([|
+          "ACTIVE",
+          "NEXT",
+          "DONE",
+          "WAITING",
+          "SOMEDAY",
+          "CANCELLED",
+          "PROJECT",
+          "NOTE",
+        |]),
+    },
   );
 
 module Heading = {
