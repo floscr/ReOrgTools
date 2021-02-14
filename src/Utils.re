@@ -32,3 +32,9 @@ let nullableOrBool = (x, fallback: bool) =>
   | Some((x: bool)) => x
   | _ => fallback
   };
+
+let nullableOrEmptyDict = x =>
+  switch (Js.Nullable.toOption(x)) {
+  | Some((x: Js.Dict.t(string))) => x
+  | _ => Js.Dict.empty()
+  };

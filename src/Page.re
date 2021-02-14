@@ -69,14 +69,16 @@ let renderHeadline = (xs, level) =>
          | Stars({level}) =>
            Belt.Array.makeBy(level, _ => "*") |> Js.Array.joinWith("") |> s
          | Todo({keyword}) => s(keyword)
-         | PlainText({value}) => <Heading level> {s(value)} </Heading>
+         | PlainText({value}) => s(value)
          | Tags({tags}) => renderTags(tags)
+         | Link({value, description}) => <a href=value> {s(description)} </a>
          | _ => React.null
          }
        )
        |> wrapWithKey(x.level, i)
      })
-     |> React.array}
+     |> React.array
+     |> (xs => <Heading level> xs </Heading>)}
   </header>;
 
 let renderParagraphs = xs => {
@@ -86,6 +88,7 @@ let renderParagraphs = xs => {
       let key = string_of_int(i);
       switch (getItem(x)) {
       | PlainText({value}) => <p key> {s(value)} </p>
+      | Link({value, description}) => <a href=value> {s(description)} </a>
       | _ => React.null
       };
     },
@@ -119,7 +122,7 @@ let rec renderList = (xs, ordered) => {
 let rec renderItems = xs => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
     switch (getItem(x)) {
-    | Headline({children, level}) as z =>
+    | Headline({children, level}) =>
       renderHeadline(children, level) |> wrapWithKey(level, i)
     | Section({children, level}) =>
       renderItems(children) |> wrapWithKey(level, i)

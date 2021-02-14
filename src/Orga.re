@@ -19,18 +19,24 @@ type sectionAst = {
   type_: string,
   children: array(sectionAst),
   position: positionAst,
+  // Section
+  properties: Js.nullable(Js.Dict.t(string)),
   // Headline
   actionable: bool,
   content: Js.nullable(string),
   level: int,
   tags: Js.nullable(array(string)),
-  // Plaintext
+  // Plaintext & Link
   value: Js.nullable(string),
   // Todo
   keyword: Js.nullable(string),
   // List
   indent: Js.nullable(int),
   ordered: Js.nullable(bool),
+  // Link
+  description: Js.nullable(string),
+  protocol: Js.nullable(string),
+  search: Js.nullable(string),
 };
 
 type propertiesAst = {
@@ -50,6 +56,7 @@ type orgItem =
       children: array(sectionAst),
       level: int,
       position: positionAst,
+      properties: Js.Dict.t(string),
     })
   | Headline({
       children: array(sectionAst),
@@ -66,6 +73,12 @@ type orgItem =
   | Stars({level: int})
   | Todo({keyword: string})
   | Tags({tags: array(string)})
+  | Link({
+      value: string,
+      description: string,
+      protocol: string,
+      search: string,
+    })
   | List({
       children: array(sectionAst),
       indent: int,
@@ -88,6 +101,7 @@ let getItem = item =>
       children: item.children,
       level: item.level,
       position: item.position,
+      properties: nullableOrEmptyDict(item.properties),
     })
   | "headline" =>
     Headline({
@@ -99,6 +113,13 @@ let getItem = item =>
     })
   | "todo" => Todo({keyword: nullableOrEmptyStr(item.keyword)})
   | "stars" => Stars({level: item.level})
+  | "link" =>
+    Link({
+      value: nullableOrEmptyStr(item.value),
+      description: nullableOrEmptyStr(item.description),
+      protocol: nullableOrEmptyStr(item.description),
+      search: nullableOrEmptyStr(item.description),
+    })
   | "tags" => Tags({tags: nullableOrEmptyArray(item.tags)})
   | "paragraph" => Paragraph({children: item.children})
   | "text.plain" =>
@@ -129,6 +150,9 @@ let getMainItem = item =>
   | _ => [||]
   };
 
+type options = {todo: option(array(string))};
+
 module Org = {
-  [@bs.module "orga"] external parseOrga: string => orgAst = "parse";
+  [@bs.module "orga"]
+  external parseOrga: (string, options) => orgAst = "parse";
 };
