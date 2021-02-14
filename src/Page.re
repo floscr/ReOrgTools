@@ -61,16 +61,40 @@ let renderTags = xs =>
      |> React.array}
   </ul>;
 
-let renderHeadline = (xs, level) =>
+type headlineProps = {
+  stars: option(stars),
+  content: array(sectionAst),
+  tags: option(tags),
+};
+
+let renderHeadline = (xs, level) => {
+  let {stars, content, tags} =
+    Js.Array.reduce(
+      (acc, cur) =>
+        switch (getItem(cur)) {
+        | Stars(x) => {...acc, stars: Some(x)}
+        | Tags(x) => {...acc, tags: Some(x)}
+        | rest => {...acc, content: Js.Array.append(cur, acc.content)}
+        },
+      {stars: None, tags: None, content: [||]},
+      xs,
+    );
+
+  Js.log(stars);
+
   <header>
-    {Belt.Array.mapWithIndex(xs, (i, x) => {
+    {switch (stars) {
+     | Some({level}) =>
+       <span>
+         {Belt.Array.makeBy(level, _ => "*") |> Js.Array.joinWith("") |> s}
+       </span>
+     | _ => React.null
+     }}
+    {Belt.Array.mapWithIndex(content, (i, x) => {
        (
          switch (getItem(x)) {
-         | Stars({level}) =>
-           Belt.Array.makeBy(level, _ => "*") |> Js.Array.joinWith("") |> s
          | Todo({keyword}) => s(keyword)
          | PlainText({value}) => s(value)
-         | Tags({tags}) => renderTags(tags)
          | Link({value, description}) => <a href=value> {s(description)} </a>
          | _ => React.null
          }
@@ -79,7 +103,12 @@ let renderHeadline = (xs, level) =>
      })
      |> React.array
      |> (xs => <Heading level> xs </Heading>)}
+    {switch (tags) {
+     | Some({tags}) => renderTags(tags)
+     | _ => React.null
+     }}
   </header>;
+};
 
 let renderParagraphs = xs => {
   Belt.Array.mapWithIndex(

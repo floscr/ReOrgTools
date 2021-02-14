@@ -50,6 +50,22 @@ type orgAst = {
   properties: propertiesAst,
 };
 
+type stars = {level: int};
+
+type plainText = {
+  children: array(sectionAst),
+  value: string,
+};
+
+type link = {
+  value: string,
+  description: string,
+  protocol: string,
+  search: string,
+};
+
+type tags = {tags: array(string)};
+
 type orgItem =
   | Unmatched
   | Section({
@@ -66,19 +82,11 @@ type orgItem =
       tags: array(string),
     })
   | Paragraph({children: array(sectionAst)})
-  | PlainText({
-      children: array(sectionAst),
-      value: string,
-    })
-  | Stars({level: int})
+  | PlainText(plainText)
+  | Stars(stars)
   | Todo({keyword: string})
-  | Tags({tags: array(string)})
-  | Link({
-      value: string,
-      description: string,
-      protocol: string,
-      search: string,
-    })
+  | Tags(tags)
+  | Link(link)
   | List({
       children: array(sectionAst),
       indent: int,
