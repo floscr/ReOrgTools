@@ -128,6 +128,58 @@ let renderParagraphs = xs => {
   |> React.array;
 };
 
+let rec renderTable = xs => {
+  let hasTableHead =
+    switch (Array.sub(xs, 0, 2) |> Array.map(getItem)) {
+    | [|TableRow(_), TableHr(_)|] => true
+    | _ => false
+    };
+
+  /* let lastIndex = Array.length(xs) - 1; */
+  /* let hasTableFoot = */
+  /*   switch (Array.sub(xs, lastIndex - 3, lastIndex) |> Array.map(getItem)) { */
+  /*   | [|TableHr(_), TableRow(_)|] => true */
+  /*   | _ => false */
+  /*   }; */
+
+  <table>
+    {Belt.Array.mapWithIndex(
+       xs,
+       (rowIndex, x) => {
+         let rowKey = string_of_int(rowIndex);
+         switch (getItem(x)) {
+         | TableRow({children}) =>
+           <tr key=rowKey>
+             {Belt.Array.mapWithIndex(
+                children,
+                (cellIndex, x) => {
+                  let cellKey = string_of_int(cellIndex);
+                  let key = {j|$rowKey-$cellKey|j};
+                  switch (getItem(x)) {
+                  | TableCell({children}) =>
+                    <th key> {renderParagraphs(children)} </th>
+                  | _ => React.null
+                  };
+                },
+              )
+              |> React.array}
+           </tr>
+           |> (
+             x =>
+               switch (rowIndex, hasTableHead) {
+               | (0, true) => <thead> x </thead>
+               /* | (lastIndex, _, true) => <tfoot> x </tfoot> */
+               | _ => x
+               }
+           )
+         | _ => React.null
+         };
+       },
+     )
+     |> React.array}
+  </table>;
+};
+
 let rec renderList = (xs, ordered) => {
   Belt.Array.mapWithIndex(
     xs,
@@ -161,6 +213,7 @@ let rec renderItems = xs => {
     | Paragraph({children}) => renderParagraphs(children)
     | Block(_) as x => renderBlock(x)
     | List({children, ordered}) => renderList(children, ordered)
+    | Table({children}) => renderTable(children)
     | _ => React.null
     }
   })

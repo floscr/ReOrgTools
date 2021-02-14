@@ -110,7 +110,11 @@ type orgItem =
       name: string,
       params: array(string),
       value: string,
-    });
+    })
+  | Table({children: array(sectionAst)})
+  | TableRow({children: array(sectionAst)})
+  | TableCell({children: array(sectionAst)})
+  | TableHr({children: array(sectionAst)});
 
 let getItem = item =>
   switch (item.type_) {
@@ -166,6 +170,10 @@ let getItem = item =>
       params: nullableOrEmptyArray(item.params),
       value: nullableOrEmptyStr(item.value),
     })
+  | "table" => Table({children: item.children})
+  | "table.row" => TableRow({children: item.children})
+  | "table.cell" => TableCell({children: item.children})
+  | "table.hr" => TableHr({children: item.children})
   | _ => Unmatched
   };
 
