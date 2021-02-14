@@ -15,14 +15,20 @@ type positionAst = {
 };
 
 type sectionAst = {
-  actionable: bool,
-  children: array(sectionAst),
-  content: Js.nullable(string),
-  level: int,
-  position: positionAst,
-  tags: Js.nullable(array(string)),
   [@bs.as "type"]
   type_: string,
+  children: array(sectionAst),
+  position: positionAst,
+  // Headline
+  actionable: bool,
+  content: Js.nullable(string),
+  level: int,
+  tags: Js.nullable(array(string)),
+  // Plaintext
+  value: Js.nullable(string),
+  // List
+  indent: Js.nullable(int),
+  ordered: Js.nullable(bool),
 };
 
 type propertiesAst = {
@@ -49,6 +55,25 @@ type orgItem =
       level: int,
       position: positionAst,
       tags: array(string),
+    })
+  | Paragraph({children: array(sectionAst)})
+  | PlainText({
+      children: array(sectionAst),
+      value: string,
+    })
+  | List({
+      children: array(sectionAst),
+      indent: int,
+      ordered: bool,
+    })
+  | ListItem({
+      children: array(sectionAst),
+      indent: int,
+    })
+  | ListItemBullet({
+      children: array(sectionAst),
+      indent: int,
+      ordered: bool,
     });
 
 let getItem = item =>
@@ -66,6 +91,26 @@ let getItem = item =>
       level: item.level,
       position: item.position,
       tags: nullableOrEmptyArray(item.tags),
+    })
+  | "paragraph" => Paragraph({children: item.children})
+  | "text.plain" =>
+    PlainText({
+      children: item.children,
+      value: nullableOrEmptyStr(item.value),
+    })
+  | "list" =>
+    List({
+      children: item.children,
+      indent: nullableOrZero(item.indent),
+      ordered: nullableOrBool(item.ordered, false),
+    })
+  | "list.item" =>
+    ListItem({children: item.children, indent: nullableOrZero(item.indent)})
+  | "list.item.bullet" =>
+    ListItemBullet({
+      children: item.children,
+      indent: nullableOrZero(item.indent),
+      ordered: nullableOrBool(item.ordered, false),
     })
   | _ => Unmatched
   };

@@ -46,7 +46,7 @@ let wrapWithKey = (level, index, children) => {
   <React.Fragment key> children </React.Fragment>;
 };
 
-let rec renderParagraphs = xs => {
+let renderParagraphs = xs => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
     switch (getItem(x)) {
     | PlainText({value}) => <p key={string_of_int(i)}> {s(value)} </p>
@@ -56,6 +56,23 @@ let rec renderParagraphs = xs => {
   |> React.array;
 };
 
+let rec renderList = (xs, ordered) => {
+  Belt.Array.mapWithIndex(xs, (i, x) => {
+    switch (getItem(x)) {
+    | ListItem({children}) => <li> {renderParagraphs(children)} </li>
+    | _ => React.null
+    }
+  })
+  |> React.array
+  |> (
+    xs =>
+      switch (ordered) {
+      | true => <ol> xs </ol>
+      | _ => <ul> xs </ul>
+      }
+  );
+};
+
 let rec renderItems = xs => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
     switch (getItem(x)) {
@@ -63,6 +80,7 @@ let rec renderItems = xs => {
     | Section({children, level}) =>
       renderItems(children) |> wrapWithKey(level, i)
     | Paragraph({children}) => renderParagraphs(children)
+    | List({children, ordered}) => renderList(children, ordered)
     | _ => React.null
     }
   })

@@ -20,3 +20,15 @@ let nullableOrEmptyStr = x =>
   | Some((x: string)) => x
   | _ => ""
   };
+
+let nullableOrZero = x =>
+  switch (Js.Nullable.toOption(x)) {
+  | Some((x: int)) => x
+  | _ => 0
+  };
+
+let nullableOrBool = (x, fallback: bool) =>
+  switch (Js.Nullable.toOption(x)) {
+  | Some((x: bool)) => x
+  | _ => fallback
+  };
