@@ -51,8 +51,6 @@ let renderHeadline = (xs, level) => {
       xs,
     );
 
-  Js.log(stars);
-
   <header>
     {switch (stars) {
      | Some({level}) =>
@@ -79,6 +77,27 @@ let renderHeadline = (xs, level) => {
      | _ => React.null
      }}
   </header>;
+};
+
+let renderBlock = x => {
+  switch (x) {
+  | Block({attributes, name, params, value}) =>
+    <section>
+      {Js.Dict.entries(attributes)
+       ->Belt.Array.mapWithIndex((i, (key, value)) => {
+           <span key={string_of_int(i)}> {s({j|$key: $value|j})} </span>
+         })
+       |> (
+         xs =>
+           switch (Js.Array.length(xs)) {
+           | 0 => React.null
+           | _ => <div> {xs |> React.array} </div>
+           }
+       )}
+      <code> {s(value)} </code>
+    </section>
+  | _ => React.null
+  };
 };
 
 let renderParagraphs = xs => {
@@ -127,6 +146,7 @@ let rec renderItems = xs => {
     | Section({children, level}) =>
       renderItems(children) |> wrapWithKey(level, i)
     | Paragraph({children}) => renderParagraphs(children)
+    | Block(_) as x => renderBlock(x)
     | List({children, ordered}) => renderList(children, ordered)
     | _ => React.null
     }

@@ -26,7 +26,7 @@ type sectionAst = {
   content: Js.nullable(string),
   level: int,
   tags: Js.nullable(array(string)),
-  // Plaintext & Link
+  // Plaintext, Link, Block
   value: Js.nullable(string),
   // Todo
   keyword: Js.nullable(string),
@@ -37,6 +37,10 @@ type sectionAst = {
   description: Js.nullable(string),
   protocol: Js.nullable(string),
   search: Js.nullable(string),
+  // Blog
+  attributes: Js.nullable(Js.Dict.t(string)),
+  name: Js.nullable(string),
+  params: Js.nullable(array(string)),
 };
 
 type propertiesAst = {
@@ -100,6 +104,12 @@ type orgItem =
       children: array(sectionAst),
       indent: int,
       ordered: bool,
+    })
+  | Block({
+      attributes: Js.Dict.t(string),
+      name: string,
+      params: array(string),
+      value: string,
     });
 
 let getItem = item =>
@@ -148,6 +158,13 @@ let getItem = item =>
       children: item.children,
       indent: nullableOrZero(item.indent),
       ordered: nullableOrBool(item.ordered, false),
+    })
+  | "block" =>
+    Block({
+      attributes: nullableOrEmptyDict(item.attributes),
+      name: nullableOrEmptyStr(item.name),
+      params: nullableOrEmptyArray(item.params),
+      value: nullableOrEmptyStr(item.value),
     })
   | _ => Unmatched
   };
