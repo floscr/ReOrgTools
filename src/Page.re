@@ -130,7 +130,7 @@ let renderParagraphs = xs => {
 
 let rec renderTable = xs => {
   let hasTableHead =
-    switch (Array.sub(xs, 0, 2) |> Array.map(getItem)) {
+    switch (Js.Array.slice(~start=0, ~end_=2, xs) |> Array.map(getItem)) {
     | [|TableRow(_), TableHr(_)|] => true
     | _ => false
     };
