@@ -13,17 +13,37 @@ Content
 |j},
   );
 
+module Heading = {
+  [@react.component]
+  let make = (~level: int, ~children) => {
+    switch (level) {
+    | 1 => <h1> children </h1>
+    | 2 => <h2> children </h2>
+    | 3 => <h3> children </h3>
+    | 4 => <h4> children </h4>
+    | 5 => <h5> children </h5>
+    | _ => children
+    };
+  };
+};
+
 let renderHeadline = x =>
   switch (x) {
-  | Headline({content}) => <h1> {s(content)} </h1>
+  | Headline({content, level}) => <Heading level> {s(content)} </Heading>
   | _ => React.null
   };
+
+let wrapWithKey = (level, index, children) => {
+  let key = {j|$level-$index|j};
+  <React.Fragment key> children </React.Fragment>;
+};
 
 let rec renderItems = xs => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
     switch (getItem(x)) {
-    | Headline(_) as z => renderHeadline(z)
-    | Section({children}) => <> {renderItems(children)} </>
+    | Headline({level}) as z => renderHeadline(z) |> wrapWithKey(level, i)
+    | Section({children, level}) =>
+      renderItems(children) |> wrapWithKey(level, i)
     | _ => React.null
     }
   })
