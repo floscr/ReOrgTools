@@ -8,6 +8,14 @@ let orga =
 
 Content
 
+- Foo
+- Bar
+- Baz
+
+1. Foo
+2. Bar
+3. Baz
+
 *** Child2
 
 |j},
@@ -38,12 +46,23 @@ let wrapWithKey = (level, index, children) => {
   <React.Fragment key> children </React.Fragment>;
 };
 
+let rec renderParagraphs = xs => {
+  Belt.Array.mapWithIndex(xs, (i, x) => {
+    switch (getItem(x)) {
+    | PlainText({value}) => <p key={string_of_int(i)}> {s(value)} </p>
+    | _ => React.null
+    }
+  })
+  |> React.array;
+};
+
 let rec renderItems = xs => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
     switch (getItem(x)) {
     | Headline({level}) as z => renderHeadline(z) |> wrapWithKey(level, i)
     | Section({children, level}) =>
       renderItems(children) |> wrapWithKey(level, i)
+    | Paragraph({children}) => renderParagraphs(children)
     | _ => React.null
     }
   })
