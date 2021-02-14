@@ -7,4 +7,8 @@ module.exports = {
     path: path.join(__dirname, "bundleOutput"),
     filename: 'index.js',
   },
+  devServer: {
+    hot: false,
+    inline: false,
+  },
 };
