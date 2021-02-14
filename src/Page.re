@@ -124,8 +124,7 @@ let rec renderItems = xs => {
   |> React.array;
 };
 
-let render = () =>
-  orga.children[0] |> Orga.getMainItem |> Utils.log |> renderItems;
+let render = () => orga.children |> Utils.log |> renderItems;
 
 [@react.component]
 let make = () => <> {render()} </>;
