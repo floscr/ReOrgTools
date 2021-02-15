@@ -11,4 +11,12 @@ module.exports = {
     hot: false,
     inline: false,
   },
+  module: {
+    rules: [
+      {
+        test: /\.org$/i,
+        use: 'raw-loader',
+      },
+    ],
+  },
 };
