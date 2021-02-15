@@ -134,7 +134,8 @@ type orgItem =
   | Table({children: array(sectionAst)})
   | TableRow({children: array(sectionAst)})
   | TableCell({children: array(sectionAst)})
-  | TableHr({children: array(sectionAst)});
+  | TableHr({children: array(sectionAst)})
+  | Hr({position: positionAst});
 
 let getItem = item => {
   let t = Js.String.split(".", item.type_) |> Array.to_list;
@@ -197,6 +198,7 @@ let getItem = item => {
   | ["table", "row"] => TableRow({children: item.children})
   | ["table", "cell"] => TableCell({children: item.children})
   | ["table", "hr"] => TableHr({children: item.children})
+  | ["hr"] => Hr({position: item.position})
   | _ => Unmatched
   };
 };

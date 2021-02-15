@@ -96,6 +96,8 @@ let renderHeadline = (xs, level) => {
   </header>;
 };
 
+let renderHr = () => <hr />;
+
 let renderBlock = x => {
   switch (x) {
   | Block({attributes, name, params, value}) =>
@@ -238,6 +240,7 @@ let rec renderItems = xs => {
     | Block(_) as x => renderBlock(x)
     | List({children, ordered}) => renderList(children, ordered)
     | Table({children}) => renderTable(children)
+    | Hr(_) => renderHr()
     | _ => React.null
     }
   })
