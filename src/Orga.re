@@ -56,9 +56,29 @@ type orgAst = {
 
 type stars = {level: int};
 
+type style =
+  | Plain
+  | Bold
+  | Italic
+  | Underline
+  | StrikeThrough
+  | Verbatim;
+
+let matchStyle = x =>
+  switch (x) {
+  | "plain" => Plain
+  | "bold" => Bold
+  | "italic" => Italic
+  | "underline" => Underline
+  | "StrikeThrough" => StrikeThrough
+  | "Verbatim" => Verbatim
+  | _ => Plain
+  };
+
 type plainText = {
   children: array(sectionAst),
   value: string,
+  style,
 };
 
 type link = {
@@ -116,16 +136,18 @@ type orgItem =
   | TableCell({children: array(sectionAst)})
   | TableHr({children: array(sectionAst)});
 
-let getItem = item =>
-  switch (item.type_) {
-  | "section" =>
+let getItem = item => {
+  let t = Js.String.split(".", item.type_) |> Array.to_list;
+
+  switch (t) {
+  | ["section"] =>
     Section({
       children: item.children,
       level: item.level,
       position: item.position,
       properties: nullableOrEmptyDict(item.properties),
     })
-  | "headline" =>
+  | ["headline"] =>
     Headline({
       children: item.children,
       content: nullableOrEmptyStr(item.content),
@@ -133,49 +155,52 @@ let getItem = item =>
       position: item.position,
       tags: nullableOrEmptyArray(item.tags),
     })
-  | "todo" => Todo({keyword: nullableOrEmptyStr(item.keyword)})
-  | "stars" => Stars({level: item.level})
-  | "link" =>
+  | ["todo"] => Todo({keyword: nullableOrEmptyStr(item.keyword)})
+  | ["stars"] => Stars({level: item.level})
+  | ["link"] =>
     Link({
       value: nullableOrEmptyStr(item.value),
       description: nullableOrEmptyStr(item.description),
       protocol: nullableOrEmptyStr(item.description),
       search: nullableOrEmptyStr(item.description),
     })
-  | "tags" => Tags({tags: nullableOrEmptyArray(item.tags)})
-  | "paragraph" => Paragraph({children: item.children})
-  | "text.plain" =>
+  | ["tags"] => Tags({tags: nullableOrEmptyArray(item.tags)})
+  | ["paragraph"] => Paragraph({children: item.children})
+  | ["text", style] =>
+    Js.log(style);
     PlainText({
       children: item.children,
       value: nullableOrEmptyStr(item.value),
-    })
-  | "list" =>
+      style: matchStyle(style),
+    });
+  | ["list"] =>
     List({
       children: item.children,
       indent: nullableOrZero(item.indent),
       ordered: nullableOrBool(item.ordered, false),
     })
-  | "list.item" =>
+  | ["list", "item"] =>
     ListItem({children: item.children, indent: nullableOrZero(item.indent)})
-  | "list.item.bullet" =>
+  | ["list", "item", "bullet"] =>
     ListItemBullet({
       children: item.children,
       indent: nullableOrZero(item.indent),
       ordered: nullableOrBool(item.ordered, false),
     })
-  | "block" =>
+  | ["block"] =>
     Block({
       attributes: nullableOrEmptyDict(item.attributes),
       name: nullableOrEmptyStr(item.name),
       params: nullableOrEmptyArray(item.params),
       value: nullableOrEmptyStr(item.value),
     })
-  | "table" => Table({children: item.children})
-  | "table.row" => TableRow({children: item.children})
-  | "table.cell" => TableCell({children: item.children})
-  | "table.hr" => TableHr({children: item.children})
+  | ["table"] => Table({children: item.children})
+  | ["table", "row"] => TableRow({children: item.children})
+  | ["table", "cell"] => TableCell({children: item.children})
+  | ["table", "hr"] => TableHr({children: item.children})
   | _ => Unmatched
   };
+};
 
 let getMainItem = item =>
   switch (getItem(item)) {

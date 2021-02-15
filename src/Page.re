@@ -38,6 +38,23 @@ type headlineProps = {
   tags: option(tags),
 };
 
+let renderPlainText = x =>
+  switch (getItem(x)) {
+  | PlainText({value, style}) =>
+    let str = s(value);
+    Js.log(value);
+    switch (style) {
+    | Plain => str
+    | Bold => <b> str </b>
+    | Italic => <i> str </i>
+    | Underline => <u> str </u>
+    | StrikeThrough => <del> str </del>
+    | Verbatim => <code> str </code>
+    | _ => str
+    };
+  | _ => React.null
+  };
+
 let renderHeadline = (xs, level) => {
   let {stars, content, tags} =
     Js.Array.reduce(
@@ -63,7 +80,7 @@ let renderHeadline = (xs, level) => {
        (
          switch (getItem(x)) {
          | Todo({keyword}) => s(keyword)
-         | PlainText({value}) => s(value)
+         | PlainText(_) => renderPlainText(x)
          | Link({value, description}) => <a href=value> {s(description)} </a>
          | _ => React.null
          }
@@ -119,7 +136,7 @@ let renderParagraphs = xs => {
     (i, x) => {
       let key = string_of_int(i);
       switch (getItem(x)) {
-      | PlainText({value}) => <p key> {s(value)} </p>
+      | PlainText(_) => <p key> {renderPlainText(x)} </p>
       | Link({value, description}) =>
         <a href=value>
           {s(
