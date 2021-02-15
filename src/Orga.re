@@ -167,12 +167,11 @@ let getItem = item => {
   | ["tags"] => Tags({tags: nullableOrEmptyArray(item.tags)})
   | ["paragraph"] => Paragraph({children: item.children})
   | ["text", style] =>
-    Js.log(style);
     PlainText({
       children: item.children,
       value: nullableOrEmptyStr(item.value),
       style: matchStyle(style),
-    });
+    })
   | ["list"] =>
     List({
       children: item.children,
