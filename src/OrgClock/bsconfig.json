@@ -1,27 +1,20 @@
 {
-  "name": "orga-renderer",
+  "name": "org-clock",
   "reason": {
     "react-jsx": 3
   },
-  "sources": {
-    "dir": "src",
-    "subdirs": [
-      "WebService",
-      "OrgClock"
-    ]
-  },
+  "sources": ".",
   "bsc-flags": [
     "-bs-super-errors"
   ],
   "package-specs": [
     {
-      "module": "es6",
+      "module": "commonjs",
       "in-source": true
     }
   ],
-  "suffix": ".bs.js",
+  "suffix": ".foo.js",
   "bs-dependencies": [
-    "reason-react"
   ],
   "refmt": 3
 }

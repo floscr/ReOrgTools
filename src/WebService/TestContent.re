@@ -1,6 +1,6 @@
 open Orga;
 
-let f = [%raw {| require("../examples/Test.org").default|}];
+let f = [%raw {| require("../../examples/Test.org").default|}];
 
 let orga =
   Org.parseOrga(

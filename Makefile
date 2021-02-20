@@ -26,6 +26,9 @@ watch: $(SOURCE_DIRS_JSON)
 		entr -nd $(BSB) $(BSB_ARGS); \
 	done
 
+build:
+	$(BSB) $(BSB_ARGS)
+
 print-%: ; @echo $*=$($*)
 
 clean:
