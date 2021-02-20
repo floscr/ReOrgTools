@@ -1,5 +1,5 @@
 {
-  "name": "org-clock",
+  "name": "reorga",
   "reason": {
     "react-jsx": 3
   },
@@ -13,7 +13,7 @@
       "in-source": true
     }
   ],
-  "suffix": ".foo.js",
+  "suffix": ".bs.js",
   "bs-dependencies": [
   ],
   "refmt": 3

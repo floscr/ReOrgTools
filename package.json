@@ -13,7 +13,8 @@
     "react-syntax-highlighter": "^13.3.1",
     "reason-react": ">=0.8.0",
     "webpack": "^4.43.0",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.0",
+    "reorga": "link:./src/ReOrga"
   },
   "devDependencies": {
     "raw-loader": "^4.0.2",

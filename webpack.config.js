@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/WebService/Index.bs.js',
+  entry: './src/WebService/WebService.bs.js',
   mode: 'development',
   output: {
     path: path.join(__dirname, "bundleOutput"),

@@ -1,4 +1,4 @@
-open Orga;
+open ReOrga;
 
 let f = [%raw {| require("../../examples/Test.org").default|}];
 

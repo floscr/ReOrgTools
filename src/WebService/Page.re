@@ -1,4 +1,4 @@
-open Orga;
+open ReOrga;
 open ReactUtils;
 
 module Heading = {
