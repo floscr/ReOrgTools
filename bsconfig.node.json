@@ -1,0 +1,23 @@
+{
+  "name": "orga-renderer",
+  "sources": {
+    "dir": "src",
+    "subdirs": [
+      "OrgClock"
+    ]
+  },
+  "bsc-flags": [
+    "-bs-super-errors"
+  ],
+  "package-specs": [
+    {
+      "module": "commonjs",
+      "in-source": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "bs-dependencies": [
+    "reorga"
+  ],
+  "refmt": 3
+}

@@ -2,8 +2,28 @@ SHELL:=$(or $(CONFIG_SHELL),bash)
 BSB := ./node_modules/.bin/bsb.exe
 BSB_ARGS:= -make-world
 SOURCE_DIRS_JSON := lib/bs/.sourcedirs.json
+TARGET := $(or $(TARGET),web)
 
-all: serve
+all:
+	serve
+
+org_clock:
+	TARGET=node $(MAKE) copy_bsconfig
+	trap 'kill %1' int term
+	yarn
+	$(MAKE) watch & $(MAKE) org_clock_watch
+
+copy_bsconfig:
+    # Copy bsconfig for either web or node
+	rm -rf bsconfig.json
+	cp "bsconfig.$(TARGET).json" bsconfig.json
+
+org_clock_watch:
+	while true; do \
+		trap 'break' int; \
+		find src -name '*.js' | \
+		entr -nd node ./src/OrgClock/OrgClock.bs.js; \
+	done
 
 serve:
 	trap 'kill %1' INT TERM
