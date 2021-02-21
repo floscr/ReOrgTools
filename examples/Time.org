@@ -15,6 +15,7 @@ SCHEDULED: <2021-02-21 Sun>
 DEADLINE: <2021-02-21 Sun>
 
 * Regular Timestamp
+SCHEDULED: <2021-02-21 Sun 17:25>
 [2021-02-21 Sun]
 
 * Created Property

@@ -17,6 +17,7 @@
   ],
   "suffix": ".bs.js",
   "bs-dependencies": [
+    "@mobily/re-date",
     "reorga"
   ],
   "refmt": 3

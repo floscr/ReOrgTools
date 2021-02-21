@@ -7,14 +7,15 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@mobily/re-date": "^0.10.0",
     "orga": "^2.3.15",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-syntax-highlighter": "^13.3.1",
     "reason-react": ">=0.8.0",
+    "reorga": "link:./src/ReOrga",
     "webpack": "^4.43.0",
-    "webpack-dev-server": "^3.11.0",
-    "reorga": "link:./src/ReOrga"
+    "webpack-dev-server": "^3.11.0"
   },
   "devDependencies": {
     "raw-loader": "^4.0.2",
