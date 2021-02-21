@@ -28,7 +28,7 @@ type sectionAst = {
   children: array(sectionAst),
   position: positionAst,
   // Document does not have this item
-  // but for simplicitys sake we'll just assume it there everywhere
+  // but for simplicity sake we'll just assume it there everywhere
   parent: sectionAst,
   // Section
   properties: Js.nullable(Js.Dict.t(string)),
