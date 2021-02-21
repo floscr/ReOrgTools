@@ -257,6 +257,26 @@ let getMainItem = item =>
 type options = {todo: option(array(string))};
 
 module Org = {
+  let documentChildren = org =>
+    switch (org |> getItem) {
+    | Document({children}) => Some(children)
+    | _ => None
+    };
+
+  let rec filterAllHeadlines = (xs, fn) =>
+    Js.Array.reduce(
+      (acc, cur) => {
+        switch (fn(cur)) {
+        | Headline(_) as x => List.append(acc, [x])
+        | Section({children}) =>
+          Belt.List.concat(acc, filterAllHeadlines(children, fn))
+        | _ => acc
+        }
+      },
+      [],
+      xs,
+    );
+
   let defaultOptions = {todo: Some([|"TODO"|])};
   [@bs.module "orga"]
   external parseOrga: (string, options) => orgAst = "parse";
