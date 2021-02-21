@@ -20,6 +20,8 @@ type timestamp = {
   end_: Js.nullable(Js.Date.t),
 };
 
+// Easiest way to type the orga element for resonml
+// We assume all possible props there and match the type with fallbacks
 type sectionAst = {
   [@bs.as "type"]
   type_: string,
