@@ -1,0 +1,26 @@
+#+TITLE: Time
+
+* Scheduled
+SCHEDULED: <2021-02-21 Sun>
+
+** Nestest Scheduled
+SCHEDULED: <2021-02-21 Sun>
+
+* Nested Scheduled
+** Nest
+*** Nested Scheduled
+SCHEDULED: <2021-02-21 Sun>
+
+* Deadline
+DEADLINE: <2021-02-21 Sun>
+
+* Regular Timestamp
+[2021-02-21 Sun]
+
+* Created Property
+:PROPERTIES:
+:CREATED:  [2021-02-21 Sun 15:25]
+:END:
+
+* Range
+SCHEDULED: <2021-08-01 Sun 11:00-00:00>
