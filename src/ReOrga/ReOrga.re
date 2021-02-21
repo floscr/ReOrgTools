@@ -148,7 +148,12 @@ type orgItem =
   | TableRow({children: array(sectionAst)})
   | TableCell({children: array(sectionAst)})
   | TableHr({children: array(sectionAst)})
-  | Hr({position: positionAst});
+  | Hr({position: positionAst})
+  | Document({
+      position: positionAst,
+      children: array(sectionAst),
+      properties: Js.Dict.t(string),
+    });
 
 let getItem = item => {
   let t = Js.String.split(".", item.type_) |> Array.to_list;
@@ -222,6 +227,12 @@ let getItem = item => {
   | ["table", "cell"] => TableCell({children: item.children})
   | ["table", "hr"] => TableHr({children: item.children})
   | ["hr"] => Hr({position: item.position})
+  | ["document"] =>
+    Document({
+      children: item.children,
+      position: item.position,
+      properties: nullableOrEmptyDict(item.properties),
+    })
   | _ => Unmatched
   };
 };
