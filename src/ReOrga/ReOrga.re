@@ -25,6 +25,9 @@ type sectionAst = {
   type_: string,
   children: array(sectionAst),
   position: positionAst,
+  // Document does not have this item
+  // but for simplicitys sake we'll just assume it there everywhere
+  parent: sectionAst,
   // Section
   properties: Js.nullable(Js.Dict.t(string)),
   // Headline
@@ -119,6 +122,7 @@ type orgItem =
       type_: string,
       start: option(Js.Date.t),
       end_: option(Js.Date.t),
+      parent: sectionAst,
     })
   | Stars(stars)
   | Todo({keyword: string})
@@ -183,8 +187,15 @@ let getItem = item => {
         type_: item.type_,
         start: x.date |> Js.Nullable.toOption,
         end_: x.end_ |> Js.Nullable.toOption,
+        parent: item.parent,
       })
-    | _ => Planning({type_: item.type_, start: None, end_: None})
+    | _ =>
+      Planning({
+        type_: item.type_,
+        start: None,
+        end_: None,
+        parent: item.parent,
+      })
     }
   | ["link"] =>
     Link({
