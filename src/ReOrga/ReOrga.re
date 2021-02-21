@@ -14,6 +14,12 @@ type positionAst = {
   start: position,
 };
 
+type timestamp = {
+  date: Js.nullable(Js.Date.t),
+  [@bs.as "end"]
+  end_: Js.nullable(Js.Date.t),
+};
+
 type sectionAst = {
   [@bs.as "type"]
   type_: string,
@@ -28,6 +34,8 @@ type sectionAst = {
   tags: Js.nullable(array(string)),
   // Plaintext, Link, Block
   value: Js.nullable(string),
+  // Planning
+  timestamp: Js.nullable(timestamp),
   // Todo
   keyword: Js.nullable(string),
   // List
@@ -107,6 +115,11 @@ type orgItem =
     })
   | Paragraph({children: array(sectionAst)})
   | PlainText(plainText)
+  | Planning({
+      type_: string,
+      start: option(Js.Date.t),
+      end_: option(Js.Date.t),
+    })
   | Stars(stars)
   | Todo({keyword: string})
   | Tags(tags)
@@ -158,6 +171,16 @@ let getItem = item => {
     })
   | ["todo"] => Todo({keyword: nullableOrEmptyStr(item.keyword)})
   | ["stars"] => Stars({level: item.level})
+  | ["planning"] =>
+    switch (item.timestamp |> Js.Nullable.toOption) {
+    | Some(x) =>
+      Planning({
+        type_: item.type_,
+        start: x.date |> Js.Nullable.toOption,
+        end_: x.end_ |> Js.Nullable.toOption,
+      })
+    | _ => Planning({type_: item.type_, start: None, end_: None})
+    }
   | ["link"] =>
     Link({
       value: nullableOrEmptyStr(item.value),
@@ -212,6 +235,7 @@ let getMainItem = item =>
 type options = {todo: option(array(string))};
 
 module Org = {
+  let defaultOptions = {todo: Some([|"TODO"|])};
   [@bs.module "orga"]
   external parseOrga: (string, options) => orgAst = "parse";
 };
