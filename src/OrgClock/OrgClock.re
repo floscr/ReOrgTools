@@ -1,5 +1,7 @@
 open ReOrga;
 
+let timeframe = 10; // minutes
+
 let f = Node_fs.readFileAsUtf8Sync("./examples/Time.org");
 let org = Org.parseOrga(f, Org.defaultOptions);
 
@@ -8,7 +10,7 @@ let rec filterScheduled = xs =>
     (acc, cur) => {
       switch (getItem(cur)) {
       | Section({children}) => List.append(acc, filterScheduled(children))
-      | Planning({parent}) as x => List.append(acc, [(parent, x)])
+      | Planning({parent}) => List.append(acc, [(parent, cur)])
       | _ => acc
       }
     },
@@ -16,8 +18,25 @@ let rec filterScheduled = xs =>
     xs,
   );
 
-let scheduled = filterScheduled(org.children) |> Belt.List.toArray;
+let filterUpcoming = now =>
+  List.filter(((section, date)) =>
+    switch (section, getItem(date)) {
+    | (_, Planning({start})) =>
+      switch (start) {
+      | Some(x) =>
+        ReDate.isAfter(now, x)
+        && ReDate.differenceInMinutes(now, x) <= timeframe
+      | _ => false
+      }
+    | _ => false
+    }
+  );
 
-Js.log(scheduled);
+let now = Js.Date.make();
+
+let scheduled = filterScheduled(org.children) |> filterUpcoming(now);
+
+let debug = scheduled |> Belt.List.toArray;
+debug |> Js.log;
 
 [%debugger];
