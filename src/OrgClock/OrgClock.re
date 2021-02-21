@@ -2,7 +2,7 @@ open ReOrga;
 
 let timeframe = 10; // minutes
 
-let f = Node_fs.readFileAsUtf8Sync("./examples/Time.org");
+let f = Node.Fs.readFileAsUtf8Sync("./examples/Time.org");
 let org = Org.parseOrga(f, Org.defaultOptions);
 
 let rec filterScheduled = xs =>
@@ -36,7 +36,24 @@ let now = Js.Date.make();
 
 let scheduled = filterScheduled(org.children) |> filterUpcoming(now);
 
+Belt.List.forEach(scheduled, ((x, _)) => {
+  switch (x.children |> Array.to_list |> Belt.List.head) {
+  | Some(x) =>
+    switch (getItem(x)) {
+    | Headline({content}) =>
+      Js.log(content);
+      Node.Child_process.execSync(
+        {j| notify-send "$content" |j},
+        Node.Child_process.option(),
+      )
+      |> ignore;
+    | _ => ()
+    }
+  | _ => ()
+  }
+});
+
 let debug = scheduled |> Belt.List.toArray;
-debug |> Js.log;
+/* debug |> Js.log; */
 
 [%debugger];
