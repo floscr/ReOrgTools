@@ -3,9 +3,9 @@ open ReOrga;
 open OrgClockUtil;
 
 let checkFile = file => {
+  let now = Js.Date.make();
   let f = Node.Fs.readFileAsUtf8Sync(file);
   let org = Org.parseOrga(f, Org.defaultOptions);
-  let now = Js.Date.make();
 
   filterScheduled(org.children)
   |> filterUpcoming(now)
@@ -16,7 +16,6 @@ let checkFile = file => {
        |> Option.tap(
             fun
             | Headline({content}) => {
-                Js.log(content);
                 Node.Child_process.execSync(
                   {j| notify-send "$content" |j},
                   Node.Child_process.option(),
@@ -31,6 +30,3 @@ let checkFile = file => {
 
 checkFile("/home/floscr/Documents/Org/Main/inbox.org");
 checkFile("/home/floscr/Documents/Org/Work/work.org");
-
-/* let debug = scheduled |> Belt.List.toArray; */
-/* [%debugger]; */
