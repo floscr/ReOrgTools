@@ -590,6 +590,17 @@ browserify-zlib@^0.2.0:
   dependencies:
     pako "~1.0.5"
 
+"bs-bastet@git+https://github.com/floscr/bastet.git":
+  version "2.0.0"
+  resolved "git+https://github.com/floscr/bastet.git#09b98df6a9e38282fc76612b5ada5d35180985bc"
+  dependencies:
+    bs-stdlib-shims "^0.1.0"
+
+bs-stdlib-shims@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/bs-stdlib-shims/-/bs-stdlib-shims-0.1.0.tgz#f64166392652a07c37b9be462beebb6c0c66a74e"
+  integrity sha512-CszWow8iXOKgmzNCc5dR3kERaqzIp3f4nbV7lJF5vS9BHm70GqLlu7OBE/VCPKZ5noG1VtJAIVqIdLFqUdIRUQ==
+
 buffer-from@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.1.tgz#32713bc028f75c02fdb710d7c7bcec1f2c6070ef"
@@ -3241,6 +3252,10 @@ regexp.prototype.flags@^1.2.0:
   dependencies:
     define-properties "^1.1.3"
     es-abstract "^1.17.0-next.1"
+
+"relude@git+https://github.com/floscr/relude.git":
+  version "0.65.0"
+  resolved "git+https://github.com/floscr/relude.git#09b98df6a9e38282fc76612b5ada5d35180985bc"
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"

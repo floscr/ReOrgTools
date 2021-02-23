@@ -15,7 +15,9 @@
     "reason-react": ">=0.8.0",
     "reorga": "link:./src/ReOrga",
     "webpack": "^4.43.0",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.0",
+    "relude": "git+https://github.com/floscr/relude.git",
+    "bs-bastet": "git+https://github.com/floscr/bastet.git"
   },
   "devDependencies": {
     "raw-loader": "^4.0.2",
