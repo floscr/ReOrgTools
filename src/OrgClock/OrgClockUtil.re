@@ -21,7 +21,7 @@ let filterUpcoming = now =>
     switch (section, getItem(date)) {
     | (_, Planning({start})) =>
       start
-      |> Option.filter(x => ReDate.isAfter(now, x))
+      |> Option.filter(ReDate.isAfter(now))
       |> Option.filter(x => ReDate.differenceInMinutes(now, x) <= timeframe)
       |> Option.isSome
     | _ => false
