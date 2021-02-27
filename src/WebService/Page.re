@@ -42,7 +42,6 @@ let renderPlainText = x =>
   switch (getItem(x)) {
   | PlainText({value, style}) =>
     let str = s(value);
-    Js.log(value);
     switch (style) {
     | Plain => str
     | Bold => <b> str </b>
