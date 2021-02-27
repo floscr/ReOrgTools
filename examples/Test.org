@@ -16,6 +16,8 @@ Paragraphs are separated by at least one empty line.
 
 https://nickhigham.wordpress.com/ A link without a description.
 
+[[https://nickhigham.wordpress.com/][Inline Link]] An inline link with a description.
+
 A DOI (digital object identifier) link:
 [[doi:10.1093/comnet/cnv016][Matching Exponential-Based and Resolvent-Based Centrality Measures]]
 
