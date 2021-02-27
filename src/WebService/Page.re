@@ -15,9 +15,9 @@ module Heading = {
   };
 };
 
+let makeKey = (level, index) => {j|$level-$index|j};
 let wrapWithKey = (level, index, children) => {
-  let key = {j|$level-$index|j};
-  <React.Fragment key> children </React.Fragment>;
+  <React.Fragment key={makeKey(level, index)}> children </React.Fragment>;
 };
 
 let renderTags = xs =>
@@ -145,7 +145,7 @@ let renderParagraphs = xs => {
       | PlainText(_) =>
         <React.Fragment key> {renderPlainText(x)} </React.Fragment>
       | Link({value, description}) =>
-        <a href=value>
+        <a href=value key>
           {s(
              x.description
              ->Js.Nullable.toOption
@@ -217,11 +217,14 @@ let renderListItem = xs => {
     xs
     |> Array.mapWithIndex((x, i) => {
          let key = string_of_int(i);
-         switch (x |> getItem) {
-         | ListItemCheckBox({checked}) =>
-           <input type_="checkbox" defaultChecked=checked />
-         | _ => renderParagraphs([|x|])
-         };
+         (
+           switch (x |> getItem) {
+           | ListItemCheckBox({checked}) =>
+             <input type_="checkbox" defaultChecked=checked />
+           | _ => renderParagraphs([|x|])
+           }
+         )
+         |> (x => <React.Fragment key> x </React.Fragment>);
        })
     |> React.array
   );
@@ -241,7 +244,7 @@ let rec renderList = (xs, ordered) => {
            </li>
          | (ListItem({children}), _) =>
            <li key> {renderListItem(children)} </li>
-         | (List(_), _) => React.null
+         /* | (List(_), _) => React.null */
          | _ => React.null
          };
        })
@@ -256,19 +259,20 @@ let rec renderList = (xs, ordered) => {
   );
 };
 
-let rec renderItems = xs => {
+let rec renderItems = (~level=0, xs) => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
     switch (getItem(x)) {
     | Headline({children, level}) =>
       renderHeadline(children, level) |> wrapWithKey(level, i)
     | Section({children, level}) =>
-      renderItems(children) |> wrapWithKey(level, i)
+      renderItems(~level, children) |> wrapWithKey(level, i)
     | Paragraph({children}) =>
-      renderParagraphs(children) |> (x => <p> x </p>)
-    | Block(_) as x => renderBlock(x)
-    | List({children, ordered}) => renderList(children, ordered)
-    | Table({children}) => renderTable(children)
-    | Hr(_) => renderHr()
+      renderParagraphs(children) |> (x => <p key={makeKey(level, i)}> x </p>)
+    | Block(_) as x => renderBlock(x) |> wrapWithKey(level, i)
+    | List({children, ordered}) =>
+      renderList(children, ordered) |> wrapWithKey(level, i)
+    | Table({children}) => renderTable(children) |> wrapWithKey(level, i)
+    | Hr(_) => renderHr() |> wrapWithKey(level, i)
     | _ => React.null
     }
   })
