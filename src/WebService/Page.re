@@ -275,7 +275,8 @@ let rec renderItems = xs => {
   |> React.array;
 };
 
-let render = () => TestContent.orga.children |> Utils.log |> renderItems;
+let render = () =>
+  TestContent.orga |> Utils.log |> (x => x.children |> renderItems);
 
 [@react.component]
 let make = () => <> {render()} </>;
