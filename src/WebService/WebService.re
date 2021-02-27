@@ -23,5 +23,4 @@ let makeContainer = text => {
   content;
 };
 
-// All 4 examples.
-ReactDOMRe.render(<Page />, makeContainer(""));
+ReactDOMRe.render(<App />, makeContainer(""));
