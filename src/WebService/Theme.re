@@ -6,6 +6,6 @@ module BaseTheme = {
 module LightTheme = {
   open Css;
   include BaseTheme;
-  let bgColor = hex("f0eeed");
-  let textColor = hex("101010");
+  let bgColor = hex("fefefe");
+  let textColor = hex("333");
 };
