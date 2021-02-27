@@ -132,12 +132,12 @@ let renderBlock = x => {
 };
 
 let renderParagraphs = xs => {
-  Belt.Array.mapWithIndex(
-    xs,
-    (i, x) => {
+  Relude.Globals.Array.mapWithIndex(
+    (x, i) => {
       let key = string_of_int(i);
       switch (getItem(x)) {
-      | PlainText(_) => <p key> {renderPlainText(x)} </p>
+      | PlainText(_) =>
+        <React.Fragment key> {renderPlainText(x)} </React.Fragment>
       | Link({value, description}) =>
         <a href=value>
           {s(
@@ -149,8 +149,10 @@ let renderParagraphs = xs => {
       | _ => React.null
       };
     },
+    xs,
   )
-  |> React.array;
+  |> React.array
+  |> (x => <p> x </p>);
 };
 
 let rec renderTable = xs => {
