@@ -23,7 +23,9 @@
     "reason-react",
     "reorga",
     "relude",
-    "bs-bastet"
+    "bs-bastet",
+    "bs-css",
+    "bs-css-emotion"
   ],
   "refmt": 3
 }
