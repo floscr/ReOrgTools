@@ -151,8 +151,7 @@ let renderParagraphs = xs => {
     },
     xs,
   )
-  |> React.array
-  |> (x => <p> x </p>);
+  |> React.array;
 };
 
 let rec renderTable = xs => {
@@ -237,7 +236,8 @@ let rec renderItems = xs => {
       renderHeadline(children, level) |> wrapWithKey(level, i)
     | Section({children, level}) =>
       renderItems(children) |> wrapWithKey(level, i)
-    | Paragraph({children}) => renderParagraphs(children)
+    | Paragraph({children}) =>
+      renderParagraphs(children) |> (x => <p> x </p>)
     | Block(_) as x => renderBlock(x)
     | List({children, ordered}) => renderList(children, ordered)
     | Table({children}) => renderTable(children)
