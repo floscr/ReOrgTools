@@ -5,6 +5,20 @@ module Styles = {
   open Css;
 
   let headline = style([display(`flex)]);
+
+  let headlineTodo = (x: string) =>
+    style([
+      (
+        switch (x) {
+        | "DONE" => "fe9898"
+        | _ => "bbfe98"
+        }
+      )
+      |> hex
+      |> backgroundColor,
+      borderRadius(px(5)),
+      padding2(~v=px(2), ~h=px(5)),
+    ]);
 };
 
 module Heading = {
@@ -84,7 +98,10 @@ let renderHeadline = (xs, level) => {
     {Belt.Array.mapWithIndex(content, (i, x) => {
        (
          switch (getItem(x)) {
-         | Todo({keyword}) => s(keyword)
+         | Todo({keyword}) =>
+           <span className={Styles.headlineTodo(keyword)}>
+             {keyword |> s}
+           </span>
          | PlainText(_) => renderPlainText(x)
          | Link({value, description}) => <a href=value> {s(description)} </a>
          | _ => React.null
