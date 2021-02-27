@@ -207,25 +207,31 @@ let rec renderTable = xs => {
 };
 
 let rec renderList = (xs, ordered) => {
-  Belt.Array.mapWithIndex(
-    xs,
-    (i, x) => {
-      let key = string_of_int(i);
-      switch (getItem(x)) {
-      | List({children, ordered}) =>
-        <li key> {renderList(children, ordered)} </li>
-      | ListItem({children}) => <li key> {renderParagraphs(children)} </li>
-      | _ => React.null
-      };
-    },
-  )
-  |> React.array
-  |> (
-    xs =>
-      switch (ordered) {
-      | true => <ol> xs </ol>
-      | _ => <ul> xs </ul>
-      }
+  Relude.Globals.(
+    xs
+    |> Array.mapWithIndex((x, i) => {
+         let key = string_of_int(i);
+         let next = Array.at(i + 1, xs) |> Option.map(getItem);
+         switch (getItem(x), next) {
+         | (ListItem({children}), Some(List(sublist))) =>
+           <li key>
+             {renderParagraphs(children)}
+             {renderList(sublist.children, sublist.ordered)}
+           </li>
+         | (ListItem({children}), _) =>
+           <li key> {renderParagraphs(children)} </li>
+         | (List(_), _) => React.null
+         | _ => React.null
+         };
+       })
+    |> React.array
+    |> (
+      xs =>
+        switch (ordered) {
+        | true => <ol> xs </ol>
+        | _ => <ul> xs </ul>
+        }
+    )
   );
 };
 
