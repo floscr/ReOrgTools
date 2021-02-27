@@ -4,7 +4,7 @@ open Relude.Globals;
 let timeframe = 10; // minutes
 
 let rec filterScheduled = xs =>
-  Js.Array.reduce(
+  Array.foldLeft(
     (acc, cur) => {
       switch (getItem(cur)) {
       | Section({children}) => List.concat(acc, filterScheduled(children))
