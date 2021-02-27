@@ -76,7 +76,7 @@ let renderPlainText = x =>
   | _ => React.null
   };
 
-let renderHeadline = (xs, level) => {
+let renderHeadline = (~index, ~level, xs) => {
   let {stars, content, tags} =
     Js.Array.reduce(
       (acc, cur) =>
@@ -89,7 +89,10 @@ let renderHeadline = (xs, level) => {
       xs,
     );
 
-  <header className=Styles.headline>
+  let key = makeKey(level, index);
+  let id = "headline-" ++ key;
+
+  <header className=Styles.headline key id>
     {switch (stars) {
      | Some({level}) =>
        <span>
@@ -290,7 +293,7 @@ let rec renderItems = (~level=0, xs) => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
     switch (getItem(x)) {
     | Headline({children, level}) =>
-      renderHeadline(children, level) |> wrapWithKey(level, i)
+      renderHeadline(~level, ~index=i, children)
     | Section({children, level}) =>
       renderItems(~level, children) |> wrapWithKey(level, i)
     | Paragraph({children}) =>
