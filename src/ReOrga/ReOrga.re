@@ -77,16 +77,17 @@ type style =
   | StrikeThrough
   | Verbatim;
 
-let matchStyle = x =>
+let matchStyle = x => {
   switch (x) {
   | "plain" => Plain
   | "bold" => Bold
   | "italic" => Italic
   | "underline" => Underline
-  | "StrikeThrough" => StrikeThrough
-  | "Verbatim" => Verbatim
+  | "strikeThrough" => StrikeThrough
+  | "verbatim" => Verbatim
   | _ => Plain
   };
+};
 
 type plainText = {
   children: array(sectionAst),
