@@ -6,7 +6,27 @@ module Styles = {
 
   let mainWrapper = style([margin2(~v=zero, ~h=auto), maxWidth(px(750))]);
 
-  let headline = style([display(`flex)]);
+  let headline = style([]);
+
+  let tagsWrapper =
+    style([
+      listStyleType(none),
+      margin(zero),
+      marginTop(rem(0.75)),
+      padding(zero),
+      display(`inlineFlex),
+      border(px(2), `solid, hex("e3ddd3")),
+      borderRadius(px(5)),
+    ]);
+  let tagsItem =
+    style([
+      padding2(~v=px(2), ~h=px(5)),
+      fontWeight(medium),
+      fontSize(rem(0.9)),
+      selector("& + &", [borderLeft(px(2), `solid, hex("e3ddd3"))]),
+      selector(":hover", [backgroundColor(hex("e3ddd3"))]),
+      cursor(`default),
+    ]);
 
   let headlineTodo = (x: string) =>
     style([
@@ -20,6 +40,7 @@ module Styles = {
       |> backgroundColor,
       borderRadius(px(5)),
       padding2(~v=px(2), ~h=px(5)),
+      marginRight(rem(0.5)),
     ]);
 };
 
@@ -43,12 +64,12 @@ let wrapWithKey = (level, index, children) => {
 };
 
 let renderTags = xs =>
-  <ul>
+  <ul className=Styles.tagsWrapper>
     {Belt.Array.mapWithIndex(
        xs,
        (i, x) => {
          let key = string_of_int(i);
-         <li key> {s(x)} </li>;
+         <li key className=Styles.tagsItem> {s(x)} </li>;
        },
      )
      |> React.array}
