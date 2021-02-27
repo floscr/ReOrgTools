@@ -81,7 +81,7 @@ let renderHeadline = (~position, ~level, ~index, xs) => {
     Js.Array.reduce(
       (acc, cur) =>
         switch (getItem(cur)) {
-        | Stars(x) => {...acc, stars: Some(x)}
+        | Stars(x) when Env.showStars => {...acc, stars: Some(x)}
         | Tags(x) => {...acc, tags: Some(x)}
         | _ => {...acc, content: Belt.Array.concat(acc.content, [|cur|])}
         },
