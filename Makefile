@@ -26,6 +26,7 @@ org_clock_watch:
 	done
 
 serve:
+	$(MAKE) copy_bsconfig
 	trap 'kill %1' INT TERM
     # BuckleScript doesn't like being run first.
 	yarn serve & $(MAKE) watch
