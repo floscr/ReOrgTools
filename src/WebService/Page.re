@@ -1,6 +1,12 @@
 open ReOrga;
 open ReactUtils;
 
+module Styles = {
+  open Css;
+
+  let headline = style([display(`flex)]);
+};
+
 module Heading = {
   [@react.component]
   let make = (~level: int, ~children) => {
@@ -67,7 +73,7 @@ let renderHeadline = (xs, level) => {
       xs,
     );
 
-  <header>
+  <header className=Styles.headline>
     {switch (stars) {
      | Some({level}) =>
        <span>
