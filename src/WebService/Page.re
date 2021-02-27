@@ -4,6 +4,8 @@ open ReactUtils;
 module Styles = {
   open Css;
 
+  let mainWrapper = style([margin2(~v=zero, ~h=auto), maxWidth(px(750))]);
+
   let headline = style([display(`flex)]);
 
   let headlineTodo = (x: string) =>
@@ -308,4 +310,4 @@ let render = () =>
   TestContent.orga |> Utils.log |> (x => x.children |> renderItems);
 
 [@react.component]
-let make = () => <> {render()} </>;
+let make = () => <div className=Styles.mainWrapper> {render()} </div>;
