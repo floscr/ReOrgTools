@@ -46,6 +46,7 @@ type sectionAst = {
   // List
   indent: Js.nullable(int),
   ordered: Js.nullable(bool),
+  checked: Js.nullable(bool),
   // Link
   description: Js.nullable(string),
   protocol: Js.nullable(string),
@@ -140,11 +141,7 @@ type orgItem =
       children: array(sectionAst),
       indent: int,
     })
-  | ListItemBullet({
-      children: array(sectionAst),
-      indent: int,
-      ordered: bool,
-    })
+  | ListItemCheckBox({checked: bool})
   | Block({
       attributes: Js.Dict.t(string),
       name: string,
@@ -223,12 +220,8 @@ let getItem = item => {
     })
   | ["list", "item"] =>
     ListItem({children: item.children, indent: nullableOrZero(item.indent)})
-  | ["list", "item", "bullet"] =>
-    ListItemBullet({
-      children: item.children,
-      indent: nullableOrZero(item.indent),
-      ordered: nullableOrBool(item.ordered, false),
-    })
+  | ["list", "item", "checkbox"] =>
+    ListItemCheckBox({checked: nullableOrBool(item.checked, false)})
   | ["block"] =>
     Block({
       attributes: nullableOrEmptyDict(item.attributes),

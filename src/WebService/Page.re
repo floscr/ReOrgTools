@@ -154,7 +154,7 @@ let renderParagraphs = xs => {
   |> React.array;
 };
 
-let rec renderTable = xs => {
+let renderTable = xs => {
   let hasTableHead =
     switch (Js.Array.slice(~start=0, ~end_=2, xs) |> Array.map(getItem)) {
     | [|TableRow(_), TableHr(_)|] => true
@@ -206,6 +206,21 @@ let rec renderTable = xs => {
   </table>;
 };
 
+let renderListItem = xs => {
+  Relude.Globals.(
+    xs
+    |> Array.mapWithIndex((x, i) => {
+         let key = string_of_int(i);
+         switch (x |> getItem) {
+         | ListItemCheckBox({checked}) =>
+           <input type_="checkbox" defaultChecked=checked />
+         | _ => renderParagraphs([|x|])
+         };
+       })
+    |> React.array
+  );
+};
+
 let rec renderList = (xs, ordered) => {
   Relude.Globals.(
     xs
@@ -215,11 +230,11 @@ let rec renderList = (xs, ordered) => {
          switch (getItem(x), next) {
          | (ListItem({children}), Some(List(sublist))) =>
            <li key>
-             {renderParagraphs(children)}
+             {renderListItem(children)}
              {renderList(sublist.children, sublist.ordered)}
            </li>
          | (ListItem({children}), _) =>
-           <li key> {renderParagraphs(children)} </li>
+           <li key> {renderListItem(children)} </li>
          | (List(_), _) => React.null
          | _ => React.null
          };
