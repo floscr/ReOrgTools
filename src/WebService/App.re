@@ -12,7 +12,7 @@ Css.(
     ],
   ),
   global(".container", [padding(px(20))]),
-  global("a", [color(Theme.LightTheme.textColor)]),
+  global("a", [color(Theme.LightTheme.textColor), fontWeight(semiBold)]),
   global("a:hover", [textDecoration(none)]),
 );
 
