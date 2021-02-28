@@ -14,15 +14,20 @@
   ],
   "package-specs": [
     {
-      "module": "es6",
+      "module": "commonjs",
       "in-source": true
     }
   ],
-  "suffix": ".bs.js",
+  "suffix": ".js",
   "bs-dependencies": [
+    "bs-axios",
+    "bs-express",
+    "@ahrefs/bs-dotenv",
+    "@glennsl/bs-json",
+    "@nireno/reasonably-typed",
     "reorga",
     "relude",
-    "bs-bastet"
+    "bs-bastet",
   ],
   "ppx-flags": ["bs-let/ppx"],
   "warnings": {
