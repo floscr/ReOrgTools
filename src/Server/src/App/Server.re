@@ -22,6 +22,21 @@ PromiseMiddleware.from((_next, _req, res) => {
      )
 });
 
+App.get(app, ~path="/file/:id") @@
+PromiseMiddleware.from((_next, req, res) => {
+  let id = req |> Request.params |> Js.Dict.get(_, "id");
+  let path = Node.Path.join([|Config.orgDir, {j|$id|j}|]) |> Utils.log;
+
+  Api.getFile(path)
+  |> resolve(
+       res,
+       fun
+       | Ok(x) => Response.sendString(x)
+       | _ => Response.sendStatus(Response.StatusCode.NotFound),
+     )
+  |> Utils.log;
+});
+
 let onListen = e =>
   switch (e) {
   | exception (Js.Exn.Error(e)) =>

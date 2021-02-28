@@ -8,6 +8,11 @@ type getDirEntriesError =
       error: Error.t,
     });
 
+let getFile = path =>
+  IO.Suspend(() => Js.log({j|Reading from file "$path"|j}))
+  |> IO.flatMap(() => ReadFile.readText(path))
+  |> IO.mapError(error => ReadEntryError({name: path, error}));
+
 let getDirFiles = dir =>
   IO.Suspend(() => Js.log({j|Reading from entries dir "$dir"|j}))
   |> IO.flatMap(() => ReadDir.readDir(dir))
