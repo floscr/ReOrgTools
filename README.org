@@ -1,7 +1,9 @@
 #+TITLE: ReOrgTools
 
 A collection of tools that for using [[https://orgmode.org/][Org mode]] in a via [[https://reasonml.github.io/][Reason]].
+
 [[https://github.com/orgapp/orgajs][Orgajs]] is the main parser for the org documents.
+
 Very much WIP.
 
 * Tools
@@ -28,6 +30,7 @@ The node server which will do some basic directory listing and sending of org do
 * Intentions
 
 I love org mode, but it's too locked down with emacs.
+
 I want to browse my files on mobile or on the go and maybe even at some point share my docs with other people.
 
 At some point I will also interface my agenda via the web-instance, as [[https://orgmode.org/manual/Agenda-Views.html][org-agenda]] is based on hacks upon hacks with unsafe string matching.
@@ -37,6 +40,7 @@ At some point I will also interface my agenda via the web-instance, as [[https:/
 ** Nix
 
 Start your nix-shell via in this directory and install the packages.
+
 When first running this project it will take some time as ~bs-platform~ has to be freshly compiled.
 
 #+BEGIN_SRC bash
