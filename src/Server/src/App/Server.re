@@ -17,12 +17,7 @@ PromiseMiddleware.from((_next, _req, res) => {
   |> resolve(
        res,
        fun
-       | Ok(xs) => {
-           Js.log(xs);
-           Response.sendArray(xs);
-         }
-       | Error(Api.ReadDirectoryError(_)) =>
-         Response.sendStatus(Response.StatusCode.NotFound)
+       | Ok(xs) => Response.sendArray(xs)
        | _ => Response.sendStatus(Response.StatusCode.NotFound),
      )
 });
