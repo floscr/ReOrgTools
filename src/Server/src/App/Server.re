@@ -19,25 +19,14 @@ PromiseMiddleware.from((_next, _req, res) => {
        fun
        | Ok(xs) => {
            Js.log(xs);
-           Response.sendString(
-             Array.String.joinWith(", \n", xs) |> (x => {j|$x foo|j}),
-           );
+           Response.sendArray(xs);
          }
        | Error(Api.ReadDirectoryError(_)) =>
          Response.sendStatus(Response.StatusCode.NotFound)
        | _ => Response.sendStatus(Response.StatusCode.NotFound),
      )
-  /* |> IO.unsafeRunAsync( */
-  /*      fun */
-  /*      | Ok(_) => res |> Response.sendString("Yup") */
-  /*      | Error(e) => res |> Response.sendStatus(Response.StatusCode.NotFound), */
-  /*    ) */
-  /* res |> Response.sendString("Yup"); */
-  /* |> Json.Encode.stringArray; */
-  /* Json.Encode.(object_([("files", files: Js.Json.t)])) |> Response.sendJson; */
 });
 
-let port = 4000;
 let onListen = e =>
   switch (e) {
   | exception (Js.Exn.Error(e)) =>
