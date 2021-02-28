@@ -5,9 +5,7 @@
   },
   "sources": {
     "dir": "src",
-    "subdirs": [
-      "App"
-    ]
+    "subdirs": true
   },
   "bsc-flags": [
     "-bs-super-errors"
