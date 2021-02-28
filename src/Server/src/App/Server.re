@@ -6,25 +6,26 @@ let app = express();
 App.use(app, Middleware.json());
 App.use(app, Middleware.urlencoded(~extended=false, ()));
 
+let resolve = (res, handler, x) =>
+  x
+  |> Relude.Js.Promise.fromIOWithResult
+  |> Js.Promise.(then_(data => res |> handler(data) |> resolve));
+
 App.get(app, ~path="/files") @@
 PromiseMiddleware.from((_next, _req, res) => {
   Api.getDirFiles(Config.orgDir)
-  |> Relude.Js.Promise.fromIOWithResult
-  |> Js.Promise.(
-       then_(actual =>
-         res
-         |> (
-           switch (actual) {
-           | Ok(xs) =>
-             Js.log(xs);
-             Response.sendString(
-               Array.String.joinWith(", \n", xs) |> (x => {j|$x foo|j}),
-             );
-           | Error(error) => Response.sendString("error")
-           }
-         )
-         |> resolve
-       )
+  |> resolve(
+       res,
+       fun
+       | Ok(xs) => {
+           Js.log(xs);
+           Response.sendString(
+             Array.String.joinWith(", \n", xs) |> (x => {j|$x foo|j}),
+           );
+         }
+       | Error(Api.ReadDirectoryError(_)) =>
+         Response.sendStatus(Response.StatusCode.NotFound)
+       | _ => Response.sendStatus(Response.StatusCode.NotFound),
      )
   /* |> IO.unsafeRunAsync( */
   /*      fun */
