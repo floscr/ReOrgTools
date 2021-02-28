@@ -1,6 +1,7 @@
 {
   "name": "orga-renderer",
   "version": "0.1.0",
+  "type": "module",
   "scripts": {
     "serve": "webpack-dev-server",
     "postinstall": "ln -sfn $BSB_PATH/../ node_modules/bs-platform && ln -sfn $BSB_PATH/*.exe ./node_modules/.bin"

@@ -14,6 +14,7 @@ in
       reason
       python3
       ocamlformat
+      httpie
       entr
       jq
     ];

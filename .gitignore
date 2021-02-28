@@ -4,6 +4,6 @@
 npm-debug.log
 lib/
 *.bs.js
-/node_modules/
+node_modules
 /bundleOutput/
 /bsconfig.json

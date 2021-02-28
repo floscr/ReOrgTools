@@ -1,0 +1,32 @@
+{
+  "name": "orga-renderer",
+  "reason": {
+    "react-jsx": 3
+  },
+  "sources": {
+    "dir": "src",
+    "subdirs": [
+      "App"
+    ]
+  },
+  "bsc-flags": [
+    "-bs-super-errors"
+  ],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "bs-dependencies": [
+    "reorga",
+    "relude",
+    "bs-bastet"
+  ],
+  "ppx-flags": ["bs-let/ppx"],
+  "warnings": {
+    "error": "+101"
+  },
+  "refmt": 3
+}
