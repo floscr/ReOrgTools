@@ -1,0 +1,45 @@
+#+TITLE: ReOrgTools
+
+A collection of tools that for using [[https://orgmode.org/][Org mode]] in a via [[https://reasonml.github.io/][Reason]].
+[[https://github.com/orgapp/orgajs][Orgajs]] is the main parser for the org documents.
+Very much WIP.
+
+* Tools
+
+** [[file:src/ReOrga/][Reorga]]
+
+The main flesh and blood that creates the reason bindings for [[https://github.com/orgapp/orgajs][Orgajs]].
+
+** [[file:src/OrgClock/][OrgClock]]
+
+Get notifications for upcoming events.
+I run this via ~systemd~ daemon that executes every 15 minutes.
+
+** [[file:src/WebService/][WebService]]
+
+Display (& maybe at some point) edit org files.
+Org files will be accessed via [[*\[\[file:src/WebService/\]\[Server\]\]][the Server]].
+
+** [[file:src/WebService/][Server]]
+
+The node server which will do some basic directory listing and sending of org documents.
+
+
+* Intentions
+
+I love org mode, but it's too locked down with emacs.
+I want to browse my files on mobile or on the go and maybe even at some point share my docs with other people.
+
+At some point I will also interface my agenda via the web-instance, as [[https://orgmode.org/manual/Agenda-Views.html][org-agenda]] is based on hacks upon hacks with unsafe string matching.
+
+* Getting Started
+
+** Nix
+
+Start your nix-shell via in this directory and install the packages.
+When first running this project it will take some time as ~bs-platform~ has to be freshly compiled.
+
+#+BEGIN_SRC bash
+nix-shell
+yarn
+#+END_SRC
