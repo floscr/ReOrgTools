@@ -20,7 +20,7 @@ I run this via ~systemd~ daemon that executes every 15 minutes.
 ** [[file:src/WebService/][WebService]]
 
 Display (& maybe at some point) edit org files.
-Org files will be accessed via [[*\[\[file:src/WebService/\]\[Server\]\]][the Server]].
+Org files will be accessed via the server.
 
 ** [[file:src/WebService/][Server]]
 
