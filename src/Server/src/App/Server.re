@@ -31,9 +31,7 @@ let onListen = e =>
   switch (e) {
   | exception (Js.Exn.Error(e)) =>
     Js.log(e);
-
     Node.Process.exit(1);
-
   | _ =>
     Js.log("Listening at http://localhost:" ++ Config.port->string_of_int)
   };
