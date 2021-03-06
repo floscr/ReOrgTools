@@ -13,12 +13,21 @@ let resolve = (res, handler, x) =>
   |> Relude.Js.Promise.fromIOWithResult
   |> Js.Promise.(then_(data => res |> handler(data) |> resolve));
 
+let makeJson = files => {
+  open Json.Encode;
+  let encodeTag = (name, stat) => object_([("name", string(name))]);
+  let jsonTags = list(encodeTag(files));
+
+  object_([("files", jsonTags)]);
+};
+
 App.get(app, ~path="/files") @@
 PromiseMiddleware.from((_next, _req, res) => {
   Api.getDirFiles(Config.orgDir)
   |> resolve(
        res,
        fun
+       | Ok(x) => x |> makeJson |> Express.Response.sendJson
        | Ok(xs) => Response.sendArray(xs)
        | _ => Response.sendStatus(Response.StatusCode.NotFound),
      )
@@ -33,7 +42,7 @@ PromiseMiddleware.from((_next, req, res) => {
   |> resolve(
        res,
        fun
-       | Ok(x) => Response.sendString(x)
+       | Ok(x) => x |> makeJson |> Express.Response.sendJson
        | _ => Response.sendStatus(Response.StatusCode.NotFound),
      )
   |> Utils.log;
