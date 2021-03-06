@@ -5,10 +5,9 @@ module D = Decode.AsResult.OfParseError;
 module FilesResponse = {
   let ((<$>), (<*>)) = D.(map, apply);
 
-  let make = (value, label): FilesType.t => {value, label};
+  let make = (name): FilesType.t => {name: name};
 
-  let decodeOne =
-    make <$> D.field("label", D.string) <*> D.field("value", D.string);
+  let decodeOne = make <$> D.field("name", D.string);
   let decodeMany = D.array(decodeOne);
 
   let decode = (url, json) => {

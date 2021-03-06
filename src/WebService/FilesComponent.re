@@ -33,7 +33,12 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
     <div>
       {switch (files) {
        | None => "No files found" |> s
-       | Some(files) => "Files found" |> s
+       | Some(files) =>
+         files
+         |> Array.mapi((i, {name}: FilesTypes.FilesType.t) =>
+              <div key=name> {name |> s} </div>
+            )
+         |> React.array
        }}
     </div>;
   };
