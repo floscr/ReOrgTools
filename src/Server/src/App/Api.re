@@ -29,9 +29,3 @@ let getDirFiles = dir =>
          Array.map(({name}: ReadDir.DirectoryEntry.t) => name, xs)
        )
      );
-
-let getFiles = () => {
-  Config.orgDir
-  |> Node.Fs.readdirSync
-  |> Array.filter(x => Filename.extension(x) |> String.eq(".org"));
-};
