@@ -6,6 +6,8 @@ let app = express();
 App.use(app, Middleware.json());
 App.use(app, Middleware.urlencoded(~extended=false, ()));
 
+let _ = Express.App.use(app, Cors.t);
+
 let resolve = (res, handler, x) =>
   x
   |> Relude.Js.Promise.fromIOWithResult
