@@ -744,10 +744,27 @@ bs-css@13.4.0:
   resolved "https://registry.yarnpkg.com/bs-css/-/bs-css-13.4.0.tgz#0918841c2812b0ae0ce1c9c569b98347ae25aa48"
   integrity sha512-/vmbAeccXdngc9Ky2rXYtEoO9C5cqgrlUjnoseltFjY5S+HaI2PBFw+bIJ+pp5iTaJmn5Ip3cNj+Vsdex4ULaA==
 
+bs-decode@^0.11.2:
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/bs-decode/-/bs-decode-0.11.2.tgz#5a4ab770dba809e0be85a28f0d97350ffc3adfff"
+  integrity sha512-KU+NM4bNhnSJKAnmicPuv171zIJ49yEsCzzTv9PAOw1hHW7ICWFNmFTpRk6AwUbV4+SVAyRCdcQjRBhoJEHPAA==
+
+bs-fetch@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.6.2.tgz#37d982e9f79b9bc44c23e87ae78ccbee1f869adf"
+  integrity sha512-VXEjp8kY3vHPckaoy3d96Bx0KYjJAPLNISBwfpwMN26K6DtuZYwI2HKhx7zeHBajz1bRArfx7O8OOLcdtujMvg==
+
 bs-stdlib-shims@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/bs-stdlib-shims/-/bs-stdlib-shims-0.1.0.tgz#f64166392652a07c37b9be462beebb6c0c66a74e"
   integrity sha512-CszWow8iXOKgmzNCc5dR3kERaqzIp3f4nbV7lJF5vS9BHm70GqLlu7OBE/VCPKZ5noG1VtJAIVqIdLFqUdIRUQ==
+
+bs-webapi@^0.19.1:
+  version "0.19.1"
+  resolved "https://registry.yarnpkg.com/bs-webapi/-/bs-webapi-0.19.1.tgz#cae7d65fc43795376becc44b56f46d85e5b8e878"
+  integrity sha512-sRhkNdHFBxzoiLH+r8rhlW9XSafBbbGCkvsxtTJ1QMABEaHKj8TejwA7TuBZH2ZYL2ur3sk291ukkge5qFm3Uw==
+  dependencies:
+    bs-fetch "^0.6.2"
 
 buffer-from@^1.0.0:
   version "1.1.1"
@@ -3520,6 +3537,16 @@ regexp.prototype.flags@^1.2.0:
   dependencies:
     define-properties "^1.1.3"
     es-abstract "^1.17.0-next.1"
+
+relude-fetch@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/relude-fetch/-/relude-fetch-0.8.0.tgz#d85766597f73dc06dfdd8a2c2bb5bbd2ef5dd70e"
+  integrity sha512-UE26Z824OovseUVIRKX++4iQwcPgRY76KPFyhtmQji7mDls9vKlhPQRolvlEuk1hU5uYPOjJ3vbHeZrEhVaHbQ==
+
+relude-reason-react@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/relude-reason-react/-/relude-reason-react-0.10.0.tgz#68d26c905d29cd3a1ff2a32e5a1691afcf8bcae3"
+  integrity sha512-0vwS1axapPKxcwCMvKQoeVXQilPXl9iaQ9hxzn+VqtMTkTtaBGaPHfKl+TYB/GXSl0fHiCDc4s8qqnZFfMQ4kA==
 
 "relude@git+https://github.com/floscr/relude.git":
   version "0.65.0"

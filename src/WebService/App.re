@@ -17,4 +17,4 @@ Css.(
 );
 
 [@react.component]
-let make = () => <Page />;
+let make = () => <> <Files /> <Page /> </>;
