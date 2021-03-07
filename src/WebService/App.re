@@ -1,3 +1,5 @@
+open ReactUtils;
+
 Css.(
   global("*, *:before, *:after", [boxSizing(borderBox)]),
   global("h1, h2, h3, h4, h5, h6", [margin(zero)]),
@@ -61,7 +63,12 @@ module Styles = {
 let showMain = (~id) =>
   <>
     <aside className=Styles.sidebar> <Files /> </aside>
-    <article className=Styles.main> <Page id /> </article>
+    <article className=Styles.main>
+      {switch (id) {
+       | Some(id) => <Page id />
+       | _ => <div> {"No file selected" |> s} </div>
+       }}
+    </article>
   </>;
 
 [@react.component]
@@ -70,7 +77,7 @@ let make = () => {
 
   <main className=Styles.root>
     {switch (url.path) {
-     | ["file", id] => showMain(~id)
+     | ["file", id] => showMain(~id=Some(id))
      | _ => showMain(~id=None)
      }}
   </main>;
