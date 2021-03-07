@@ -58,9 +58,20 @@ module Styles = {
   let main = style([gridColumnStart(2), padding(innerSpacing)]);
 };
 
-[@react.component]
-let make = () =>
-  <main>
+let showMain = (~id) =>
+  <>
     <aside className=Styles.sidebar> <Files /> </aside>
-    <article className=Styles.main> <Page /> </article>
+    <article className=Styles.main> <Page id /> </article>
+  </>;
+
+[@react.component]
+let make = () => {
+  let url = ReasonReactRouter.useUrl();
+
+  <main>
+    {switch (url.path) {
+     | ["file", id] => showMain(~id)
+     | _ => showMain(~id=None)
+     }}
   </main>;
+};

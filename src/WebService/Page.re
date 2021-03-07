@@ -339,7 +339,13 @@ let rec renderItems = (~level=0, xs) => {
 };
 
 let render = () =>
-  TestContent.orga |> Utils.log |> (x => x.children |> renderItems);
+  TestContent.orga
+  |> Utils.log
+  |> (x => x.children |> (xs => renderItems(xs)));
 
 [@react.component]
-let make = () => <div className=Styles.mainWrapper> {render()} </div>;
+let make = (~id) => {
+  Js.log(id);
+
+  <div className=Styles.mainWrapper> {render()} </div>;
+};
