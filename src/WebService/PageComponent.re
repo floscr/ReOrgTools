@@ -1,8 +1,9 @@
 open PageTypes;
 open ReactUtils;
 open Relude.Globals;
+open ReOrga;
 
-type state = {page: option(PageType.t)};
+type state = {page: option(ReOrga.orgAst)};
 
 let initialState = {page: None};
 
@@ -18,7 +19,11 @@ type action =
 let reducer =
     (state: state, action: action): ReludeReact.Reducer.update(action, state) =>
   switch (action) {
-  | FetchPagesSuccess(page) => Update({...state, page: Some(page)})
+  | FetchPagesSuccess({text}) =>
+    Update({
+      ...state,
+      page: Some(Org.parseOrga(text, {todo: Some([|"TODO"|])})),
+    })
   | NoOp => NoUpdate
   | _ => NoUpdate
   };
@@ -41,5 +46,8 @@ let make = (~id) => {
 
   Js.log(page);
 
-  <Page doc=testDoc />;
+  switch (page) {
+  | Some(doc) => <Page doc />
+  | _ => React.null
+  };
 };
