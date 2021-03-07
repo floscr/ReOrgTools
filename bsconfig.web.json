@@ -6,7 +6,8 @@
   "sources": {
     "dir": "src",
     "subdirs": [
-      "WebService"
+      "WebService",
+      "WebService/bindings"
     ]
   },
   "bsc-flags": [
