@@ -51,11 +51,11 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
             )
          |> Array.map(({name}: FilesTypes.FilesType.t) => {
               let base = name |> makeName;
-              <div
+              <button
                 key=name
                 onClick={_ => ReasonReactRouter.push("/file/" ++ base)}>
                 {base |> s}
-              </div>;
+              </button>;
             })
          |> React.array
        }}
