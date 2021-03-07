@@ -5,14 +5,16 @@ module.exports = {
   mode: 'development',
   output: {
     path: path.join(__dirname, "bundleOutput"),
+    publicPath: '/',
     filename: 'index.js',
   },
   devServer: {
+    port: 8080,
     hot: true,
     inline: true,
     historyApiFallback: {
-      index: 'index.html',
-    },
+      index: 'index.html'
+    }
   },
   module: {
     rules: [
