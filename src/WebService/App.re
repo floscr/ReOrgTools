@@ -68,7 +68,7 @@ let showMain = (~id) =>
 let make = () => {
   let url = ReasonReactRouter.useUrl();
 
-  <main>
+  <main className=Styles.root>
     {switch (url.path) {
      | ["file", id] => showMain(~id)
      | _ => showMain(~id=None)
