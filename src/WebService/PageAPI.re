@@ -30,7 +30,7 @@ module PageRequest: PageRequest = {
   let baseUrl = "http://localhost:4000/file/";
 
   let getPageIO = (file: string) => {
-    let url = baseUrl ++ file;
+    let url = baseUrl ++ file ++ ".org";
 
     ReludeFetch.get(url)
     >>= ReludeFetch.Response.StatusCode.ensure2xx

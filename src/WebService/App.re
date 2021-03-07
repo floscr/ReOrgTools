@@ -65,7 +65,7 @@ let showMain = (~id) =>
     <aside className=Styles.sidebar> <Files /> </aside>
     <article className=Styles.main>
       {switch (id) {
-       | Some(id) => <Page id />
+       | Some(id) => <PageComponent id />
        | _ => <div> {"No file selected" |> s} </div>
        }}
     </article>
