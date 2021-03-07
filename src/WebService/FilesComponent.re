@@ -1,5 +1,6 @@
 open FilesTypes;
 open ReactUtils;
+open Relude.Globals;
 
 type state = {files: option(array(FilesType.t))};
 
@@ -22,6 +23,12 @@ let reducer =
   | _ => NoUpdate
   };
 
+let makeName = name =>
+  name
+  |> String.splitAsArray(~delimiter=".org")
+  |> Array.head
+  |> Option.getOrElse(name);
+
 module Functor = (Request: FilesAPI.FilesRequest) => {
   [@react.component]
   let make = (~optionsUrl: option(string)=?) => {
@@ -39,8 +46,8 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
        | None => "No files found" |> s
        | Some(files) =>
          files
-         |> Array.mapi((i, {name}: FilesTypes.FilesType.t) =>
-              <div key=name> {name |> s} </div>
+         |> Array.mapWithIndex(({name}: FilesTypes.FilesType.t, i) =>
+              <div key=name> {name |> makeName |> s} </div>
             )
          |> React.array
        }}
