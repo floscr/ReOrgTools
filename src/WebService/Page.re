@@ -4,7 +4,12 @@ open ReactUtils;
 module Styles = {
   open Css;
 
-  let mainWrapper = style([margin2(~v=zero, ~h=auto), maxWidth(px(750))]);
+  let mainWrapper =
+    style([
+      margin2(~v=zero, ~h=auto),
+      maxWidth(px(750)),
+      wordWrap(breakWord),
+    ]);
 
   let headline = style([]);
 
