@@ -49,9 +49,14 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
          |> Array.reject(({name}: FilesTypes.FilesType.t) =>
               String.contains(~search=".sync-conflict", name)
             )
-         |> Array.map(({name}: FilesTypes.FilesType.t) =>
-              <div key=name> {name |> makeName |> s} </div>
-            )
+         |> Array.map(({name}: FilesTypes.FilesType.t) => {
+              let base = name |> makeName;
+              <div
+                key=name
+                onClick={_ => ReasonReactRouter.push("/file/" ++ base)}>
+                {base |> s}
+              </div>;
+            })
          |> React.array
        }}
     </>;
