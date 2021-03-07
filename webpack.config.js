@@ -8,8 +8,8 @@ module.exports = {
     filename: 'index.js',
   },
   devServer: {
-    // hot: false,
-    // inline: false,
+    hot: true,
+    inline: true,
     historyApiFallback: {
       index: 'index.html',
     },
