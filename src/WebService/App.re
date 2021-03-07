@@ -21,12 +21,7 @@ module Styles = {
   open Css;
   let innerSpacing = rem(2.);
 
-  let root =
-    style([
-      display(grid),
-      gridTemplateColumns([vw(20.), auto]),
-      gridGap(rem(1.)),
-    ]);
+  let root = style([display(grid), gridTemplateColumns([vw(20.), auto])]);
 
   let sidebar =
     style([
@@ -57,7 +52,8 @@ module Styles = {
       padding(innerSpacing),
     ]);
 
-  let main = style([gridColumnStart(2), padding(innerSpacing)]);
+  let main =
+    style([gridColumnStart(2), padding(innerSpacing), overflow(hidden)]);
 };
 
 let showMain = (~id) =>
