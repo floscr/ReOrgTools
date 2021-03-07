@@ -9,16 +9,12 @@ let makeJson = files => {
 };
 
 let t =
-  PromiseMiddleware.from((_next, req, res) => {
-    let id = req |> Request.params |> Js.Dict.get(_, "id");
-    let path = Node.Path.join([|Config.orgDir, {j|$id|j}|]) |> Utils.log;
-
-    Api.getFile(path)
+  PromiseMiddleware.from((_next, _req, res) => {
+    Api.getDirFiles(Config.orgDir)
     |> resolve(
          res,
          fun
-         | Ok(x) => Response.sendString(x)
+         | Ok(xs) => xs |> makeJson |> Response.sendArray
          | _ => Response.sendStatus(Response.StatusCode.NotFound),
        )
-    |> Utils.log;
   });
