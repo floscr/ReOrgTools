@@ -46,7 +46,10 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
        | None => "No files found" |> s
        | Some(files) =>
          files
-         |> Array.mapWithIndex(({name}: FilesTypes.FilesType.t, i) =>
+         |> Array.reject(({name}: FilesTypes.FilesType.t) =>
+              String.contains(~search=".sync-conflict", name)
+            )
+         |> Array.map(({name}: FilesTypes.FilesType.t) =>
               <div key=name> {name |> makeName |> s} </div>
             )
          |> React.array
