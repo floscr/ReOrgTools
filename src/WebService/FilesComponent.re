@@ -5,6 +5,10 @@ type state = {files: option(array(FilesType.t))};
 
 let initialState = {files: None};
 
+module Styles = {
+  open Css;
+};
+
 type action =
   | FetchFilesSuccess(array(FilesTypes.FilesType.t))
   | FetchFilesFailure(ReludeFetch.Error.t(string))
@@ -30,7 +34,7 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
       error => FetchFilesFailure(error)->send,
     );
 
-    <div>
+    <>
       {switch (files) {
        | None => "No files found" |> s
        | Some(files) =>
@@ -40,6 +44,6 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
             )
          |> React.array
        }}
-    </div>;
+    </>;
   };
 };
