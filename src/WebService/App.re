@@ -2,8 +2,22 @@ open ReactUtils;
 
 Css.(
   global("*, *:before, *:after", [boxSizing(borderBox)]),
-  global("h1, h2, h3, h4, h5, h6", [margin(zero)]),
-  global("html, body", [height(vh(100.))]),
+  /* button reset */
+  global(
+    "button",
+    [
+      border(`zero, `none, `transparent),
+      margin(zero),
+      padding(zero),
+      width(`auto),
+      overflow(visible),
+      background(transparent),
+      unsafe("color", "inherit"),
+      unsafe("font", "inherit"),
+      display(block),
+      lineHeight(normal),
+    ],
+  ),
   global(
     "body",
     [
