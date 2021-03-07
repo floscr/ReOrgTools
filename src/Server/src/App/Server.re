@@ -7,24 +7,9 @@ let app = express();
 App.use(app, Middleware.json());
 App.use(app, Middleware.urlencoded(~extended=false, ()));
 
-let _ = Express.App.use(app, Cors.t);
+App.use(app, Cors.t);
 
-let makeJson = files => {
-  Json.Encode.(
-    files |> Array.map(name => object_([("name", string(name))]))
-  );
-};
-
-App.get(app, ~path="/files") @@
-PromiseMiddleware.from((_next, _req, res) => {
-  Api.getDirFiles(Config.orgDir)
-  |> resolve(
-       res,
-       fun
-       | Ok(xs) => xs |> makeJson |> Response.sendArray
-       | _ => Response.sendStatus(Response.StatusCode.NotFound),
-     )
-});
+App.get(app, ~path="/files", Route__File.t);
 
 App.get(app, ~path="/file/:id") @@
 PromiseMiddleware.from((_next, req, res) => {
