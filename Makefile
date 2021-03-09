@@ -14,12 +14,10 @@ copy_bsconfig:
 
 serve_frontend:
 	trap 'kill %1' INT TERM
-    # BuckleScript doesn't like being run first.
 	yarn serve & $(MAKE) watch
 
 serve_backend:
 	trap 'kill %1' INT TERM
-    # BuckleScript doesn't like being run first.
 	cd $(BACKEND_DIR); yarn start:dev & bsb -make-world -w
 
 $(SOURCE_DIRS_JSON): bsconfig.json
