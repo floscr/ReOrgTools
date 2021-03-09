@@ -3,33 +3,24 @@ BSB := ./node_modules/.bin/bsb.exe
 BSB_ARGS:= -make-world
 SOURCE_DIRS_JSON := lib/bs/.sourcedirs.json
 TARGET := $(or $(TARGET),web)
+BACKEND_DIR := ./src/Server
 
-all:
-	serve
-
-org_clock:
-	TARGET=node $(MAKE) copy_bsconfig
-	trap 'kill %1' int term
-	yarn
-	$(MAKE) watch & $(MAKE) org_clock_watch
+serve: copy_bsconfig
+	@make -j 2 serve_frontend serve_backend
 
 copy_bsconfig:
-    # Copy bsconfig for either web or node
 	rm -rf bsconfig.json
 	cp "bsconfig.$(TARGET).json" bsconfig.json
 
-org_clock_watch:
-	while true; do \
-		trap 'break' int; \
-		find src -name '*.js' | \
-		entr -nd node ./src/OrgClock/OrgClock.bs.js; \
-	done
-
-serve:
-	$(MAKE) copy_bsconfig
+serve_frontend:
 	trap 'kill %1' INT TERM
     # BuckleScript doesn't like being run first.
 	yarn serve & $(MAKE) watch
+
+serve_backend:
+	trap 'kill %1' INT TERM
+    # BuckleScript doesn't like being run first.
+	cd $(BACKEND_DIR); yarn start:dev & bsb -make-world -w
 
 $(SOURCE_DIRS_JSON): bsconfig.json
 	$(BSB) -install
@@ -37,7 +28,7 @@ $(SOURCE_DIRS_JSON): bsconfig.json
 bs:
 	$(BSB) $(BSB_ARGS)
 
-watch: $(SOURCE_DIRS_JSON)
+watch_frontend: $(SOURCE_DIRS_JSON)
     # `entr` exits when the directory contents change, so we restart it to pick
     # up updated files
 	while true; do \
