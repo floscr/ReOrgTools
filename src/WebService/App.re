@@ -28,6 +28,7 @@ Css.(
       margin(zero),
     ],
   ),
+  global("img", [maxWidth(`percent(100.))]),
   global("h1, h2, h3, h4, h5, h6", [margin(zero)]),
   global(
     "header",
