@@ -62,5 +62,6 @@ let rec renderItems = (~level=0, xs) => {
 [@react.component]
 let make = (~ast: ReOrga.orgAst) => {
   let items = ast.children;
+
   <> {ast |> (x => x.children |> (xs => renderItems(xs)))} </>;
 };
