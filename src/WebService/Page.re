@@ -102,15 +102,24 @@ let renderPlainText = x =>
   | _ => React.null
   };
 
-/* let renderAttachment = x => { */
-/*   x */
-/*   |> Relude.String.splitAt(2) */
-/*   |> */
-/* } */
+let renderAttachment = (~attachmentId=None, {value, description}) => {
+  let url =
+    attachmentId
+    |> Relude.Option.map(x =>
+         x |> Relude.String.splitAt(2) |> (((a, b)) => {j|$a/$b/$value|j})
+       )
+    |> Relude.Option.getOrElse(value);
 
-let renderLink = (~id=?, {protocol, description, value}) => {
+  <img src={j|http://localhost:4000/attachments/$url|j} />;
+};
+
+let renderLink = (~attachmentId=None, {protocol, description, value} as x) => {
+  Js.log(attachmentId);
+  Js.log(protocol);
   switch (protocol) {
-  | Some("attachment") => <img src={j|/attachments/$value|j} />
+  | Some(p) when p === "attachment" =>
+    Js.log2("inside", attachmentId);
+    renderAttachment(~attachmentId, x);
   | _ =>
     <a href=value> {description |> Relude.Option.getOrElse(value) |> s} </a>
   };
@@ -127,7 +136,7 @@ let makeHeadlineKey = position =>
   ++ "-"
   ++ (position.end_.column |> string_of_int);
 
-let renderHeadline = (~position, ~level, ~index, xs) => {
+let renderHeadline = (~position, ~level, ~properties, xs) => {
   let {stars, content, tags} =
     Js.Array.reduce(
       (acc, cur) =>
@@ -139,6 +148,8 @@ let renderHeadline = (~position, ~level, ~index, xs) => {
       {stars: None, tags: None, content: [||]},
       xs,
     );
+
+  let atid = properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "id"));
 
   let id = makeHeadlineKey(position);
 
@@ -158,7 +169,7 @@ let renderHeadline = (~position, ~level, ~index, xs) => {
              {keyword |> s}
            </span>
          | PlainText(_) => renderPlainText(x)
-         | Link(x) => renderLink(x)
+         | Link(x) => renderLink(~attachmentId=atid, x)
          | _ => React.null
          }
        )
@@ -215,14 +226,19 @@ let renderBlock = x => {
   };
 };
 
-let renderParagraphs = xs => {
+let renderParagraphs = (~properties=None, xs) => {
+  let atid = properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "id"));
+
   Relude.Globals.Array.mapWithIndex(
     (x, i) => {
       let key = string_of_int(i);
       switch (getItem(x)) {
       | PlainText(_) =>
         <React.Fragment key> {renderPlainText(x)} </React.Fragment>
-      | Link(x) => <React.Fragment key> {renderLink(x)} </React.Fragment>
+      | Link(x) =>
+        <React.Fragment key>
+          {renderLink(~attachmentId=atid, x)}
+        </React.Fragment>
       | _ => React.null
       };
     },
@@ -332,15 +348,16 @@ let rec renderList = (xs, ordered) => {
   );
 };
 
-let rec renderItems = (~level=0, xs) => {
+let rec renderItems = (~level=0, ~properties=?, xs) => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
     switch (getItem(x)) {
     | Headline({children, level, position}) =>
-      renderHeadline(~position, ~level, ~index=i, children)
-    | Section({children, level}) =>
-      renderItems(~level, children) |> wrapWithKey(level, i)
+      renderHeadline(~position, ~level, ~properties, children)
+    | Section({children, level, properties}) =>
+      renderItems(~level, ~properties, children) |> wrapWithKey(level, i)
     | Paragraph({children}) =>
-      renderParagraphs(children) |> (x => <p key={makeKey(level, i)}> x </p>)
+      renderParagraphs(~properties, children)
+      |> (x => <p key={makeKey(level, i)}> x </p>)
     | Block(_) as x => renderBlock(x) |> wrapWithKey(level, i)
     | List({children, ordered}) =>
       renderList(children, ordered) |> wrapWithKey(level, i)
@@ -355,6 +372,7 @@ let rec renderItems = (~level=0, xs) => {
 [@react.component]
 let make = (~doc: ReOrga.orgAst, ~header: option(string)) => {
   let items = doc.children;
+  Js.log(items);
   <div className=Styles.mainWrapper>
     {doc |> (x => x.children |> (xs => renderItems(xs)))}
   </div>;
