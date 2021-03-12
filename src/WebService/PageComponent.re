@@ -7,7 +7,6 @@ open ReOrga;
 let make = (~id, ~header, ~send, ~page) => {
   switch (id) {
   | Some(id) =>
-    Js.log(id);
     ReludeReact.Effect.useEffect1WithEq(
       () =>
         PageAPI.PageRequest.getPageIO(id)
@@ -19,7 +18,7 @@ let make = (~id, ~header, ~send, ~page) => {
         |> ignore,
       (a, b) => a === b,
       id,
-    );
+    )
   | _ => ()
   };
 
