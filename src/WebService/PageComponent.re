@@ -3,9 +3,14 @@ open ReactUtils;
 open Relude.Globals;
 open ReOrga;
 
-type state = {page: option(ReOrga.orgAst)};
+type loadedState = {page: ReOrga.orgAst};
 
-let initialState = {page: None};
+type state =
+  | Loaded(loadedState)
+  | Loading
+  | Initial;
+
+let initialState = Loading;
 
 module Styles = {
   open Css;
@@ -20,10 +25,9 @@ let reducer =
     (state: state, action: action): ReludeReact.Reducer.update(action, state) =>
   switch (action) {
   | FetchPagesSuccess({text}) =>
-    Update({
-      ...state,
-      page: Some(Org.parseOrga(text, {todo: Some([|"TODO"|])})),
-    })
+    Update(Loaded({page: Org.parseOrga(text, {todo: Some([|"TODO"|])})}))
+  | UpdateHeadlines({text}) =>
+    Update(Loaded({page: Org.parseOrga(text, {todo: Some([|"TODO"|])})}))
   | NoOp => NoUpdate
   | _ => NoUpdate
   };
@@ -31,23 +35,23 @@ let reducer =
 let testDoc = TestContent.orga |> Utils.log;
 
 [@react.component]
-let make = (~id) => {
-  let ({page}: state, send) =
-    ReludeReact.Reducer.useReducer(reducer, initialState);
+let make = (~id, ~header) => {
+  let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
   id
   |> Option.tap(id =>
        ReludeReact.Effect.useIOOnMount(
          PageAPI.PageRequest.getPageIO(id),
-         options => FetchPagesSuccess(options)->send,
+         data => FetchPagesSuccess(data)->send,
          error => FetchPagesFailure(error)->send,
        )
      );
 
   Js.log(page);
 
-  switch (page) {
-  | Some(doc) => <Page doc />
-  | _ => React.null
+  switch (state) {
+  | Loaded({page}) => <Page doc=page header />
+  | Loading => "Loading" |> s
+  | Initial => React.null
   };
 };
