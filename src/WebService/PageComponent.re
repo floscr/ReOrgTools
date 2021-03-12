@@ -5,14 +5,23 @@ open ReOrga;
 
 [@react.component]
 let make = (~id, ~header, ~send, ~page) => {
-  id
-  |> Option.tap(id =>
-       ReludeReact.Effect.useIOOnMount(
-         PageAPI.PageRequest.getPageIO(id),
-         data => State.FetchPagesSuccess(data)->send,
-         error => State.FetchPagesFailure(error)->send,
-       )
-     );
+  switch (id) {
+  | Some(id) =>
+    Js.log(id);
+    ReludeReact.Effect.useEffect1WithEq(
+      () =>
+        PageAPI.PageRequest.getPageIO(id)
+        |> Relude.IO.unsafeRunAsync(
+             fun
+             | Ok(data) => State.FetchPagesSuccess(data)->send
+             | Error(data) => State.FetchPagesFailure(data)->send,
+           )
+        |> ignore,
+      (a, b) => a === b,
+      id,
+    );
+  | _ => ()
+  };
 
   switch (page) {
   | State.FetchedPage({ast}) => <Page doc=ast header />
