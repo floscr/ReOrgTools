@@ -26,22 +26,25 @@ let reducer =
   };
 
 [@react.component]
-let make = (~page) => {
+let make = (~page, ~id) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
   let onFileClick = () => send(SwitchMode(Outline(page)));
   let onBackClick = _ => send(SwitchMode(FileBrowser));
 
-  switch (state.mode) {
-  | Outline(state) =>
-    switch (state) {
-    | State.FetchedPage({ast}) =>
-      <>
-        <button onClick=onBackClick> {"Go back" |> s} </button>
-        <Outline ast />
-      </>
-    | _ => <Files onFileClick={() => ()} />
-    }
-  | _ => <Files onFileClick />
-  };
+  <>
+    {id |> Option.getOrElse("Nope") |> s}
+    {switch (state.mode, id) {
+     | (Outline(state), id) =>
+       switch (page) {
+       | State.FetchedPage({ast}) =>
+         <>
+           <button onClick=onBackClick> {"Go back" |> s} </button>
+           <Outline ast />
+         </>
+       | _ => <Files onFileClick={() => ()} />
+       }
+     | _ => <Files onFileClick />
+     }}
+  </>;
 };

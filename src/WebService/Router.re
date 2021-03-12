@@ -1,5 +1,6 @@
 open ReactUtils;
 open State;
+open Relude.Globals;
 
 module Styles = {
   open Css;
@@ -42,7 +43,7 @@ module Styles = {
 
 let showMain = (~id, ~header, ~send, ~state) => {
   <>
-    <aside className=Styles.sidebar> <Sidebar page={state.page} /> </aside>
+    <aside className=Styles.sidebar> <Sidebar page={state.page} id /> </aside>
     <article className=Styles.main>
       <PageComponent id header page={state.page} send />
     </article>

@@ -55,7 +55,6 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
                 key=name
                 onClick={_ => {
                   ReasonReactRouter.push("/file/" ++ base);
-                  Js.log("foo");
                   onFileClick();
                 }}>
                 {base |> s}
