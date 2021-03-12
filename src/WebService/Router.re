@@ -1,4 +1,5 @@
 open ReactUtils;
+open State;
 
 module Styles = {
   open Css;
@@ -39,17 +40,12 @@ module Styles = {
     style([gridColumnStart(2), padding(innerSpacing), overflow(hidden)]);
 };
 
-type state =
-  | Loaded(loadedState)
-  | Loading
-  | Initial;
-
-let showMain = (~id, ~header) => {
+let showMain = (~id, ~header, ~send, ~page) => {
   <>
     <aside className=Styles.sidebar> <Files /> </aside>
     <article className=Styles.main>
       {switch (id) {
-       | Some(_) => <PageComponent id header />
+       | Some(_) => <PageComponent id header page send />
        | _ => <div> {"No file selected" |> s} </div>
        }}
     </article>
@@ -58,6 +54,8 @@ let showMain = (~id, ~header) => {
 
 [@react.component]
 let make = () => {
+  let (state, send) =
+    ReludeReact.Reducer.useReducer(reducer, initialGlobalState);
   open Webapi.Url;
   let url = ReasonReactRouter.useUrl();
   let params = URLSearchParams.make(url.search);
@@ -65,8 +63,9 @@ let make = () => {
 
   <main className=Styles.root>
     {switch (url.path) {
-     | ["file", id] => showMain(~id=Some(id), ~header)
-     | _ => showMain(~id=None, ~header)
+     | ["file", id] =>
+       showMain(~id=Some(id), ~header, ~send, ~page=state.page)
+     | _ => showMain(~id=None, ~header, ~send, ~page=state.page)
      }}
   </main>;
 };
