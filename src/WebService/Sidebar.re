@@ -30,11 +30,16 @@ let make = (~page) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
   let onFileClick = () => send(SwitchMode(Outline(page)));
+  let onBackClick = _ => send(SwitchMode(FileBrowser));
 
   switch (state.mode) {
   | Outline(state) =>
     switch (state) {
-    | State.FetchedPage({ast}) => <Outline ast />
+    | State.FetchedPage({ast}) =>
+      <>
+        <button onClick=onBackClick> {"Go back" |> s} </button>
+        <Outline ast />
+      </>
     | _ => <Files onFileClick={() => ()} />
     }
   | _ => <Files onFileClick />
