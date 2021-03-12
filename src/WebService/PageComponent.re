@@ -26,7 +26,7 @@ let reducer =
   switch (action) {
   | FetchPagesSuccess({text}) =>
     Update(Loaded({page: Org.parseOrga(text, {todo: Some([|"TODO"|])})}))
-  | UpdateHeadlines({text}) =>
+  | FetchPagesSuccess({text}) =>
     Update(Loaded({page: Org.parseOrga(text, {todo: Some([|"TODO"|])})}))
   | NoOp => NoUpdate
   | _ => NoUpdate
@@ -46,8 +46,6 @@ let make = (~id, ~header) => {
          error => FetchPagesFailure(error)->send,
        )
      );
-
-  Js.log(page);
 
   switch (state) {
   | Loaded({page}) => <Page doc=page header />
