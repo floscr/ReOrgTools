@@ -102,6 +102,17 @@ let renderPlainText = x =>
   | _ => React.null
   };
 
+let makeHeadlineKey = position =>
+  "headline"
+  ++ "-"
+  ++ (position.start.line |> string_of_int)
+  ++ "-"
+  ++ (position.start.column |> string_of_int)
+  ++ "-"
+  ++ (position.end_.line |> string_of_int)
+  ++ "-"
+  ++ (position.end_.column |> string_of_int);
+
 let renderHeadline = (~position, ~level, ~index, xs) => {
   let {stars, content, tags} =
     Js.Array.reduce(
@@ -115,16 +126,7 @@ let renderHeadline = (~position, ~level, ~index, xs) => {
       xs,
     );
 
-  let id =
-    "headline"
-    ++ "-"
-    ++ (position.start.line |> string_of_int)
-    ++ "-"
-    ++ (position.start.column |> string_of_int)
-    ++ "-"
-    ++ (position.end_.line |> string_of_int)
-    ++ "-"
-    ++ (position.end_.column |> string_of_int);
+  let id = makeHeadlineKey(position);
 
   <header className=Styles.headline key=id id>
     {switch (stars) {

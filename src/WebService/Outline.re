@@ -4,11 +4,46 @@ open Relude.Globals;
 open ReactUtils;
 open ReOrga;
 
+module Styles = {
+  open Css;
+
+  let headline = (level: int) =>
+    style([
+      paddingLeft(px(5 * level)),
+      margin(zero),
+      marginTop(level == 1 ? rem(0.5) : zero),
+    ]);
+};
+
+let renderHeadline = (~position, ~level, ~index, xs) => {
+  let key = Page.makeHeadlineKey(position);
+
+  let text =
+    Array.foldLeft(
+      ((i, str) as acc, cur) => {
+        (
+          switch (getItem(cur)) {
+          | PlainText({value}) => Some(value)
+          | Link({value}) => Some(value)
+          | _ => None
+          }
+        )
+        |> Option.map(x => (i + 1, str ++ x))
+        |> Option.getOrElse(acc)
+      },
+      (0, ""),
+      xs,
+    )
+    |> (((a, b)) => b);
+
+  <p key className={Styles.headline(level)}> {text |> s} </p>;
+};
+
 let rec renderItems = (~level=0, xs) => {
   Belt.Array.mapWithIndex(xs, (i, x) => {
     switch (getItem(x)) {
     | Headline({children, level, position}) =>
-      Page.renderHeadline(~position, ~level, ~index=i, children)
+      renderHeadline(~position, ~level, ~index=i, children)
     | Section({children, level}) =>
       renderItems(~level, children) |> Page.wrapWithKey(level, i)
     | _ => React.null
@@ -20,5 +55,5 @@ let rec renderItems = (~level=0, xs) => {
 [@react.component]
 let make = (~ast: ReOrga.orgAst) => {
   let items = ast.children;
-  <div> {ast |> (x => x.children |> (xs => renderItems(xs)))} </div>;
+  <> {ast |> (x => x.children |> (xs => renderItems(xs)))} </>;
 };
