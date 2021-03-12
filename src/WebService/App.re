@@ -85,25 +85,29 @@ module Styles = {
     style([gridColumnStart(2), padding(innerSpacing), overflow(hidden)]);
 };
 
-let showMain = (~id) =>
+let showMain = (~id, ~header) => {
   <>
     <aside className=Styles.sidebar> <Files /> </aside>
     <article className=Styles.main>
       {switch (id) {
-       | Some(_) => <PageComponent id />
+       | Some(_) => <PageComponent id header />
        | _ => <div> {"No file selected" |> s} </div>
        }}
     </article>
   </>;
+};
 
 [@react.component]
 let make = () => {
+  open Webapi.Url;
   let url = ReasonReactRouter.useUrl();
+  let params = URLSearchParams.make(url.search);
+  let header = params |> URLSearchParams.get("header");
 
   <main className=Styles.root>
     {switch (url.path) {
-     | ["file", id] => showMain(~id=Some(id))
-     | _ => showMain(~id=None)
+     | ["file", id] => showMain(~id=Some(id), ~header)
+     | _ => showMain(~id=None, ~header)
      }}
   </main>;
 };

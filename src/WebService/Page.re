@@ -344,7 +344,8 @@ let rec renderItems = (~level=0, xs) => {
 };
 
 [@react.component]
-let make = (~doc: ReOrga.orgAst) => {
+let make = (~doc: ReOrga.orgAst, ~header: option(string)) => {
+  let items = doc.children;
   <div className=Styles.mainWrapper>
     {doc |> (x => x.children |> (xs => renderItems(xs)))}
   </div>;
