@@ -40,14 +40,11 @@ module Styles = {
     style([gridColumnStart(2), padding(innerSpacing), overflow(hidden)]);
 };
 
-let showMain = (~id, ~header, ~send, ~page) => {
+let showMain = (~id, ~header, ~send, ~state) => {
   <>
-    <aside className=Styles.sidebar> <Files /> </aside>
+    <aside className=Styles.sidebar> <Sidebar page={state.page} /> </aside>
     <article className=Styles.main>
-      {switch (id) {
-       | Some(_) => <PageComponent id header page send />
-       | _ => <div> {"No file selected" |> s} </div>
-       }}
+      <PageComponent id header page={state.page} send />
     </article>
   </>;
 };
@@ -63,9 +60,8 @@ let make = () => {
 
   <main className=Styles.root>
     {switch (url.path) {
-     | ["file", id] =>
-       showMain(~id=Some(id), ~header, ~send, ~page=state.page)
-     | _ => showMain(~id=None, ~header, ~send, ~page=state.page)
+     | ["file", id] => showMain(~id=Some(id), ~header, ~send, ~state)
+     | _ => showMain(~id=None, ~header, ~send, ~state)
      }}
   </main>;
 };

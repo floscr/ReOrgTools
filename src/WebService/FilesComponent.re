@@ -31,7 +31,7 @@ let makeName = name =>
 
 module Functor = (Request: FilesAPI.FilesRequest) => {
   [@react.component]
-  let make = (~optionsUrl: option(string)=?) => {
+  let make = (~optionsUrl: option(string)=?, ~onFileClick) => {
     let ({files}: state, send) =
       ReludeReact.Reducer.useReducer(reducer, initialState);
 
@@ -53,7 +53,11 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
               let base = name |> makeName;
               <button
                 key=name
-                onClick={_ => ReasonReactRouter.push("/file/" ++ base)}>
+                onClick={_ => {
+                  ReasonReactRouter.push("/file/" ++ base);
+                  Js.log("foo");
+                  onFileClick();
+                }}>
                 {base |> s}
               </button>;
             })
