@@ -12,9 +12,9 @@ copy_bsconfig:
 	rm -rf bsconfig.json
 	cp "bsconfig.$(TARGET).json" bsconfig.json
 
-serve_frontend:
+serve_frontend: copy_bsconfig
 	trap 'kill %1' INT TERM
-	yarn serve & $(MAKE) watch
+	yarn serve & $(MAKE) watch_frontend
 
 serve_backend:
 	trap 'kill %1' INT TERM
