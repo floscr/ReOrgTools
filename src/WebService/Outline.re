@@ -18,6 +18,13 @@ module Styles = {
 let renderHeadline = (~position, ~level, ~index, xs) => {
   let key = Page.makeHeadlineKey(position);
 
+  let onClick = _ =>
+    Webapi.Dom.document
+    |> Webapi.Dom.Document.getElementById(key)
+    |> Option.tap(Webapi.Dom.Element.scrollIntoView)
+    |> Option.tap(_ => ReasonReactRouter.push({j|#$key|j}))
+    |> ignore;
+
   let text =
     Array.foldLeft(
       ((i, str) as acc, cur) => {
@@ -36,7 +43,7 @@ let renderHeadline = (~position, ~level, ~index, xs) => {
     )
     |> (((a, b)) => b);
 
-  <p key className={Styles.headline(level)}> {text |> s} </p>;
+  <p key className={Styles.headline(level)} onClick> {text |> s} </p>;
 };
 
 let rec renderItems = (~level=0, xs) => {
