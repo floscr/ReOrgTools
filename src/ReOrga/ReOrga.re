@@ -98,8 +98,8 @@ type plainText = {
 
 type link = {
   value: string,
-  description: string,
-  protocol: string,
+  description: option(string),
+  protocol: option(string),
   search: string,
 };
 
@@ -200,8 +200,8 @@ let getItem = item => {
   | ["link"] =>
     Link({
       value: nullableOrEmptyStr(item.value),
-      description: nullableOrEmptyStr(item.description),
-      protocol: nullableOrEmptyStr(item.description),
+      description: item.description |> Js.Nullable.toOption,
+      protocol: item.protocol |> Js.Nullable.toOption,
       search: nullableOrEmptyStr(item.description),
     })
   | ["tags"] => Tags({tags: nullableOrEmptyArray(item.tags)})

@@ -102,6 +102,20 @@ let renderPlainText = x =>
   | _ => React.null
   };
 
+/* let renderAttachment = x => { */
+/*   x */
+/*   |> Relude.String.splitAt(2) */
+/*   |> */
+/* } */
+
+let renderLink = (~id=?, {protocol, description, value}) => {
+  switch (protocol) {
+  | Some("attachment") => <img src={j|/attachments/$value|j} />
+  | _ =>
+    <a href=value> {description |> Relude.Option.getOrElse(value) |> s} </a>
+  };
+};
+
 let makeHeadlineKey = position =>
   "headline"
   ++ "-"
@@ -144,7 +158,7 @@ let renderHeadline = (~position, ~level, ~index, xs) => {
              {keyword |> s}
            </span>
          | PlainText(_) => renderPlainText(x)
-         | Link({value, description}) => <a href=value> {s(description)} </a>
+         | Link(x) => renderLink(x)
          | _ => React.null
          }
        )
@@ -208,14 +222,7 @@ let renderParagraphs = xs => {
       switch (getItem(x)) {
       | PlainText(_) =>
         <React.Fragment key> {renderPlainText(x)} </React.Fragment>
-      | Link({value, description}) =>
-        <a href=value key>
-          {s(
-             x.description
-             ->Js.Nullable.toOption
-             ->Belt.Option.getWithDefault(value),
-           )}
-        </a>
+      | Link(x) => <React.Fragment key> {renderLink(x)} </React.Fragment>
       | _ => React.null
       };
     },
