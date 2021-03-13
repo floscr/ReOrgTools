@@ -1,11 +1,11 @@
-open PageTypes;
+open API__OrgDocument__Types;
 
 module D = Decode.AsResult.OfParseError;
 
-module PageResponse = {
+module Response = {
   let ((<$>), (<*>)) = D.(map, apply);
 
-  let make = (text): PageType.t => {text: text};
+  let make = (text): OrgDocumentType.t => {text: text};
 
   let decodeOne = make <$> D.field("text", D.string);
 
@@ -19,12 +19,12 @@ module PageResponse = {
   };
 };
 
-module type PageRequest = {
+module type Request = {
   let getPageIO:
-    string => Relude.IO.t(PageType.t, ReludeFetch.Error.t(string));
+    string => Relude.IO.t(OrgDocumentType.t, ReludeFetch.Error.t(string));
 };
 
-module PageRequest: PageRequest = {
+module Request: Request = {
   open Relude.IO;
 
   let baseUrl = "http://localhost:4000/file/";
@@ -35,6 +35,6 @@ module PageRequest: PageRequest = {
     ReludeFetch.get(url)
     >>= ReludeFetch.Response.StatusCode.ensure2xx
     >>= ReludeFetch.Response.json
-    >>= PageResponse.decode(url);
+    >>= Response.decode(url);
   };
 };

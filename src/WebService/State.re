@@ -16,7 +16,7 @@ type globalState = {page: pageState};
 let initialGlobalState = {page: EmptyPage};
 
 type action =
-  | FetchPagesSuccess(PageTypes.PageType.t)
+  | FetchPagesSuccess(API__OrgDocument__Types.OrgDocumentType.t)
   | FetchPagesFailure(ReludeFetch.Error.t(string))
   | NoOp;
 

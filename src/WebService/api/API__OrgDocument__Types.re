@@ -1,3 +1,3 @@
-module PageType = {
+module OrgDocumentType = {
   type t = {text: string};
 };

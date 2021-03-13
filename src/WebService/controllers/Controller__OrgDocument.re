@@ -1,4 +1,4 @@
-open PageTypes;
+open API__OrgDocument__Types;
 open ReactUtils;
 open Relude.Globals;
 open ReOrga;
@@ -9,7 +9,7 @@ let make = (~id, ~header, ~send, ~ast) => {
   | Some(id) =>
     ReludeReact.Effect.useEffect1WithEq(
       () =>
-        PageAPI.PageRequest.getPageIO(id)
+        API__OrgDocument.Request.getPageIO(id)
         |> Relude.IO.unsafeRunAsync(
              fun
              | Ok(data) => State.FetchPagesSuccess(data)->send
