@@ -1,0 +1,1 @@
+let renderHr = () => <hr />;

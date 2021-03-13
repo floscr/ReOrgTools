@@ -16,7 +16,7 @@ module Styles = {
 };
 
 let renderHeadline = (~position, ~level, ~index, xs) => {
-  let key = Page.makeHeadlineKey(position);
+  let key = OrgDocument__Component__Headline.makeHeadlineKey(position);
 
   let onClick = _ =>
     Webapi.Dom.document
@@ -52,7 +52,8 @@ let rec renderItems = (~level=0, xs) => {
     | Headline({children, level, position}) =>
       renderHeadline(~position, ~level, ~index=i, children)
     | Section({children, level}) =>
-      renderItems(~level, children) |> Page.wrapWithKey(level, i)
+      renderItems(~level, children)
+      |> OrgDocument__Utils.wrapWithKey(level, i)
     | _ => React.null
     }
   })

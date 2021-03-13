@@ -3,13 +3,12 @@
   "reason": {
     "react-jsx": 3
   },
-  "sources": {
-    "dir": "src",
-    "subdirs": [
-      "WebService",
-      "WebService/bindings"
-    ]
-  },
+  "sources": [
+    {
+      "dir": "src/WebService",
+      "subdirs": true
+    }
+  ],
   "bsc-flags": [
     "-bs-super-errors"
   ],

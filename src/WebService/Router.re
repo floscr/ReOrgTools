@@ -45,7 +45,7 @@ let showMain = (~id, ~header, ~send, ~state) => {
   <>
     <aside className=Styles.sidebar> <Sidebar page={state.page} id /> </aside>
     <article className=Styles.main>
-      <PageComponent id header page={state.page} send />
+      <Controller__OrgDocument id header ast={state.page} send />
     </article>
   </>;
 };

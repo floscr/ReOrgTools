@@ -4,7 +4,7 @@ open Relude.Globals;
 open ReOrga;
 
 [@react.component]
-let make = (~id, ~header, ~send, ~page) => {
+let make = (~id, ~header, ~send, ~ast) => {
   switch (id) {
   | Some(id) =>
     ReludeReact.Effect.useEffect1WithEq(
@@ -22,8 +22,8 @@ let make = (~id, ~header, ~send, ~page) => {
   | _ => ()
   };
 
-  switch (page) {
-  | State.FetchedPage({ast}) => <Page doc=ast header />
+  switch (ast) {
+  | State.FetchedPage({ast}) => <OrgDocument__Root ast header />
   | State.FetchingPage => "Loading" |> s
   | _ => React.null
   };

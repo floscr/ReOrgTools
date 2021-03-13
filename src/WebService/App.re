@@ -1,5 +1,3 @@
-open ReactUtils;
-
 Css.(
   global("*, *:before, *:after", [boxSizing(borderBox)]),
   /* button reset */
