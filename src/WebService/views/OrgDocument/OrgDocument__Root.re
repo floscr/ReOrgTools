@@ -56,7 +56,7 @@ let rec renderItems = (~level=0, ~properties=?, xs) => {
 let make = (~ast: ReOrga.orgAst, ~header: option(string)) => {
   let {children, properties} = ast;
 
-  Js.log(children);
+  Js.log(ast);
 
   <div className=Styles.mainWrapper> {renderItems(children)} </div>;
 };
