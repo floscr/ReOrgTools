@@ -14,13 +14,18 @@ let renderAttachment = (~attachmentId=None, {value, description}) => {
   <img src={j|http://localhost:4000/attachments/$url|j} />;
 };
 
-let renderLink = (~attachmentId=None, {protocol, description, value} as x) => {
-  switch (protocol) {
-  | Some(p) when p === "attachment" =>
-    Js.log2("inside", attachmentId);
-    renderAttachment(~attachmentId, x);
-  | _ => <a href=value> {description |> Option.getOrElse(value) |> s} </a>
-  };
+let renderLink = (~attachmentId=None, {protocol, description, value} as link) => {
+  link
+  |> Option.some
+  |> Option.flatMap(({protocol}) => protocol)
+  |> Option.flatMap(
+       fun
+       | "attachment" => renderAttachment(~attachmentId, link) |> Option.some
+       | _ => None,
+     )
+  |> Option.getOrElseLazy(_ =>
+       <a href=value> {description |> Option.getOrElse(value) |> s} </a>
+     );
 };
 
 let renderPlainText = x =>
