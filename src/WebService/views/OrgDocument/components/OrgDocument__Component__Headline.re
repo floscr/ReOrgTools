@@ -6,7 +6,11 @@ open ReactUtils;
 module Styles = {
   open Css;
 
-  let headline = style([]);
+  let headline =
+    style([
+      display(block),
+      margin3(~h=zero, ~top=rem(1.38), ~bottom=rem(1.38)),
+    ]);
 
   let headlineTodo = (x: string) =>
     style([
@@ -55,18 +59,19 @@ type headlineProps = {
   tags: option(tags),
 };
 
+let makeHeadlineProps =
+  Array.foldLeft(
+    (acc, cur) =>
+      switch (getItem(cur)) {
+      | Stars(x) when Env.showStars => {...acc, stars: Some(x)}
+      | Tags(x) => {...acc, tags: Some(x)}
+      | _ => {...acc, content: Array.concat(acc.content, [|cur|])}
+      },
+    {stars: None, tags: None, content: [||]},
+  );
+
 let renderHeadline = (~position, ~level, ~properties, xs) => {
-  let {stars, content, tags} =
-    Array.foldLeft(
-      (acc, cur) =>
-        switch (getItem(cur)) {
-        | Stars(x) when Env.showStars => {...acc, stars: Some(x)}
-        | Tags(x) => {...acc, tags: Some(x)}
-        | _ => {...acc, content: Array.concat(acc.content, [|cur|])}
-        },
-      {stars: None, tags: None, content: [||]},
-      xs,
-    );
+  let {stars, content, tags} = xs |> makeHeadlineProps;
 
   let atid = properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "id"));
   let id = makeHeadlineKey(position);

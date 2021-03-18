@@ -58,5 +58,13 @@ let make = (~ast: ReOrga.orgAst, ~header: option(string)) => {
 
   Js.log(ast);
 
-  <div className=Styles.mainWrapper> {renderItems(children)} </div>;
+  Js.Dict.get(properties, "reorg_view")
+  |> (
+    fun
+    | Some(x) when x === "SIMPLE_TODO" =>
+      <div className=Styles.mainWrapper>
+        <OrgDocument__ViewStyle__SimpleTodo ast />
+      </div>
+    | _ => <div className=Styles.mainWrapper> {renderItems(children)} </div>
+  );
 };

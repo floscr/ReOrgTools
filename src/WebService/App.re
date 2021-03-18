@@ -28,10 +28,6 @@ Css.(
   ),
   global("img", [maxWidth(`percent(100.))]),
   global("h1, h2, h3, h4, h5, h6", [margin(zero)]),
-  global(
-    "header",
-    [display(block), margin3(~h=zero, ~top=rem(1.38), ~bottom=rem(1.38))],
-  ),
   /* global("html, body", [height(vh(100.))]), */
   /* global("p", [marginBottom(rem(1.))]), */
   global("h1", [fontSize(rem(2.3)), marginBottom(rem(3.))]),

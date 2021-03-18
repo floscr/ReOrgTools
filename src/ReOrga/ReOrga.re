@@ -57,15 +57,9 @@ type sectionAst = {
   params: Js.nullable(array(string)),
 };
 
-type propertiesAst = {
-  date: string,
-  template: string,
-  title: string,
-};
-
 type orgAst = {
   children: array(sectionAst),
-  properties: propertiesAst,
+  properties: Js.Dict.t(string),
 };
 
 type stars = {level: int};
