@@ -1,5 +1,14 @@
 let omit = (f, _) => f();
 
+module ClassName = {
+  include Relude.Identity;
+  let id = x => x;
+
+  let append = className => map(a => a ++ " " ++ className);
+
+  let condAppend = (cond, className) => cond ? append(className) : id;
+};
+
 let s = React.string;
 
 [@bs.send] external performanceNow: Webapi__Performance.t => float = "now";
