@@ -91,5 +91,6 @@ let make = () => {
        showMain(~id, ~header, ~send, ~state, ~workspaceIndex, ());
      | _ => showMain(~header, ~send, ~state, ())
      }}
+    <Dialogs />
   </main>;
 };
