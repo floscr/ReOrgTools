@@ -271,7 +271,7 @@ let make = (~close) => {
               <React.Fragment key={i |> Int.toString}>
                 <Item
                   isSelected
-                  onClick={() => Js.log("foo")}
+                  onClick={_ => onSubmit(~index=Some(i), results) |> ignore}
                   value={name |> Filename.chop_extension}
                 />
               </React.Fragment>;
