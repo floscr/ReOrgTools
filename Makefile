@@ -19,7 +19,6 @@ serve_frontend: copy_bsconfig
 serve_backend:
 	trap 'kill %1' INT TERM
 	@make -j 2 start_server_backend watch_backend
-	# cd $(BACKEND_DIR); yarn start:dev & $(MAKE) watch_backend
 
 start_server_backend:
 	cd $(BACKEND_DIR); yarn start:dev
