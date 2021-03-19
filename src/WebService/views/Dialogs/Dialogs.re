@@ -25,7 +25,6 @@ module Styles = {
       position(absolute),
       backgroundColor(white),
       borderRadius(FixedTheme.BorderRadius.small),
-      padding(FixedTheme.Spacing.medium),
     ]);
 };
 
