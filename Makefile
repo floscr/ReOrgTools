@@ -6,7 +6,7 @@ TARGET := $(or $(TARGET),web)
 BACKEND_DIR := ./src/Server
 
 serve: copy_bsconfig
-	@make -j 2 serve_frontend serve_backend
+	@make -j 10 serve_frontend serve_backend
 
 copy_bsconfig:
 	rm -rf bsconfig.json
@@ -18,7 +18,19 @@ serve_frontend: copy_bsconfig
 
 serve_backend:
 	trap 'kill %1' INT TERM
-	cd $(BACKEND_DIR); yarn start:dev & bsb -make-world -w
+	@make -j 2 start_server_backend watch_backend
+	# cd $(BACKEND_DIR); yarn start:dev & $(MAKE) watch_backend
+
+start_server_backend:
+	cd $(BACKEND_DIR); yarn start:dev
+
+watch_backend:
+	while true; do \
+		trap 'break' INT; \
+		cd $(BACKEND_DIR); find -L $$(jq -r 'include "./dirs"; dirs' $(SOURCE_DIRS_JSON)) -maxdepth 1 \
+			-type f -iregex ".*\.\(re\|ml\)i?" | \
+		entr -nd $(BSB) $(BSB_ARGS); \
+	done
 
 $(SOURCE_DIRS_JSON): bsconfig.json
 	$(BSB) -install
