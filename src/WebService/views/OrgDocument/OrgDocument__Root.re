@@ -58,6 +58,12 @@ let make = (~ast: ReOrga.orgAst, ~header: option(string)) => {
 
   Js.log(ast);
 
+  let xs =
+    header
+    |> Option.flatMap(text => Org.narrowToHeadlineWithText(~text, children))
+    |> Option.map(x => [|x.parent|])
+    |> Option.getOrElse(children);
+
   Js.Dict.get(properties, "reorg_view")
   |> (
     fun
@@ -65,6 +71,6 @@ let make = (~ast: ReOrga.orgAst, ~header: option(string)) => {
       <div className=Styles.mainWrapper>
         <OrgDocument__ViewStyle__SimpleTodo ast />
       </div>
-    | _ => <div className=Styles.mainWrapper> {renderItems(children)} </div>
+    | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div>
   );
 };
