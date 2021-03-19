@@ -12,7 +12,7 @@ let result = [];
 
 describe("IO basics", () => {
   testAsync("getWorkspaces", onDone => {
-    getWorkspaces(~workspaces=Config.workspaces |> List.append("./foo"), ())
+    getWorkspaces(~workspaces=Config.workspaces |> List.prepend("./foo"), ())
     /* |> IO.flatMap(xs => {IO.Pure(Array.map(IO.unsafeRunAsync(ignore)))}) */
     /* |> List.map(IO.unsafeRunAsync(ignore)) */
     /* |> Js.log */

@@ -28,17 +28,25 @@ let getDirFiles = dir =>
        IO.suspend(() =>
          Array.map(({name}: ReadDir.DirectoryEntry.t) => name, xs)
        )
-     );
+     )
+  |> IO.tap(_ => Js.log("DONE"));
 
 let getWorkspaces = (~workspaces=Config.workspaces, ()) =>
   IO.Pure(workspaces |> List.toArray)
   |> IO.flatMap(xs =>
        xs
        |> Array.map(getDirFiles)
+       /* |> Utils.log */
        |> Array.foldLeft(
             (accumulator, current) =>
               IO.flatMap(
-                entries => IO.map(entry => [entry, ...entries], current),
+                entries =>
+                IO.apll
+                  current
+                  /* |> IO.bitap(Js.log2("Foo"), Js.log2("Bar")) */
+                  /* |> IO.tapError(Js.log2("Err")) */
+                  /* |> IO.flatMap(x => x) */
+                  |> IO.map(entry => [entry, ...entries]),
                 accumulator,
               ),
             IO.Pure([]),
