@@ -19,14 +19,6 @@ module Styles = {
       overflow(hidden),
       padding(FixedTheme.Spacing.large),
     ]);
-
-  let dialog =
-    style([
-      position(absolute),
-      backgroundColor(white),
-      borderRadius(FixedTheme.BorderRadius.small),
-      overflow(hidden),
-    ]);
 };
 
 [@react.component]
@@ -95,12 +87,9 @@ let make = () => {
                    }
                  )
                  |> Option.map(((id, x)) =>
-                      <div
-                        onClick=ReactEvent.Mouse.stopPropagation
-                        className=Styles.dialog
-                        key={id ++ (i |> Int.toString)}>
+                      <React.Fragment key={id ++ (i |> Int.toString)}>
                         x
-                      </div>
+                      </React.Fragment>
                     )
                  |> Option.getOrElse(React.null)
                )

@@ -1,6 +1,7 @@
 open ReactUtils;
 open Relude.Globals;
 open State;
+open Dialogs__Style;
 
 module Styles = {
   open Css;
@@ -17,7 +18,6 @@ module Styles = {
       width(vw(90.)),
       maxWidth(px(460)),
       maxHeight(px(380)),
-      overflow(hidden),
     ]);
 
   let input =
@@ -227,7 +227,7 @@ let make = (~close) => {
     ),
   |];
 
-  <ComboKeysWrapper bindings>
+  <RoundedDialogWrapper bindings>
     <div className=Styles.root>
       <input
         autoFocus=true
@@ -263,5 +263,5 @@ let make = (~close) => {
         </ul>
       </div>
     </div>
-  </ComboKeysWrapper>;
+  </RoundedDialogWrapper>;
 };
