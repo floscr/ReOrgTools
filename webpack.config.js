@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  stats: 'errors-only',
   entry: './src/WebService/Index.bs.js',
   mode: 'development',
   output: {
