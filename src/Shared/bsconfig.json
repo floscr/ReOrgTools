@@ -1,0 +1,24 @@
+{
+  "name": "shared",
+  "reason": {
+    "react-jsx": 3
+  },
+  "sources": ".",
+  "bsc-flags": [
+    "-bs-super-errors"
+  ],
+  "package-specs": [
+    {
+      "module": "commonjs",
+      "in-source": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "bs-dependencies": [
+    "@glennsl/bs-json",
+    "bs-bastet",
+    "bs-decode",
+    "relude",
+  ],
+  "refmt": 3
+}

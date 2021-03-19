@@ -31,18 +31,14 @@ module File = {
 module Workspaces = {
   type t = list((string, array(File.t)));
 
-  let encodeJson = xs => {
+  let encodeJson = xs =>
     Json.Encode.(
       xs
       |> List.toArray
       |> Array.map(((workspace, files)) =>
-           object_([
-             ("name", string(workspace)),
-             ("files", files |> array(File.encodeJson)),
-           ])
+           tuple2(string, array(File.encodeJson), (workspace, files))
          )
     );
-  };
 
   let decodeOne = Decode.(tuple(string, array(File.decodeJson)));
   let decodeMany = Decode.(list(decodeOne));

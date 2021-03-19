@@ -5,10 +5,6 @@
   },
   "sources": [
     {
-      "dir": "../Shared",
-      "subdirs": false
-    },
-    {
       "dir": "src",
       "subdirs": true
     },
@@ -37,7 +33,8 @@
     "bs-express",
     "bs-decode",
     "relude",
-    "reorga"
+    "reorga",
+    "shared",
   ],
   "bs-dev-dependencies": [
     "@glennsl/bs-jest"
