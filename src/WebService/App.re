@@ -61,7 +61,7 @@ CssTheme.Dom.setDefaultTheme();
 
 [@react.component]
 let make = () => {
-  <ReductiveStore.Store.Provider store=ReductiveStore.store>
+  <State.Store.Provider store=State.store>
     <CssTheme.Provider> <Router /> </CssTheme.Provider>
-  </ReductiveStore.Store.Provider>;
+  </State.Store.Provider>;
 };

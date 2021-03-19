@@ -1,6 +1,6 @@
 open ReactUtils;
 open Relude.Globals;
-open ReductiveStore;
+open State;
 
 module Styles = {
   open Css;

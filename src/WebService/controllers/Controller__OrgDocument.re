@@ -2,7 +2,7 @@ open API__OrgDocument__Types;
 open ReactUtils;
 open Relude.Globals;
 open ReOrga;
-open ReductiveStore;
+open State;
 
 [@react.component]
 let make = (~id, ~header, ~workspaceIndex) => {
@@ -13,9 +13,7 @@ let make = (~id, ~header, ~workspaceIndex) => {
 
   ReludeReact.Effect.useEffect1WithEq(
     () => {
-      OrgDocumentsAction(
-        ReductiveStore__OrgDocuments.Store.FetchProgress(id),
-      )
+      OrgDocumentsAction(State__OrgDocuments.Store.FetchProgress(id))
       |> dispatch;
 
       API__OrgDocument.Request.make(~workspaceIndex, ~file=id)
@@ -32,7 +30,7 @@ let make = (~id, ~header, ~workspaceIndex) => {
            fun
            | Ok(data) =>
              OrgDocumentsAction(
-               ReductiveStore__OrgDocuments.Store.FetchSuccess(
+               State__OrgDocuments.Store.FetchSuccess(
                  id,
                  workspaceIndex,
                  data,
@@ -42,7 +40,7 @@ let make = (~id, ~header, ~workspaceIndex) => {
 
            | Error(data) =>
              OrgDocumentsAction(
-               ReductiveStore__OrgDocuments.Store.FetchFailure(id, data),
+               State__OrgDocuments.Store.FetchFailure(id, data),
              )
              |> dispatch,
          )
@@ -54,7 +52,7 @@ let make = (~id, ~header, ~workspaceIndex) => {
 
   file
   |> Option.map(x =>
-       ReductiveStore__OrgDocuments.(
+       State__OrgDocuments.(
          switch ((x: File.t)) {
          | File.Fetched({ast}) => <OrgDocument__Root ast header />
          | File.Cached({ast}) => <OrgDocument__Root ast header />

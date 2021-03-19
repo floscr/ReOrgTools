@@ -43,25 +43,22 @@ let showMain = (~id=?, ~header, ~workspaceIndex=0, ()) => {
 
 [@react.component]
 let make = () => {
-  let dispatch = ReductiveStore.Store.useDispatch();
+  let dispatch = State.Store.useDispatch();
 
   let openFilePicker = _ =>
     dispatch(
-      ReductiveStore.DialogsAction(
-        ReductiveStore__Dialogs.OpenDialog(
-          ReductiveStore__Dialogs.FilePicker,
-        ),
+      State.DialogsAction(
+        State__Dialogs.OpenDialog(State__Dialogs.FilePicker),
       ),
     );
 
-  ReductiveStore__Workspaces.(
+  State__Workspaces.(
     ReludeReact.Effect.useIOOnMount(
       Request.make(),
       data =>
-        ReductiveStore.WorkspaceAction(Store.FetchWorkspacesSuccess(data))
-        |> dispatch,
+        State.WorkspaceAction(Store.FetchWorkspacesSuccess(data)) |> dispatch,
       error =>
-        ReductiveStore.WorkspaceAction(Store.FetchWorkspacesFailure(error))
+        State.WorkspaceAction(Store.FetchWorkspacesFailure(error))
         |> dispatch,
     )
   );

@@ -1,6 +1,6 @@
 open ReactUtils;
 open Relude.Globals;
-open ReductiveStore;
+open State;
 
 module Styles = {
   open Css;
@@ -30,7 +30,7 @@ module Styles = {
 
 [@react.component]
 let make = () => {
-  open ReductiveStore__Dialogs;
+  open State__Dialogs;
   let dispatch = Store.useDispatch();
   let dialogs = Store.useSelector(Selector.Dialogs.dialogs);
 

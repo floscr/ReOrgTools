@@ -1,6 +1,6 @@
 open ReactUtils;
 open Relude.Globals;
-open ReductiveStore;
+open State;
 
 module Styles = {
   open Css;
@@ -57,7 +57,7 @@ let make = (~id, ~workspaceIndex) => {
   <div className=Styles.root>
     <IconButton style=Styles.backIcon id="arrow_back" />
     {switch (state.mode, file) {
-     | (Outline, Some(ReductiveStore__OrgDocuments.File.Fetched({ast}))) =>
+     | (Outline, Some(State__OrgDocuments.File.Fetched({ast}))) =>
        <>
          <button onClick=onBackClick> {"<- Go back" |> s} </button>
          <Outline ast />
