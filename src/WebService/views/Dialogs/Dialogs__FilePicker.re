@@ -47,12 +47,26 @@ module Styles = {
       borderRight(px(1), solid, var(ThemeKeys.grey10)),
     ]);
 
-  let resultsItem = (~isSelected) =>
+  let resultsItem =
     style([
+      fontSize(Fonts.small),
+      fontWeight(medium),
+      color(var(ThemeKeys.grey40)),
       padding2(~h=paddingSize, ~v=Spacing.xsmall),
       borderBottom(px(1), solid, var(ThemeKeys.grey10)),
-      backgroundColor(
-        isSelected ? var(ThemeKeys.blue) : var(ThemeKeys.bgColor),
+      backgroundColor(var(ThemeKeys.bgColor)),
+    ]);
+
+  let resultsItemFocused =
+    style([
+      backgroundColor(var(ThemeKeys.grey15)),
+      boxShadow(
+        Shadow.box(
+          ~spread=px(2),
+          ~x=px(2),
+          ~inset=true,
+          var(ThemeKeys.accentMain),
+        ),
       ),
     ]);
 };
@@ -105,6 +119,11 @@ module Item = {
     let rootRef: React.ref(Js.Nullable.t(Dom.element)) =
       React.useRef(Js.Nullable.null);
 
+    let className =
+      ClassName.pure(Styles.resultsItem)
+      |> ClassName.condAppend(isSelected, Styles.resultsItemFocused)
+      |> Box.unwrap;
+
     React.useEffect1(
       () => {
         if (isSelected) {
@@ -118,7 +137,7 @@ module Item = {
 
     <li
       ref={ReactDOMRe.Ref.domRef(rootRef)}
-      className={Styles.resultsItem(~isSelected)}
+      className
       onClick={ReactUtils.omit(onClick)}>
       {value |> s}
     </li>;
