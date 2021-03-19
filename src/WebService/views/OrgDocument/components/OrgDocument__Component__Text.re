@@ -4,6 +4,8 @@ open ReOrga;
 open OrgDocument__Utils;
 
 let renderAttachment = (~attachmentId=None, {value, description}) => {
+  let dispatch = State.Store.useDispatch();
+
   let src =
     attachmentId
     |> Option.map(String.splitAt(2))
@@ -35,7 +37,14 @@ let renderAttachment = (~attachmentId=None, {value, description}) => {
        )
     |> ReludeURL.URI.show;
 
-  <img src />;
+  let onClick = () =>
+    State.DialogsAction(
+      State__Dialogs.OpenDialog(
+        State__Dialogs.Lightbox({index: None, items: [|src|]}),
+      ),
+    );
+
+  <img src onClick={_ => onClick() |> dispatch} />;
 };
 
 let renderLink = (~attachmentId=None, {protocol, description, value} as link) => {
