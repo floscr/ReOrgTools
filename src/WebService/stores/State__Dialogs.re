@@ -1,5 +1,11 @@
+type lightBoxProps = {
+  index: option(int),
+  items: array(string),
+};
+
 type dialog =
-  | FilePicker;
+  | FilePicker
+  | Lightbox(lightBoxProps);
 
 type state = {dialogs: array(dialog)};
 

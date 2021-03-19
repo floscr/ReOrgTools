@@ -87,6 +87,11 @@ let make = () => {
                        Dialogs__FilePicker.id,
                        <Dialogs__FilePicker close />,
                      ))
+                   | Lightbox({index, items}) =>
+                     Some((
+                       Dialogs__Lightbox.id,
+                       <Dialogs__Lightbox index images=items close />,
+                     ))
                    }
                  )
                  |> Option.map(((id, x)) =>
