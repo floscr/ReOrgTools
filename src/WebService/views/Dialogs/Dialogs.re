@@ -1,7 +1,5 @@
 open ReactUtils;
-
 open Relude.Globals;
-
 open ReductiveStore;
 
 module Styles = {
@@ -34,7 +32,6 @@ module Styles = {
 [@react.component]
 let make = () => {
   open ReductiveStore__Dialogs;
-
   let dispatch = Wrapper.useDispatch();
   let dialogs = Wrapper.useSelector(Selector.DialogsStore.dialogs);
 

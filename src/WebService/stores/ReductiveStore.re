@@ -2,11 +2,13 @@ module Implementation = {
   type state = {
     dialogsState: ReductiveStore__Dialogs.state,
     workspacesState: ReductiveStore__Workspaces.Store.state,
+    orgDocumentsState: ReductiveStore__OrgDocuments.Store.state,
   };
 
   type action =
     | DialogsAction(ReductiveStore__Dialogs.action)
-    | WorkspaceAction(ReductiveStore__Workspaces.Store.action);
+    | WorkspaceAction(ReductiveStore__Workspaces.Store.action)
+    | OrgDocumentsAction(ReductiveStore__OrgDocuments.Store.action);
 
   let reducer = (state, action) =>
     switch (action) {
@@ -19,6 +21,14 @@ module Implementation = {
         workspacesState:
           ReductiveStore__Workspaces.Store.reducer(state.workspacesState, a),
       }
+    | OrgDocumentsAction(a) => {
+        ...state,
+        orgDocumentsState:
+          ReductiveStore__OrgDocuments.Store.reducer(
+            state.orgDocumentsState,
+            a,
+          ),
+      }
     };
 
   let store =
@@ -27,6 +37,7 @@ module Implementation = {
       ~preloadedState={
         dialogsState: ReductiveStore__Dialogs.initial,
         workspacesState: ReductiveStore__Workspaces.Store.initialState,
+        orgDocumentsState: ReductiveStore__OrgDocuments.Store.initialState,
       },
       (),
     );
@@ -38,8 +49,12 @@ module Implementation = {
     module WorkspacesStore = {
       let workspaces = state => state.workspacesState.workspaces;
     };
+    module OrgDocumentsStore = {
+      let files = state => state.orgDocumentsState.filesCache;
+    };
   };
 };
+
 include Implementation;
 
 module Wrapper = {

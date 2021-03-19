@@ -1,5 +1,6 @@
 open ReactUtils;
 open Relude.Globals;
+open ReductiveStore;
 
 module Styles = {
   open Css;
@@ -44,15 +45,20 @@ let reducer =
   };
 
 [@react.component]
-let make = (~file, ~workspaceIndex) => {
+let make = (~id, ~workspaceIndex) => {
+  open ReductiveStore__OrgDocuments;
+  let files = Wrapper.useSelector(Selector.OrgDocumentsStore.files);
+  let file = id |> Option.flatMap(x => StringMap.get(x, files));
+
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
+
   let onFileClick = () => send(SwitchMode(Outline));
   let onBackClick = _ => send(SwitchMode(Workspaces));
 
   <div className=Styles.root>
     <IconButton style=Styles.backIcon id="arrow_back" />
     {switch (state.mode, file) {
-     | (Outline, Some(State.File.Fetched({ast}))) =>
+     | (Outline, Some(File.Fetched({ast}))) =>
        <>
          <button onClick=onBackClick> {"<- Go back" |> s} </button>
          <Outline ast />

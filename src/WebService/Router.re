@@ -1,5 +1,4 @@
 open ReactUtils;
-open State;
 open Relude.Globals;
 
 module Styles = {
@@ -30,15 +29,12 @@ module Styles = {
   let main = style([gridColumnStart(2), padding(innerSpacing)]);
 };
 
-let showMain = (~id=?, ~header, ~send, ~state, ~workspaceIndex=0, ()) => {
-  let file = id |> Option.flatMap(x => StringMap.get(x, state.filesCache));
-
+let showMain = (~id=?, ~header, ~workspaceIndex=0, ()) => {
   <>
-    <aside className=Styles.sidebar> <Sidebar workspaceIndex file /> </aside>
+    <aside className=Styles.sidebar> <Sidebar workspaceIndex id /> </aside>
     <article className=Styles.main>
       {switch (id) {
-       | Some(id) =>
-         <Controller__OrgDocument id header file send workspaceIndex />
+       | Some(id) => <Controller__OrgDocument id header workspaceIndex />
        | _ => React.null
        }}
     </article>
@@ -69,11 +65,7 @@ let make = () => {
         |> dispatch,
     )
   );
-
-  let (state, send) =
-    ReludeReact.Reducer.useReducer(reducer, initialGlobalState);
   open Webapi.Url;
-
   let url = ReasonReactRouter.useUrl();
   let params = URLSearchParams.make(url.search);
   let header = params |> URLSearchParams.get("header");
@@ -103,8 +95,8 @@ let make = () => {
      | ["file", workspaceIndex, id] =>
        let workspaceIndex =
          workspaceIndex |> String.toInt |> Option.getOrElse(0);
-       showMain(~id, ~header, ~send, ~state, ~workspaceIndex, ());
-     | _ => showMain(~header, ~send, ~state, ())
+       showMain(~id, ~header, ~workspaceIndex, ());
+     | _ => showMain(~header, ())
      }}
     <Dialogs />
   </main>;
