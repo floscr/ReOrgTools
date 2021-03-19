@@ -74,7 +74,7 @@ type state = {
   selection: option(int),
 };
 
-let initialState = {options: [||], query: "", selection: None};
+let initialState = {options: [||], query: "", selection: Some(0)};
 
 type action =
   | ChangeQuery(string)
@@ -151,19 +151,53 @@ let make = (~close) => {
     workspaces
     |> List.foldLeft(
          (acc, (workspace, files)) => {
-           files |> Array.map(x => (workspace, x)) |> Array.concat(acc)
+           let index =
+             acc
+             |> Array.last
+             |> Option.map(((i, _, _)) => Int.add(1, i))
+             |> Option.getOrElse(0);
+
+           files
+           |> Array.map(x => (index, workspace, x))
+           |> Array.concat(acc);
          },
          [||],
        )
-    |> Array.filter(((a, {name}: Shared__API__Workspaces.File.t)) =>
+    |> Array.filter(((_, _, {name}: Shared__API__Workspaces.File.t)) =>
          name |> String.toLowerCase |> String.contains(~search=query)
        );
   React.Ref.setCurrent(boundsRef, results |> Array.length);
+
+  let onSubmit = (~index=None, results) => {
+    results
+    |> Array.at(index |> Option.getOrElse(0))
+    |> Option.flatMap(
+         ((_, workspaceName, {name}: Shared__API__Workspaces.File.t)) =>
+         workspaces
+         |> List.map(((a, _)) => a)
+         |> List.indexOfBy(String.eq, workspaceName)
+         |> Option.map(i => (i, name))
+       )
+    |> Option.tap(((i, name)) => {
+         let name = Filename.chop_extension(name);
+         close();
+         ReasonReactRouter.push({j|/file/$i/$name|j});
+       });
+  };
 
   let selectNext = () => SelectNext(boundsRef |> React.Ref.current) |> send;
   let selectPrev = () => SelectPrev(boundsRef |> React.Ref.current) |> send;
   let onChange = event => {
     send(ChangeQuery(event->ReactEvent.Form.target##value));
+  };
+  let onKeyDown = event => {
+    switch (event |> ReactEvent.Keyboard.key) {
+    | "Enter" =>
+      onSubmit(~index=state.selection, results) |> ignore;
+      ReactEvent.Keyboard.preventDefault(event);
+    | "Escape" => close()
+    | _ => ()
+    };
   };
 
   let combokeys: ref(option(Combokeys.t)) = ref(None);
@@ -223,6 +257,7 @@ let make = (~close) => {
       name=id
       value={state.query}
       onChange
+      onKeyDown
       onBlur={e => e->ReactEvent.Synthetic.preventDefault}
       placeholder="Pick File"
     />
@@ -230,7 +265,7 @@ let make = (~close) => {
       <ul className=Styles.resultsList>
         {results
          |> Array.mapWithIndex(
-              ((a, {name}: Shared__API__Workspaces.File.t), i) => {
+              ((_, _, {name}: Shared__API__Workspaces.File.t), i) => {
               let isSelected =
                 state.selection |> Option.filter(Int.eq(i)) |> Option.isSome;
               <React.Fragment key={i |> Int.toString}>
