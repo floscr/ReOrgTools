@@ -55,6 +55,10 @@ module Styles = {
       padding2(~h=paddingSize, ~v=Spacing.xsmall),
       borderBottom(px(1), solid, var(ThemeKeys.grey10)),
       backgroundColor(var(ThemeKeys.bgColor)),
+      selector(
+        ":hover",
+        [cursor(pointer), backgroundColor(var(ThemeKeys.grey15))],
+      ),
     ]);
 
   let resultsItemFocused =
