@@ -149,8 +149,6 @@ let make = (~close) => {
   let query = state.query |> String.toLowerCase;
   let workspaces = Store.useSelector(Selector.Workspaces.workspaces);
 
-  // Needs to be mutable otherwise the shortcuts point to an outdated reference
-  let boundsRef = React.useRef(0);
   let results =
     workspaces
     |> List.foldLeft(
@@ -170,7 +168,6 @@ let make = (~close) => {
     |> Array.filter(((_, _, {name}: Shared__API__Workspaces.File.t)) =>
          name |> String.toLowerCase |> String.contains(~search=query)
        );
-  boundsRef.current = results |> Array.length;
 
   let onSubmit = (~index=None, results) => {
     results
@@ -214,20 +211,20 @@ let make = (~close) => {
     (
       [|"ctrl+n", "down"|],
       _ => {
-        SelectNext(boundsRef.current) |> send;
+        SelectNext(results |> Array.length) |> send;
         false;
       },
     ),
     (
       [|"ctrl+p", "up"|],
       _ => {
-        SelectPrev(boundsRef.current) |> send;
+        SelectPrev(results |> Array.length) |> send;
         false;
       },
     ),
   |];
 
-  <RoundedDialogWrapper bindings>
+  <RoundedDialogWrapper bindings key={results |> Array.length |> Int.toString}>
     <div className=Styles.root>
       <input
         autoFocus=true
