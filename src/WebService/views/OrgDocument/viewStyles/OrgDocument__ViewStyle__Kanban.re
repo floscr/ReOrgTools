@@ -17,10 +17,6 @@ module Styles = {
       overflowX(scroll),
       overflowY(hidden),
       display(`flex),
-      selector(
-        "> * + *",
-        [borderRight(px(1), `solid, var(ThemeKeys.grey10))],
-      ),
       backgroundColor(var(ThemeKeys.grey20)),
     ]);
 
@@ -33,6 +29,10 @@ module Styles = {
       display(`flex),
       flexDirection(column),
       backgroundColor(var(ThemeKeys.grey00)),
+      selector(
+        "> * + *",
+        [borderRight(px(1), `solid, var(ThemeKeys.grey20))],
+      ),
     ]);
 
   let columnContent =
