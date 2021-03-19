@@ -12,9 +12,7 @@ module.exports = {
     port: 8080,
     hot: true,
     inline: true,
-    historyApiFallback: {
-      index: 'index.html'
-    }
+    historyApiFallback: true,
   },
   module: {
     rules: [
