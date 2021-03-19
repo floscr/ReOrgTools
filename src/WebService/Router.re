@@ -23,11 +23,16 @@ module Styles = {
 
 let showMain = (~id=?, ~header, ~send, ~state, ()) => {
   <>
-    <aside className=Styles.sidebar> <Sidebar page={state.page} /> </aside>
+    /* <aside className=Styles.sidebar> <Sidebar page={state.page} /> </aside> */
     <article className=Styles.main>
       {switch (id) {
        | Some(id) =>
-         <Controller__OrgDocument id header ast={state.page} send />
+         <Controller__OrgDocument
+           id
+           header
+           file={Array.head(state.files)}
+           send
+         />
        | _ => React.null
        }}
     </article>

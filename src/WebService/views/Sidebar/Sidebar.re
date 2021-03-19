@@ -61,7 +61,7 @@ let make = (~page) => {
     <header className=Styles.header> {"Files" |> s} </header>
     <IconButton style=Styles.backIcon id="arrow_back" />
     {switch (state.mode, page) {
-     | (Outline, State.FetchedPage({ast})) =>
+     | (Outline, State.File.Fetched({ast})) =>
        <>
          <button onClick=onBackClick> {"<- Go back" |> s} </button>
          <Outline ast />

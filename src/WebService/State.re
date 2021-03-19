@@ -1,19 +1,28 @@
 open ReOrga;
+open Relude.Globals;
 
-type pageLoadedState = {
-  text: string,
-  ast: ReOrga.orgAst,
+module File = {
+  type content = {
+    text: string,
+    ast: ReOrga.orgAst,
+  };
+
+  type status =
+    | Fetched(content)
+    | InProgress
+    | Empty
+    | NotFound
+    | Forbidden;
+
+  type t = {
+    name: string,
+    status,
+  };
 };
 
-type pageState =
-  | FetchedPage(pageLoadedState)
-  | FetchingPage
-  | EmptyPage
-  | NotFoundPage;
+type globalState = {files: array(File.t)};
 
-type globalState = {page: pageState};
-
-let initialGlobalState = {page: EmptyPage};
+let initialGlobalState = {files: [||]};
 
 type action =
   | FetchPagesProgress
@@ -21,20 +30,35 @@ type action =
   | FetchPagesFailure(ReludeFetch.Error.t(string))
   | NoOp;
 
+let actionToName =
+  fun
+  | FetchPagesProgress => "FetchPagesProgress"
+  | FetchPagesSuccess(_) => "FetchPagesSuccess"
+  | FetchPagesFailure(_) => "FetchPagesFailure"
+  | NoOp => "NoOp";
+
 let reducer =
     (state: globalState, action: action)
-    : ReludeReact.Reducer.update(action, globalState) =>
+    : ReludeReact.Reducer.update(action, globalState) => {
+  Js.log2(state, action |> actionToName);
   switch (action) {
   | FetchPagesSuccess({text}) =>
     Update({
       ...state,
-      page:
-        FetchedPage({
-          text,
-          ast: Org.parseOrga(text, {todo: Some([|"TODO"|])}),
-        }),
+      files: [|
+        {
+          name: "",
+          status:
+            File.Fetched({
+              text,
+              ast: Org.parseOrga(text, {todo: Some([|"TODO"|])}),
+            }),
+        },
+      |],
     })
-  | FetchPagesProgress => Update({...state, page: FetchingPage})
+  | FetchPagesProgress =>
+    Update({...state, files: [|{name: "", status: File.InProgress}|]})
   | NoOp => NoUpdate
   | _ => NoUpdate
   };
+};
