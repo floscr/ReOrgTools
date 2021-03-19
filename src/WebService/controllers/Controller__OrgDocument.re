@@ -7,12 +7,12 @@ open ReOrga;
 let make = (~id, ~header, ~send, ~file) => {
   ReludeReact.Effect.useEffect1WithEq(
     () => {
-      State.FetchPagesProgress |> send;
+      State.FetchPagesProgress(id) |> send;
       API__OrgDocument.Request.getPageIO(id)
       |> Relude.IO.unsafeRunAsync(
            fun
-           | Ok(data) => State.FetchPagesSuccess(data) |> send
-           | Error(data) => State.FetchPagesFailure(data) |> send,
+           | Ok(data) => State.FetchPagesSuccess(id, data) |> send
+           | Error(data) => State.FetchPagesFailure(id, data) |> send,
          )
       |> ignore;
     },
@@ -21,8 +21,8 @@ let make = (~id, ~header, ~send, ~file) => {
   );
 
   file
-  |> Option.map((f: State.File.t) =>
-       switch (f.status) {
+  |> Option.map(x =>
+       switch ((x: State.File.t)) {
        | State.File.Fetched({ast}) => <OrgDocument__Root ast header />
        | State.File.InProgress => "Loading" |> s
        }

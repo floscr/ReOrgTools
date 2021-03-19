@@ -22,17 +22,14 @@ module Styles = {
 };
 
 let showMain = (~id=?, ~header, ~send, ~state, ()) => {
+  let file = id |> Option.flatMap(x => StringMap.get(x, state.files));
+
   <>
-    /* <aside className=Styles.sidebar> <Sidebar page={state.page} /> </aside> */
+    <aside className=Styles.sidebar> <Sidebar file /> </aside>
     <article className=Styles.main>
       {switch (id) {
-       | Some(id) =>
-         <Controller__OrgDocument
-           id
-           header
-           file={Array.head(state.files)}
-           send
-         />
+       | Some(id) => <Controller__OrgDocument id header file send />
+
        | _ => React.null
        }}
     </article>

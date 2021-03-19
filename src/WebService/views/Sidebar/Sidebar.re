@@ -51,7 +51,7 @@ let reducer =
   };
 
 [@react.component]
-let make = (~page) => {
+let make = (~file) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
   let onFileClick = () => send(SwitchMode(Outline));
@@ -60,8 +60,8 @@ let make = (~page) => {
   <div className=Styles.root>
     <header className=Styles.header> {"Files" |> s} </header>
     <IconButton style=Styles.backIcon id="arrow_back" />
-    {switch (state.mode, page) {
-     | (Outline, State.File.Fetched({ast})) =>
+    {switch (state.mode, file) {
+     | (Outline, Some(State.File.Fetched({ast}))) =>
        <>
          <button onClick=onBackClick> {"<- Go back" |> s} </button>
          <Outline ast />
