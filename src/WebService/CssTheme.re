@@ -33,12 +33,12 @@ module Storage = {
   let key = "theme";
 
   let getTheme = () =>
-    Web.Storage.localStorage
-    ->Web.Storage.getItem(key)
-    ->Option.map(fromString);
+    Dom.Storage.localStorage
+    |> Dom.Storage.getItem(key)
+    |> Option.map(fromString);
 
   let setTheme = value =>
-    Web.Storage.localStorage->Web.Storage.setItem(key, value->toString);
+    Dom.Storage.localStorage |> Dom.Storage.setItem(key, value->toString);
 };
 
 module Dom = {
@@ -46,7 +46,7 @@ module Dom = {
   let lightMq = "(prefers-color-scheme: light)";
 
   let getRoot = () => {
-    Web.Dom.(
+    Webapi__Dom.(
       window
       ->Window.document
       ->Document.documentElement
@@ -55,13 +55,13 @@ module Dom = {
   };
 
   let getVar = (root, key) => {
-    Web.Dom.(
+    Webapi__Dom.(
       root->HtmlElement.style->CssStyleDeclaration.getPropertyValue(key, _)
     );
   };
 
   let setVar = (root, key, value) => {
-    Web.Dom.(
+    Webapi__Dom.(
       root
       ->HtmlElement.style
       ->CssStyleDeclaration.setProperty(key, value, "", _)
@@ -91,12 +91,12 @@ let setDefault = () => {
   switch (Storage.getTheme()) {
   | Some(theme) => theme->Dom.setTheme
   | None =>
-    let darkMq = Web.Dom.(window->Window.matchMedia(Dom.darkMq, _));
-    if (darkMq->MediaQueryList.matches) {
-      Dark->Dom.setTheme;
-    } else {
-      Light->Dom.setTheme;
-    };
+    /* let darkMq = Webapi__Dom.(window->Window.matchMedia(Dom.darkMq, _)); */
+    /* if (darkMq->Webapi__Dom.Window.mediaQueryList.matches) { */
+    Dark->Dom.setTheme
+  /* } else { */
+  /*   Light->Dom.setTheme; */
+  /* }; */
   };
 };
 
@@ -107,14 +107,18 @@ type ctx = {
 };
 
 module Context = {
-  include ReactContext.Make({
-    type context = ctx;
-    let defaultValue = {
+  let makeProps = (~value, ~children, ()) => {
+    "value": value,
+    "children": children,
+  };
+  let themeContext =
+    React.createContext({
       current: default,
       colors: default->getModule,
       set: ignore,
-    };
-  });
+    });
+  include React.Context; // Adds the makeProps external
+  let make = React.Context.provider(themeContext);
 };
 
 module Provider = {
@@ -147,23 +151,6 @@ module Provider = {
       [|theme|],
     );
 
-    React.useEffect1(
-      () =>
-        Subscription.onKeyDown(event =>
-          Web.Dom.(
-            switch (event->KeyboardEvent.code) {
-            | "KeyT" when event->KeyboardEvent.altKey =>
-              switch (theme) {
-              | Light => Set(Dark)->dispatch
-              | Dark => Set(Light)->dispatch
-              }
-            | _ => ()
-            }
-          )
-        ),
-      [|theme|],
-    );
-
     let value =
       React.useMemo1(
         () =>
@@ -175,6 +162,6 @@ module Provider = {
         [|theme|],
       );
 
-    <Context.Provider value> children </Context.Provider>;
+    <Context value> children </Context>;
   };
 };

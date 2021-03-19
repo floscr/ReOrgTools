@@ -58,5 +58,5 @@ Css.(
 
 [@react.component]
 let make = () => {
-  <Router />;
+  <CssTheme.Provider> <Router /> </CssTheme.Provider>;
 };

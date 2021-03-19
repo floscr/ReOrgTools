@@ -53,6 +53,7 @@ let reducer =
 [@react.component]
 let make = (~file) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
+  let theme = React.useContext(CssTheme.Context.themeContext);
 
   let onFileClick = () => send(SwitchMode(Outline));
   let onBackClick = _ => send(SwitchMode(FileBrowser));
