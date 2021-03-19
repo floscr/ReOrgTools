@@ -69,8 +69,8 @@ let make = () => {
   React.useEffect1(
     _ => {
       switch (dialogs) {
-      | [||] => detachShortcuts() |> (_ => None)
-      | _ => bindShortcuts() |> (_ => None)
+      | [||] => detachShortcuts()
+      | _ => bindShortcuts() |> ignore
       };
       Some(() => detachShortcuts());
     },
@@ -85,7 +85,7 @@ let make = () => {
   |> Option.foldLazy(
        () => React.null,
        ReactDOMRe.createPortal(
-         <div className=Styles.root>
+         <div className=Styles.root onClick={_ => close()}>
            {dialogs
             |> Array.mapWithIndex((x, i) =>
                  (
@@ -95,7 +95,6 @@ let make = () => {
                        Dialogs__FilePicker.id,
                        <Dialogs__FilePicker close />,
                      ))
-                   | _ => None
                    }
                  )
                  |> Option.map(((id, x)) =>
