@@ -43,6 +43,7 @@ let make = () => {
   let (state, send) =
     ReludeReact.Reducer.useReducer(reducer, initialGlobalState);
   open Webapi.Url;
+
   let url = ReasonReactRouter.useUrl();
   let params = URLSearchParams.make(url.search);
   let header = params |> URLSearchParams.get("header");
@@ -52,6 +53,35 @@ let make = () => {
     data => State.FetchWorkspacesSuccess(data) |> send,
     error => State.FetchWorkspacesFailure(error) |> send,
   );
+
+  let combokeys: ref(option(Combokeys.t)) = ref(None);
+  let getCombokeys = () =>
+    switch (combokeys^) {
+    | None =>
+      let keys =
+        Combokeys.init(
+          Webapi.Dom.document |> Webapi.Dom.Document.documentElement,
+        );
+      combokeys := Some(keys);
+      keys;
+    | Some(x) => x
+    };
+  let bindShortcuts = () => {
+    getCombokeys()
+    |> Combokeys.bind("ctrl+k", _ => {
+         Js.log("Launch FilePicker");
+         false;
+       });
+  };
+  let detachShortcuts = () => {
+    let c = getCombokeys();
+    c |> Combokeys.detach();
+    combokeys := None;
+  };
+  React.useEffect0(_ => {
+    bindShortcuts();
+    Some(() => detachShortcuts());
+  });
 
   <main className=Styles.root>
     {switch (url.path) {
