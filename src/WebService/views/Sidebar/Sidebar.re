@@ -18,6 +18,14 @@ module Styles = {
       flexGrow(1.),
       flexShrink(1.),
     ]);
+
+  let header =
+    style([
+      fontWeight(medium),
+      color(Theme.BaseTheme.grey3),
+      padding(Theme.Spacing.large),
+      fontSize(rem(1.)),
+    ]);
 };
 
 type mode =
@@ -46,6 +54,7 @@ let make = (~page, ~id) => {
   let onBackClick = _ => send(SwitchMode(FileBrowser));
 
   <div className=Styles.root>
+    <header className=Styles.header> {"Files" |> s} </header>
     {switch (state.mode, page) {
      | (Outline, State.FetchedPage({ast})) =>
        <>
