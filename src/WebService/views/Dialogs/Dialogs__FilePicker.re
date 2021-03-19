@@ -58,6 +58,9 @@ let reducer =
 [@react.component]
 let make = (~close) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
+
+  let boundsRef = React.useRef(0);
+
   let query = state.query |> String.toLowerCase;
   open ReductiveStore__Workspaces;
   let workspaces = Wrapper.useSelector(Selector.WorkspacesStore.workspaces);
@@ -74,9 +77,11 @@ let make = (~close) => {
          name |> String.toLowerCase |> String.contains(~search=query)
        );
 
+  React.Ref.setCurrent(boundsRef, results |> Array.length);
+
   let bounds = results |> Array.length |> Int.add(1);
-  let selectNext = () => SelectNext(bounds) |> send;
-  let selectPrev = () => SelectPrev(bounds) |> send;
+  let selectNext = () => SelectNext(boundsRef |> React.Ref.current) |> send;
+  let selectPrev = () => SelectPrev(boundsRef |> React.Ref.current) |> send;
 
   let combokeys: ref(option(Combokeys.t)) = ref(None);
   let getCombokeys = () =>
@@ -104,14 +109,15 @@ let make = (~close) => {
       (
         [|"cmd+n", "ctrl+n"|],
         _ => {
-          selectNext();
+          Js.log(bounds);
+          SelectNext(boundsRef |> React.Ref.current) |> send;
           false;
         },
       ),
       (
         [|"cmd+p", "ctrl+p"|],
         _ => {
-          selectPrev();
+          SelectPrev(boundsRef |> React.Ref.current) |> send;
           false;
         },
       ),
