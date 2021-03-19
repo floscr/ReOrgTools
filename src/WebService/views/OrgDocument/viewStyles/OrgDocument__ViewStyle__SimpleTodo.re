@@ -11,7 +11,7 @@ module Styles = {
       width(pct(100.)),
       marginBottom(Spacing.medium),
       padding(Spacing.medium),
-      border(px(1), `solid, BaseTheme.grey1),
+      border(px(1), `solid, BaseTheme.grey2),
       borderRadius(BorderRadius.small),
       display(`flex),
       alignItems(center),

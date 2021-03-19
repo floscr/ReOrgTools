@@ -2,7 +2,11 @@ module BaseTheme = {
   open Css;
   let bgColor = hex("fff");
 
-  let grey1 = hex("e3ddd3");
+  let grey1 = hex("f5f5f5");
+  let grey2 = hex("E0E0E0");
+  let grey4 = hex("333333");
+
+  let sidebarBgColor = grey1;
 };
 
 module LightTheme = {
@@ -15,6 +19,8 @@ module LightTheme = {
 module Spacing = {
   open Css;
 
+  let xxlarge = rem(1.75);
+  let xlarge = rem(1.5);
   let large = rem(1.);
   let medium = rem(0.7);
   let small = rem(0.55);
