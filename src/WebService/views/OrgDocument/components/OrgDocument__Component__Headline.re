@@ -63,7 +63,7 @@ let makeHeadlineProps =
   Array.foldLeft(
     (acc, cur) =>
       switch (getItem(cur)) {
-      | Stars(x) when Env.showStars => {...acc, stars: Some(x)}
+      | Stars(x) when Config.showStars => {...acc, stars: Some(x)}
       | Tags(x) => {...acc, tags: Some(x)}
       | _ => {...acc, content: Array.concat(acc.content, [|cur|])}
       },
