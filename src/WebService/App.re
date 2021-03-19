@@ -27,7 +27,7 @@ Css.(
     ],
   ),
   // Scrollbar
-  global("::-webkit-scrollbar", [width(px(14))]),
+  global("::-webkit-scrollbar", [width(Theme.Spacing.scrollbarWidth)]),
   global(
     "::-webkit-scrollbar-thumb",
     [

@@ -24,6 +24,7 @@ module Spacing = {
   let large = rem(1.);
   let medium = rem(0.7);
   let small = rem(0.55);
+  let scrollbarWidth = px(14);
 };
 
 module BorderRadius = {

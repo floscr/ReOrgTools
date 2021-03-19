@@ -4,7 +4,7 @@ open Relude.Globals;
 
 module Styles = {
   open Css;
-  let innerSpacing = Theme.Spacing.xxlarge;
+  let innerSpacing = Theme.Spacing.xlarge;
 
   let root = style([display(grid), gridTemplateColumns([vw(20.), auto])]);
 
@@ -15,6 +15,9 @@ module Styles = {
       overflowY(scroll),
       height(vh(100.)),
       padding(innerSpacing),
+      paddingRight(
+        `calc((`sub, innerSpacing, Theme.Spacing.scrollbarWidth)),
+      ),
       backgroundColor(Theme.BaseTheme.sidebarBgColor),
     ]);
 
