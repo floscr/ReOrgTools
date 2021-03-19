@@ -54,25 +54,29 @@ let rec renderItems = (~level=0, ~properties=?, xs) => {
 };
 
 [@react.component]
-let make = (~ast: ReOrga.orgAst, ~header: option(string)) => {
+let make = (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t) => {
   let {children, properties} = ast;
-
-  Js.log(ast);
+  let {narrowToHeader, layoutType}: Types__URLSearchParams.t = queryParams;
 
   let xs =
-    header
+    narrowToHeader
     |> Option.flatMap(text => Org.narrowToHeadlineWithText(~text, children))
     |> Option.map(x => [|x.parent|])
     |> Option.getOrElse(children);
 
-  <div className=Styles.root> <OrgDocument__ViewStyle__Kanban xs /> </div>;
-  /* Js.Dict.get(properties, "reorg_view") */
-  /* |> ( */
-  /*   fun */
-  /*   | Some(x) when x === "SIMPLE_TODO" => */
-  /*     <div className=Styles.mainWrapper> */
-  /*       <OrgDocument__ViewStyle__SimpleTodo ast /> */
-  /*     </div> */
-  /*   | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div> */
-  /* ); */
+  Js.Dict.get(properties, "reorg_view")
+  |> Option.map(Types__URLSearchParams.Layouts.fromString)
+  |> Option.getOrElse(layoutType)
+  |> Types__URLSearchParams.(
+       fun
+       | Kanban =>
+         <div className=Styles.root>
+           <OrgDocument__ViewStyle__Kanban xs />
+         </div>
+       | SimpleTodo =>
+         <div className=Styles.mainWrapper>
+           <OrgDocument__ViewStyle__SimpleTodo ast />
+         </div>
+       | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div>
+     );
 };

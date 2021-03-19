@@ -30,12 +30,12 @@ module Styles = {
     style([gridColumnStart(2), display(`flex), flexDirection(column)]);
 };
 
-let showMain = (~id=?, ~header, ~workspaceIndex=0, ()) => {
+let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ()) => {
   <>
     <aside className=Styles.sidebar> <Sidebar workspaceIndex id /> </aside>
     <article className=Styles.main>
       {switch (id) {
-       | Some(id) => <Controller__OrgDocument id header workspaceIndex />
+       | Some(id) => <Controller__OrgDocument id queryParams workspaceIndex />
        | _ => React.null
        }}
     </article>
@@ -64,12 +64,10 @@ let make = () => {
     )
   );
   open Webapi.Url;
+
   let url = ReasonReactRouter.useUrl();
   let params = URLSearchParams.make(url.search);
-  let header =
-    params
-    |> URLSearchParams.get("header")
-    |> Option.flatMap(String.toNonWhitespace);
+  let queryParams = Types__URLSearchParams.make(params);
 
   let bindShortcuts = () => {
     Keys.get()
@@ -96,8 +94,8 @@ let make = () => {
      | ["file", workspaceIndex, id] =>
        let workspaceIndex =
          workspaceIndex |> String.toInt |> Option.getOrElse(0);
-       showMain(~id, ~header, ~workspaceIndex, ());
-     | _ => showMain(~header, ())
+       showMain(~id, ~queryParams, ~workspaceIndex, ());
+     | _ => showMain(~queryParams, ())
      }}
     <Dialogs />
   </main>;
