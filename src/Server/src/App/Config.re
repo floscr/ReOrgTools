@@ -49,3 +49,18 @@ let port =
   Env.get("PORT")
   |> Option.flatMap(String.toInt)
   |> Option.getOrElse(Defaults.port);
+
+let intToBool = x =>
+  String.toInt(x)
+  |> Option.map(
+       fun
+       | 1 => true
+       | _ => false,
+     );
+
+let shouldLog =
+  Env.get("ENABLE_LOGGING")
+  |> Option.flatMap(intToBool)
+  |> Option.getOrElse(false);
+
+let log = shouldLog ? Js.log : ignore;
