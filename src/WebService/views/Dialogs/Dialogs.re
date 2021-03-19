@@ -56,6 +56,42 @@ let renderDialog =
 let make = () => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
+  let combokeys: ref(option(Combokeys.t)) = ref(None);
+  let getCombokeys = () =>
+    switch (combokeys^) {
+    | None =>
+      let keys =
+        Combokeys.init(
+          Webapi.Dom.document |> Webapi.Dom.Document.documentElement,
+        );
+      combokeys := Some(keys);
+      keys;
+    | Some(x) => x
+    };
+  let bindShortcuts = () => {
+    getCombokeys()
+    |> Combokeys.bind("esc", _ => {
+         send(CloseDialogs);
+         false;
+       });
+  };
+  let detachShortcuts = () => {
+    let c = getCombokeys();
+    c |> Combokeys.detach();
+    combokeys := None;
+  };
+
+  React.useEffect1(
+    _ => {
+      switch (state.dialogs) {
+      | [||] => detachShortcuts() |> (_ => None)
+      | _ => bindShortcuts() |> (_ => None)
+      };
+      Some(() => detachShortcuts());
+    },
+    state.dialogs |> List.toArray,
+  );
+
   Option.some(state.dialogs)
   |> Option.filter(List.isNotEmpty)
   |> Option.flatMap(_ =>
