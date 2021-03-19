@@ -8,18 +8,20 @@ module IOE =
     type t = getDirEntriesError;
   });
 
-describe("IO basics", () => {
-  testAsync("all", onDone => {
-    let x =
-      getWorkspaces()
-      |> IOE.all
-      |> IO.bimap(Js.log, _ => Js.log("error"))
-      |> IO.unsafeRunAsync(
-           fun
-           | Ok(_) => onDone(expect(1) |> toEqual(42))
-           | Error(_) => onDone(fail("Failed")),
-         );
+let result = [
+  ("./__tests__/workspaces/workspace1", [|"1.org"|]),
+  ("./__tests__/workspaces/workspace2", [|"1.org", "2.org"|]),
+];
 
-    ();
+describe("IO basics", () => {
+  testAsync("getWorkspaces", onDone => {
+    getWorkspaces()
+    |> IOE.all
+    |> IO.bimap(x => expect(x) |> toEqual(result), _ => fail("Failed"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
   })
 });

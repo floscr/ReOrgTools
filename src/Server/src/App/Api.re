@@ -30,5 +30,9 @@ let getDirFiles = dir =>
        )
      );
 
-let getWorkspaces = (~workspaces=Config.workspaces) =>
-  workspaces |> List.map(getDirFiles);
+let getWorkspaces = (~workspaces=Config.workspaces, ()) =>
+  workspaces
+  |> List.map(x => {
+       let files = getDirFiles(x);
+       files |> IO.map(xs => (x, xs));
+     });
