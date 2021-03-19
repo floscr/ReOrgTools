@@ -46,7 +46,8 @@ let renderFiles = (~onClick, ~index, xs) =>
   |> Array.sortBy(fileCompare)
   |> Array.map(({name}: Shared__API__Workspaces.File.t) => {
        let base = name |> Filename.chop_extension;
-       <button key=name className=Styles.button onClick={_ => onClick(base)}>
+       <button
+         key=name className=Styles.button onClick={_ => onClick(base, index)}>
          {base |> s}
        </button>;
      })
@@ -54,8 +55,7 @@ let renderFiles = (~onClick, ~index, xs) =>
 
 [@react.component]
 let make = (~workspaces, ~workspaceIndex, ~onFileClick) => {
-  let onClick = file => {
-    let index = Int.toString(workspaceIndex);
+  let onClick = (file, index) => {
     ReasonReactRouter.push({j|/file/$index/$file|j});
     onFileClick();
   };
