@@ -9,8 +9,8 @@ module Styles = {
     style([
       listStyleType(none),
       margin(zero),
-      marginTop(rem(0.75)),
       padding(zero),
+      marginTop(rem(0.75)),
       display(`inlineFlex),
       border(px(2), `solid, hex("e3ddd3")),
       borderRadius(px(5)),

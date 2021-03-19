@@ -68,7 +68,7 @@ let make = () => {
   let header = params |> URLSearchParams.get("header");
 
   let bindShortcuts = () => {
-    Keys.getCombokeys()
+    Keys.get()
     |> Combokeys.bindArray(
          [|"cmd+k", "ctrl+k"|],
          _ => {
@@ -78,7 +78,7 @@ let make = () => {
        );
   };
   let detachShortcuts = () => {
-    let c = Keys.getCombokeys();
+    let c = Keys.get();
     c |> Combokeys.detach();
     Keys.combokeys := None;
   };

@@ -1,3 +1,10 @@
+module Fonts = {
+  open Css;
+
+  let regular = rem(1.);
+  let large = rem(1.2);
+};
+
 module Spacing = {
   open Css;
 

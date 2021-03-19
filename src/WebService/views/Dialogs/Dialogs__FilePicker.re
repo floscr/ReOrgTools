@@ -4,13 +4,57 @@ open State;
 
 module Styles = {
   open Css;
+  open FixedTheme;
 
-  let root = style([maxHeight(vh(30.))]);
+  let paddingSize = Spacing.medium;
+  let inputSize = px(50);
 
-  let resultsRoot = style([overflowY(scroll)]);
+  let root =
+    style([
+      display(`flex),
+      flexDirection(column),
+      height(vh(90.)),
+      width(vw(90.)),
+      maxWidth(px(460)),
+      maxHeight(px(380)),
+      overflow(hidden),
+    ]);
+
+  let input =
+    style([
+      border(zero, none, currentColor),
+      borderBottom(px(1), solid, var(ThemeKeys.grey10)),
+      padding(paddingSize),
+      fontSize(Fonts.regular),
+      selector(":focus", [outlineStyle(none)]),
+    ]);
+
+  let resultsRoot =
+    style([
+      overflowY(scroll),
+      flexGrow(1.),
+      display(`flex),
+      flexDirection(column),
+      backgroundColor(var(ThemeKeys.grey00)),
+    ]);
+
+  let resultsList =
+    style([
+      listStyleType(none),
+      flexGrow(1.),
+      margin(zero),
+      padding(zero),
+      borderRight(px(1), solid, var(ThemeKeys.grey10)),
+    ]);
 
   let resultsItem = (~isSelected) =>
-    style([color(isSelected ? red : blue)]);
+    style([
+      padding2(~h=paddingSize, ~v=Spacing.xsmall),
+      borderBottom(px(1), solid, var(ThemeKeys.grey10)),
+      backgroundColor(
+        isSelected ? var(ThemeKeys.blue) : var(ThemeKeys.bgColor),
+      ),
+    ]);
 };
 
 let id = "Dialogs__FilePicker";
@@ -63,7 +107,6 @@ let make = (~close) => {
 
   // Needs to be mutable otherwise the shortcuts point to an outdated reference
   let boundsRef = React.useRef(0);
-
   let results =
     workspaces
     |> List.foldLeft(
@@ -75,12 +118,13 @@ let make = (~close) => {
     |> Array.filter(((a, {name}: Shared__API__Workspaces.File.t)) =>
          name |> String.toLowerCase |> String.contains(~search=query)
        );
-
   React.Ref.setCurrent(boundsRef, results |> Array.length);
 
-  let bounds = results |> Array.length |> Int.add(1);
   let selectNext = () => SelectNext(boundsRef |> React.Ref.current) |> send;
   let selectPrev = () => SelectPrev(boundsRef |> React.Ref.current) |> send;
+  let onChange = event => {
+    send(ChangeQuery(event->ReactEvent.Form.target##value));
+  };
 
   let combokeys: ref(option(Combokeys.t)) = ref(None);
   let getCombokeys = () =>
@@ -99,22 +143,21 @@ let make = (~close) => {
     let keys = getCombokeys();
     [|
       (
-        [|"cmd+k", "ctrl+k", "esc"|],
+        [|"ctrl+k", "esc"|],
         _ => {
           close();
           false;
         },
       ),
       (
-        [|"cmd+n", "ctrl+n"|],
+        [|"ctrl+n"|],
         _ => {
-          Js.log(bounds);
           SelectNext(boundsRef |> React.Ref.current) |> send;
           false;
         },
       ),
       (
-        [|"cmd+p", "ctrl+p"|],
+        [|"ctrl+p"|],
         _ => {
           SelectPrev(boundsRef |> React.Ref.current) |> send;
           false;
@@ -132,14 +175,11 @@ let make = (~close) => {
     Some(() => detachShortcuts());
   });
 
-  let onChange = event => {
-    send(ChangeQuery(event->ReactEvent.Form.target##value));
-  };
-
   <div className=Styles.root>
     <input
       autoFocus=true
-      autoComplete="false"
+      className=Styles.input
+      autoComplete="off"
       name=id
       value={state.query}
       onChange
@@ -147,7 +187,7 @@ let make = (~close) => {
       placeholder="Pick File"
     />
     <div className=Styles.resultsRoot>
-      <ul>
+      <ul className=Styles.resultsList>
         {results
          |> Array.mapWithIndex(
               ((a, {name}: Shared__API__Workspaces.File.t), i) => {
@@ -156,7 +196,7 @@ let make = (~close) => {
               <li
                 key={i |> Int.toString}
                 className={Styles.resultsItem(~isSelected)}>
-                {name |> s}
+                {name |> Filename.chop_extension |> s}
               </li>;
             })
          |> React.array}

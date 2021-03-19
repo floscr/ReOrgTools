@@ -1,7 +1,7 @@
 let combokeys: ref(option(Combokeys.t)) = ref(None);
 
-let getCombokeys = () =>
-  switch (combokeys^) {
+let getCombokeys = keys =>
+  switch (keys) {
   | None =>
     let keys =
       Combokeys.init(
@@ -12,3 +12,5 @@ let getCombokeys = () =>
     keys;
   | Some(x) => x
   };
+
+let get = () => getCombokeys(combokeys^);

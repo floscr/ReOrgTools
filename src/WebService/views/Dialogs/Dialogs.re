@@ -25,6 +25,7 @@ module Styles = {
       position(absolute),
       backgroundColor(white),
       borderRadius(FixedTheme.BorderRadius.small),
+      overflow(hidden),
     ]);
 };
 
@@ -50,7 +51,7 @@ let make = () => {
     };
 
   let bindShortcuts = () => {
-    Keys.getCombokeys() |> Combokeys.pause();
+    Keys.get() |> Combokeys.pause();
 
     getCombokeys();
     /* |> Combokeys.bind("esc", _ => { */
@@ -60,7 +61,7 @@ let make = () => {
   };
 
   let detachShortcuts = () => {
-    Keys.getCombokeys() |> Combokeys.unpause();
+    Keys.get() |> Combokeys.unpause();
     getCombokeys() |> Combokeys.detach();
     combokeys := None;
   };
