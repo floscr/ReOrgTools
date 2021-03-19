@@ -6,7 +6,17 @@ module Styles = {
   open Css;
   let innerSpacing = FixedTheme.Spacing.xlarge;
 
-  let root = style([display(grid), gridTemplateColumns([vw(20.), auto])]);
+  let root =
+    style([
+      position(fixed),
+      top(zero),
+      left(zero),
+      right(zero),
+      bottom(zero),
+      overflow(auto),
+      display(grid),
+      gridTemplateColumns([vw(20.), auto]),
+    ]);
 
   let sidebar =
     style([
@@ -17,8 +27,7 @@ module Styles = {
       flexDirection(column),
     ]);
 
-  let main =
-    style([gridColumnStart(2), padding(innerSpacing), overflow(hidden)]);
+  let main = style([gridColumnStart(2), padding(innerSpacing)]);
 };
 
 let showMain = (~id=?, ~header, ~send, ~state, ~workspaceIndex=0, ()) => {

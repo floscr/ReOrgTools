@@ -19,6 +19,7 @@ Css.(
   global(
     "body",
     [
+      overflow(hidden),
       backgroundColor(var(ThemeKeys.bgColor)),
       color(var(ThemeKeys.textColor)),
       fontFamilies([`custom("IBM Plex Sans"), `sansSerif]),
