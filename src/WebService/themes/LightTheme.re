@@ -1,3 +1,3 @@
 let key = "light";
 
-let bgColor = "#fff";
+let bgColor = ("--bg-color", "#fff");

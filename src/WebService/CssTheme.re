@@ -1,109 +1,96 @@
 open Relude.Globals;
 
-type t =
-  | Light
-  | Dark;
-
-let default = Light;
+type cssVar = (string, string);
 
 module type Colors = {
   let key: string;
 
-  let bgColor: string;
+  let bgColor: cssVar;
 };
 
-let toString =
-  fun
-  | Light => "light"
-  | Dark => "dark";
+module Theme = {
+  type t =
+    | Light
+    | Dark;
 
-let fromString =
-  fun
-  | "light" => Light
-  | "dark" => Dark
-  | _ as x => failwith({j|Unknown theme: $(x)|j});
+  let default = Light;
+  let storageKey = "theme";
 
-let getModule = (theme): (module Colors) =>
-  switch (theme) {
-  | Light => (module LightTheme)
-  | Dark => (module DarkTheme)
-  };
+  let encodeThemeKey =
+    fun
+    | Light => "light"
+    | Dark => "dark";
 
-module Storage = {
-  let key = "theme";
+  let decodeThemeKey =
+    fun
+    | "light" => Light
+    | "dark" => Dark
+    | _ as x => failwith({j|Unknown theme: $(x)|j});
 
-  let getTheme = () =>
+  let getModule = (theme): (module Colors) =>
+    switch (theme) {
+    | Light => (module LightTheme)
+    | Dark => (module DarkTheme)
+    };
+
+  let getStorage = () =>
     Dom.Storage.localStorage
-    |> Dom.Storage.getItem(key)
-    |> Option.map(fromString);
+    |> Dom.Storage.getItem(storageKey)
+    |> Option.map(decodeThemeKey)
+    |> Option.getOrElse(default);
 
-  let setTheme = value =>
-    Dom.Storage.localStorage |> Dom.Storage.setItem(key, value->toString);
+  let setStorage = x =>
+    Dom.Storage.localStorage
+    |> Dom.Storage.setItem(storageKey, x |> encodeThemeKey);
 };
 
 module Dom = {
-  let darkMq = "(prefers-color-scheme: dark)";
-  let lightMq = "(prefers-color-scheme: light)";
-
-  let getRoot = () => {
+  let getRootHtmlElement = () => {
     Webapi__Dom.(
       window
-      ->Window.document
-      ->Document.documentElement
-      ->Element.unsafeAsHtmlElement
+      |> Window.document
+      |> Document.documentElement
+      |> Element.asHtmlElement
     );
   };
 
-  let getVar = (root, key) => {
+  let getCssVar = (key, el) => {
     Webapi__Dom.(
-      root->HtmlElement.style->CssStyleDeclaration.getPropertyValue(key, _)
+      el |> HtmlElement.style |> CssStyleDeclaration.getPropertyValue(key)
     );
   };
 
-  let setVar = (root, key, value) => {
+  let setCssVar = ((key, value), el) => {
     Webapi__Dom.(
-      root
-      ->HtmlElement.style
-      ->CssStyleDeclaration.setProperty(key, value, "", _)
+      el
+      |> HtmlElement.style
+      |> CssStyleDeclaration.setProperty(key, value, "")
     );
   };
 
   let setTheme = theme => {
-    let (module Theme) = theme->getModule;
+    let (module ThemeModule) = theme |> Theme.getModule;
 
-    let root = getRoot();
-
-    root->setVar("--theme", Theme.key);
-    root->setVar("--bg-color", Theme.bgColor);
+    getRootHtmlElement()
+    |> Option.tap(el => {
+         el |> setCssVar(("--theme", ThemeModule.key));
+         el |> setCssVar(ThemeModule.bgColor);
+       });
   };
 
   let currentTheme = () => {
-    let root = getRoot();
-
-    switch (root->getVar("--theme")) {
-    | "" => default
-    | _ as x => x->fromString
-    };
-  };
-};
-
-let setDefault = () => {
-  switch (Storage.getTheme()) {
-  | Some(theme) => theme->Dom.setTheme
-  | None =>
-    /* let darkMq = Webapi__Dom.(window->Window.matchMedia(Dom.darkMq, _)); */
-    /* if (darkMq->Webapi__Dom.Window.mediaQueryList.matches) { */
-    Dark->Dom.setTheme
-  /* } else { */
-  /*   Light->Dom.setTheme; */
-  /* }; */
+    getRootHtmlElement()
+    |> Option.map(getCssVar("--theme"))
+    |> Option.filter(String.isEmpty)
+    |> Option.map(Theme.decodeThemeKey)
+    |> Option.getOrElse(Theme.default);
   };
 };
 
 type ctx = {
-  current: t,
+  current: Theme.t,
   colors: (module Colors),
-  set: t => unit,
+  set: Theme.t => unit,
 };
 
 module Context = {
@@ -113,8 +100,8 @@ module Context = {
   };
   let themeContext =
     React.createContext({
-      current: default,
-      colors: default->getModule,
+      current: Theme.default,
+      colors: Theme.default |> Theme.getModule,
       set: ignore,
     });
   include React.Context; // Adds the makeProps external
@@ -123,7 +110,7 @@ module Context = {
 
 module Provider = {
   type action =
-    | Set(t);
+    | Set(Theme.t);
 
   let reducer = (_state, action) =>
     switch (action) {
@@ -133,16 +120,15 @@ module Provider = {
   [@react.component]
   let make = (~children) => {
     let mounted = React.useRef(false);
-
     let theme = React.useMemo0(Dom.currentTheme);
-
     let (theme, dispatch) = reducer->React.useReducer(theme);
 
     React.useEffect1(
       () => {
         if (mounted.current) {
-          theme->Storage.setTheme;
-          theme->Dom.setTheme;
+          theme |> Theme.setStorage;
+          theme |> Dom.setTheme;
+          ();
         } else {
           mounted.current = true;
         };
@@ -156,8 +142,8 @@ module Provider = {
         () =>
           {
             current: theme,
-            colors: theme->getModule,
-            set: theme => Set(theme)->dispatch,
+            colors: theme |> Theme.getModule,
+            set: theme => Set(theme) |> dispatch,
           },
         [|theme|],
       );
