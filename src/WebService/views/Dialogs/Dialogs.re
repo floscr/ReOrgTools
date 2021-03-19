@@ -32,7 +32,7 @@ module Styles = {
 let make = () => {
   open ReductiveStore__Dialogs;
   let dispatch = Wrapper.useDispatch();
-  let dialogs = Wrapper.useSelector(Selector.DialogsStore.dialogs);
+  let dialogs = Wrapper.useSelector(Selector.Dialogs.dialogs);
 
   let close = _ => dispatch(DialogsAction(CloseDialogs));
 

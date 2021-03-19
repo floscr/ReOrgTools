@@ -47,7 +47,7 @@ let reducer =
 [@react.component]
 let make = (~id, ~workspaceIndex) => {
   open ReductiveStore__OrgDocuments;
-  let files = Wrapper.useSelector(Selector.OrgDocumentsStore.files);
+  let files = Wrapper.useSelector(Selector.OrgDocuments.files);
   let file = id |> Option.flatMap(x => StringMap.get(x, files));
 
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);

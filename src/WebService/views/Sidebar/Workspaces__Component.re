@@ -65,7 +65,7 @@ let renderFiles = (~onClick, ~index, xs) =>
 [@react.component]
 let make = (~workspaceIndex, ~onFileClick) => {
   open ReductiveStore__Workspaces;
-  let workspaces = Wrapper.useSelector(Selector.WorkspacesStore.workspaces);
+  let workspaces = Wrapper.useSelector(Selector.Workspaces.workspaces);
 
   let onClick = (file, index) => {
     ReasonReactRouter.push({j|/file/$index/$file|j});

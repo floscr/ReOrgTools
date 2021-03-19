@@ -59,11 +59,11 @@ let reducer =
 let make = (~close) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
+  // Needs to be mutable otherwise the shortcuts point to an outdated reference
   let boundsRef = React.useRef(0);
 
   let query = state.query |> String.toLowerCase;
-  open ReductiveStore__Workspaces;
-  let workspaces = Wrapper.useSelector(Selector.WorkspacesStore.workspaces);
+  let workspaces = Wrapper.useSelector(Selector.Workspaces.workspaces);
 
   let results =
     workspaces

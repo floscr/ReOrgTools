@@ -10,7 +10,7 @@ let make = (~id, ~header, ~workspaceIndex) => {
 
   let dispatch = ReductiveStore.Wrapper.useDispatch();
 
-  let files = Wrapper.useSelector(Selector.OrgDocumentsStore.files);
+  let files = Wrapper.useSelector(Selector.OrgDocuments.files);
   let file = StringMap.get(id, files);
 
   ReludeReact.Effect.useEffect1WithEq(

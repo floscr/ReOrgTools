@@ -43,13 +43,13 @@ module Implementation = {
     );
 
   module Selector = {
-    module DialogsStore = {
+    module Dialogs = {
       let dialogs = state => state.dialogsState.dialogs;
     };
-    module WorkspacesStore = {
+    module Workspaces = {
       let workspaces = state => state.workspacesState.workspaces;
     };
-    module OrgDocumentsStore = {
+    module OrgDocuments = {
       let files = state => state.orgDocumentsState.filesCache;
     };
   };
