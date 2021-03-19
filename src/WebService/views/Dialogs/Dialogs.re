@@ -31,9 +31,9 @@ module Styles = {
 type dialog =
   | FilePicker;
 
-type state = {dialogs: list(dialog)};
+type state = {dialogs: array(dialog)};
 
-let initialState = {dialogs: [FilePicker]};
+let initialState = {dialogs: [|FilePicker|]};
 
 type action =
   | OpenDialog(dialog)
@@ -43,8 +43,8 @@ let reducer =
     (state: state, action: action): ReludeReact.Reducer.update(action, state) =>
   switch (action) {
   | OpenDialog(x) =>
-    Update({...state, dialogs: List.append(x, state.dialogs)})
-  | CloseDialogs => Update({dialogs: []})
+    Update({...state, dialogs: Array.append(x, state.dialogs)})
+  | CloseDialogs => Update({dialogs: [||]})
   | _ => NoUpdate
   };
 
@@ -89,11 +89,11 @@ let make = () => {
       };
       Some(() => detachShortcuts());
     },
-    state.dialogs |> List.toArray,
+    [|Array.length(state.dialogs)|],
   );
 
   Option.some(state.dialogs)
-  |> Option.filter(List.isNotEmpty)
+  |> Option.filter(Array.isNotEmpty)
   |> Option.flatMap(_ =>
        Webapi.Dom.(Document.querySelector("body", document))
      )
@@ -102,7 +102,7 @@ let make = () => {
        ReactDOMRe.createPortal(
          <div className=Styles.root>
            {state.dialogs
-            |> List.mapWithIndex((x, i) =>
+            |> Array.mapWithIndex((x, i) =>
                  (
                    switch (x) {
                    | FilePicker => <Dialogs__FilePicker />
@@ -111,7 +111,6 @@ let make = () => {
                  )
                  |> (x => <div className=Styles.dialog> x </div>)
                )
-            |> List.toArray
             |> React.array}
          </div>,
        ),
