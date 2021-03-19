@@ -65,29 +65,18 @@ let make = () => {
     error => State.FetchWorkspacesFailure(error) |> send,
   );
 
-  let combokeys: ref(option(Combokeys.t)) = ref(None);
-  let getCombokeys = () =>
-    switch (combokeys^) {
-    | None =>
-      let keys =
-        Combokeys.init(
-          Webapi.Dom.document |> Webapi.Dom.Document.documentElement,
-        );
-      combokeys := Some(keys);
-      keys;
-    | Some(x) => x
-    };
   let bindShortcuts = () => {
-    getCombokeys()
+    Keys.getCombokeys()
     |> Combokeys.bind("ctrl+k", _ => {
+         Js.log("Open File Picker");
          openFilePicker();
          false;
        });
   };
   let detachShortcuts = () => {
-    let c = getCombokeys();
+    let c = Keys.getCombokeys();
     c |> Combokeys.detach();
-    combokeys := None;
+    Keys.combokeys := None;
   };
   React.useEffect0(_ => {
     bindShortcuts();

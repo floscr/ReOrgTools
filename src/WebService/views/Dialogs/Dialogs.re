@@ -41,7 +41,6 @@ let make = () => {
   let close = _ => dispatch(DialogsAction(CloseDialogs));
 
   let combokeys: ref(option(Combokeys.t)) = ref(None);
-
   let getCombokeys = () =>
     switch (combokeys^) {
     | None =>
@@ -53,7 +52,10 @@ let make = () => {
       keys;
     | Some(x) => x
     };
+
   let bindShortcuts = () => {
+    Keys.getCombokeys() |> Combokeys.pause();
+
     getCombokeys()
     |> Combokeys.bind("esc", _ => {
          close();
@@ -62,8 +64,8 @@ let make = () => {
   };
 
   let detachShortcuts = () => {
-    let c = getCombokeys();
-    c |> Combokeys.detach();
+    Keys.getCombokeys() |> Combokeys.unpause();
+    getCombokeys() |> Combokeys.detach();
     combokeys := None;
   };
 
