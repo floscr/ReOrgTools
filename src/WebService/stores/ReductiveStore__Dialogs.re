@@ -7,7 +7,7 @@ type action =
   | OpenDialog(dialog)
   | CloseDialogs;
 
-let initial = {dialogs: [|FilePicker|]};
+let initial = {dialogs: [||]};
 
 let reducer = (state, action) => {
   switch (action) {
