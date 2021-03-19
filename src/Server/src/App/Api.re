@@ -28,38 +28,17 @@ let getDirFiles = dir =>
        IO.suspend(() =>
          Array.map(({name}: ReadDir.DirectoryEntry.t) => name, xs)
        )
-     )
-  |> IO.tap(_ => Js.log("DONE"));
+     );
 
 let getWorkspaces = (~workspaces=Config.workspaces, ()) =>
-  IO.Pure(workspaces |> List.toArray)
-  |> IO.flatMap(xs =>
-       xs
-       |> Array.map(getDirFiles)
-       /* |> Utils.log */
-       |> Array.foldLeft(
-            (accumulator, current) =>
-              IO.flatMap(
-                entries =>
-                IO.apll
-                  current
-                  /* |> IO.bitap(Js.log2("Foo"), Js.log2("Bar")) */
-                  /* |> IO.tapError(Js.log2("Err")) */
-                  /* |> IO.flatMap(x => x) */
-                  |> IO.map(entry => [entry, ...entries]),
-                accumulator,
-              ),
-            IO.Pure([]),
-          )
-     );
-/* |> IO.flatMap(xs => */
-/*      xs */
-/*      |> Js.Array.reduce( */
-/*           (accumulator, current) => */
-/*             IO.flatMap( */
-/*               entries => */
-/*                 IO.map(entry => [entry, ...entries], current), */
-/*               accumulator, */
-/*             ), */
-/*           IO.Pure([]), */
-/*         ) */
+  workspaces
+  |> List.map(x =>
+       x
+       |> getDirFiles
+       |> IO.tapError(_ => Config.log({j|Workspace $x doesn't exist|j}))
+       // Turn the error into Void so it can't fail
+       |> IO.summonError
+     )
+  |> List.IO.sequence
+  // Reject the void values so we get a list of only succesful entries
+  |> IO.map(List.mapOption(Result.getOk));
