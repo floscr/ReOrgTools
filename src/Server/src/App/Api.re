@@ -1,6 +1,11 @@
 open Relude.Globals;
 open NodeFS;
 
+type file = {
+  name: string,
+  mtimeMs: float,
+};
+
 type getDirEntriesError =
   | ReadDirectoryError(Error.t)
   | ReadEntryError({
@@ -26,7 +31,14 @@ let getDirFiles = dir =>
      )
   |> IO.flatMap(xs =>
        IO.suspend(() =>
-         Array.map(({name}: ReadDir.DirectoryEntry.t) => name, xs)
+         Array.map(
+           ({name}: ReadDir.DirectoryEntry.t) => {
+             let path = Filename.concat(dir, name);
+             let stats = Stat.statSync(path);
+             {name, mtimeMs: stats.mtimeMs};
+           },
+           xs,
+         )
        )
      );
 

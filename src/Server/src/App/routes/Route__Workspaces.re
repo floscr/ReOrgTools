@@ -4,7 +4,10 @@ open Relude.Globals;
 
 let makeJson = files => {
   Json.Encode.(
-    files |> Array.map(name => object_([("name", string(name))]))
+    files
+    |> Array.map(({name, mtimeMs}: Api.file) =>
+         object_([("name", string(name))])
+       )
   );
 };
 
