@@ -64,6 +64,12 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
       error => FetchFilesFailure(error)->send,
     );
 
+    let fileCompare =
+      Ord.by(
+        ({name}: FilesTypes.FilesType.t) => name |> String.toLowerCase,
+        String.compare,
+      );
+
     <>
       {switch (files) {
        | None => "No files found" |> s
@@ -72,6 +78,7 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
          |> Array.reject(({name}: FilesTypes.FilesType.t) =>
               String.contains(~search=".sync-conflict", name)
             )
+         |> Array.sortBy(fileCompare)
          |> Array.map(({name}: FilesTypes.FilesType.t) => {
               let base = name |> makeName;
               <button
