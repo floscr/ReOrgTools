@@ -228,14 +228,14 @@ let make = (~close) => {
         },
       ),
       (
-        [|"ctrl+n"|],
+        [|"ctrl+n", "down"|],
         _ => {
           SelectNext(boundsRef |> React.Ref.current) |> send;
           false;
         },
       ),
       (
-        [|"ctrl+p"|],
+        [|"ctrl+p", "up"|],
         _ => {
           SelectPrev(boundsRef |> React.Ref.current) |> send;
           false;
