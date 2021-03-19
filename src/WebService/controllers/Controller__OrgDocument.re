@@ -25,6 +25,7 @@ let make = (~id, ~header, ~send, ~file, ~workspaceIndex) => {
        switch ((x: State.File.t)) {
        | State.File.Fetched({ast}) => <OrgDocument__Root ast header />
        | State.File.InProgress => "Loading" |> s
+       | _ => React.null
        }
      )
   |> Option.getOrElseLazy(() => React.null);
