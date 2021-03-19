@@ -12,3 +12,29 @@ let measure = f => {
   Js.log("Measurement: " ++ (t1 -. t0 |> Js.Float.toString) ++ "ms.");
   v;
 };
+
+module Icon = {
+  [@react.component]
+  let make = (~id) => {
+    <span className="material-icons"> {id |> s} </span>;
+  };
+};
+
+module Styles = {
+  open Css;
+  let iconButton = style([lineHeight(`abs(1.))]);
+};
+
+module IconButton = {
+  let buttonClassName = Styles.iconButton;
+
+  [@react.component]
+  let make = (~id, ~style=?) => {
+    let className =
+      switch (style) {
+      | Some(x) => buttonClassName ++ " " ++ x
+      | _ => buttonClassName
+      };
+    <button className> <Icon id /> </button>;
+  };
+};

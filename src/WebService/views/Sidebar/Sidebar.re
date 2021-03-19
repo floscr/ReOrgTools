@@ -9,6 +9,7 @@ module Styles = {
 
   let root =
     style([
+      position(relative),
       padding(innerSpacing),
       paddingRight(
         `calc((`sub, innerSpacing, Theme.Spacing.scrollbarWidth)),
@@ -26,6 +27,9 @@ module Styles = {
       padding(Theme.Spacing.large),
       fontSize(rem(1.)),
     ]);
+
+  let backIcon =
+    style([position(absolute), top(innerSpacing), right(innerSpacing)]);
 };
 
 type mode =
@@ -55,6 +59,7 @@ let make = (~page, ~id) => {
 
   <div className=Styles.root>
     <header className=Styles.header> {"Files" |> s} </header>
+    <IconButton style=Styles.backIcon id="arrow_back" />
     {switch (state.mode, page) {
      | (Outline, State.FetchedPage({ast})) =>
        <>
