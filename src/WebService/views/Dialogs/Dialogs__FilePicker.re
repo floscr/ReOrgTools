@@ -1,8 +1,13 @@
 open ReactUtils;
 open Relude.Globals;
+open ReductiveStore;
 
 module Styles = {
   open Css;
+
+  let root = style([maxHeight(vh(30.))]);
+
+  let resultsRoot = style([overflowY(scroll)]);
 };
 
 let id = "Dialogs__FilePicker";
@@ -27,8 +32,24 @@ let reducer =
 
 [@react.component]
 let make = (~close) => {
-  let ({query}: state, send) =
-    ReludeReact.Reducer.useReducer(reducer, initialState);
+  open ReductiveStore__Workspaces;
+  let workspaces = Wrapper.useSelector(Selector.WorkspacesStore.workspaces);
+
+  let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
+  let query = state.query |> String.toLowerCase;
+
+  let results =
+    workspaces
+    |> List.foldLeft(
+         (acc, (workspace, files)) => {
+           files |> Array.map(x => (workspace, x)) |> Array.concat(acc)
+         },
+         [||],
+       )
+    |> Array.filter(((a, {name}: Shared__API__Workspaces.File.t)) =>
+         name |> String.toLowerCase |> String.contains(~search=query)
+       )
+    |> Utils.log;
 
   let combokeys: ref(option(Combokeys.t)) = ref(None);
   let getCombokeys = () =>
@@ -43,7 +64,6 @@ let make = (~close) => {
       keys;
     | Some(x) => x
     };
-
   let bindShortcuts = _ => {
     getCombokeys()
     |> Combokeys.bindGlobalArray(
@@ -54,12 +74,10 @@ let make = (~close) => {
          },
        );
   };
-
   let detachShortcuts = () => {
     getCombokeys() |> Combokeys.detach();
     combokeys := None;
   };
-
   React.useEffect0(_ => {
     bindShortcuts();
     Some(() => detachShortcuts());
@@ -69,23 +87,26 @@ let make = (~close) => {
     send(ChangeQuery(event->ReactEvent.Form.target##value));
   };
 
-  <div>
+  <div className=Styles.root>
     <input
       autoFocus=true
+      autoComplete="false"
       name=id
-      value=query
+      value={state.query}
       onChange
       onBlur={e => e->ReactEvent.Synthetic.preventDefault}
+      onSubmit={}
       placeholder="Pick File"
     />
-    <button
-      onClick={e => {
-        Js.log("Foo");
-
-        ReactEvent.Mouse.preventDefault(e);
-        ReactEvent.Mouse.stopPropagation(e);
-      }}>
-      {"Foo" |> s}
-    </button>
+    <div className=Styles.resultsRoot>
+      <ul>
+        {results
+         |> Array.mapWithIndex(
+              ((a, {name}: Shared__API__Workspaces.File.t), i) =>
+              <li key={i |> Int.toString}> {name |> s} </li>
+            )
+         |> React.array}
+      </ul>
+    </div>
   </div>;
 };
