@@ -4,10 +4,13 @@ open OrgDocument__Utils;
 
 module Styles = {
   open Css;
+  open FixedTheme;
+
   let root = style([position(relative), flexGrow(1.), flexShrink(1.)]);
 
   let mainWrapper =
     style([
+      paddingTop(Spacing.xlarge),
       margin2(~v=zero, ~h=auto),
       maxWidth(px(750)),
       wordWrap(breakWord),
@@ -69,14 +72,18 @@ let make = (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t) => {
   |> Option.getOrElse(layoutType)
   |> Types__URLSearchParams.(
        fun
-       | Kanban =>
-         <div className=Styles.root>
-           <OrgDocument__ViewStyle__Kanban xs />
-         </div>
+       | Kanban => <OrgDocument__ViewStyle__Kanban xs />
        | SimpleTodo =>
          <div className=Styles.mainWrapper>
            <OrgDocument__ViewStyle__SimpleTodo ast />
          </div>
        | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div>
-     );
+     )
+  |> (
+    xs =>
+      <div className=Styles.root>
+        <OrgDocument__Toolbar ast queryParams />
+        xs
+      </div>
+  );
 };
