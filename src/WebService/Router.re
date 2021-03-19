@@ -65,7 +65,10 @@ let make = () => {
   open Webapi.Url;
   let url = ReasonReactRouter.useUrl();
   let params = URLSearchParams.make(url.search);
-  let header = params |> URLSearchParams.get("header");
+  let header =
+    params
+    |> URLSearchParams.get("header")
+    |> Option.flatMap(String.toNonWhitespace);
 
   let bindShortcuts = () => {
     Keys.get()
