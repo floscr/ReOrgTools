@@ -23,9 +23,9 @@ module Theme = {
 
   let decodeThemeKey =
     fun
-    | "light" => Light
-    | "dark" => Dark
-    | _ as x => failwith({j|Unknown theme: $(x)|j});
+    | "light" => Some(Light)
+    | "dark" => Some(Dark)
+    | _ => None;
 
   let getModule = (theme): (module Colors) =>
     switch (theme) {
@@ -36,7 +36,7 @@ module Theme = {
   let getStorage = () =>
     Dom.Storage.localStorage
     |> Dom.Storage.getItem(storageKey)
-    |> Option.map(decodeThemeKey)
+    |> Option.flatMap(decodeThemeKey)
     |> Option.getOrElse(default);
 
   let setStorage = x =>
@@ -82,7 +82,7 @@ module Dom = {
     getRootHtmlElement()
     |> Option.map(getCssVar("--theme"))
     |> Option.filter(String.isEmpty)
-    |> Option.map(Theme.decodeThemeKey)
+    |> Option.flatMap(Theme.decodeThemeKey)
     |> Option.getOrElse(Theme.default);
   };
 };
