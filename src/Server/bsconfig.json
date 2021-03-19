@@ -25,14 +25,15 @@
   ],
   "suffix": ".js",
   "bs-dependencies": [
-    "bs-axios",
-    "bs-express",
     "@ahrefs/bs-dotenv",
     "@glennsl/bs-json",
     "@nireno/reasonably-typed",
-    "reorga",
-    "relude",
+    "bs-axios",
     "bs-bastet",
+    "bs-express",
+    "relude",
+    "reorga"
+  ],
   ],
   "ppx-flags": ["bs-let/ppx"],
   "warnings": {
