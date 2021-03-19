@@ -6,11 +6,26 @@ let encode = text => Json.Encode.(object_([("text", string(text))]));
 
 let t =
   PromiseMiddleware.from((_next, req, res) => {
-    let id = req |> Request.params |> Js.Dict.get(_, "id");
+    let file =
+      req
+      |> Request.params
+      |> Js.Dict.get(_, "id")
+      |> Option.flatMap(Js.Json.decodeString);
+    let workspacePath =
+      req
+      |> Request.params
+      |> Js.Dict.get(_, "workspaceIndex")
+      |> Option.flatMap(Js.Json.decodeString)
+      |> Option.flatMap(String.toInt)
+      |> Option.flatMap(x => List.at(x, Config.workspaces));
+    let path =
+      List.Option.traverse(x => x, [workspacePath, file])
+      |> Option.map(List.toArray)
+      |> Option.map(Node.Path.join);
 
-    let path = Node.Path.join([|Config.orgDir, {j|$id|j}|]) |> Utils.log;
-
-    Api.getFile(path)
+    path
+    |> IO.fromOption(() => Api.ReadWordkspaceError)
+    |> IO.flatMap(Api.getFile)
     |> resolve(
          res,
          fun
