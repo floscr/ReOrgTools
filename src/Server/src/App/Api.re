@@ -22,29 +22,30 @@ let getDirFiles = dir =>
   IO.Suspend(() => Config.log({j|Reading from entries dir "$dir"|j}))
   |> IO.flatMap(() => ReadDir.readDir(dir))
   |> IO.mapError(error => ReadDirectoryError(error))
-  |> IO.map(
-       Array.filter((entry: ReadDir.DirectoryEntry.t) =>
-         Filename.extension(entry.name)
-         |> String.eq(".org")
-         && ReadDir.DirectoryEntry.isFile(entry)
-       ),
-     )
-  |> IO.flatMap(xs =>
-       IO.suspend(() =>
-         Array.map(
-           ({name}: ReadDir.DirectoryEntry.t) => {
-             let path = Filename.concat(dir, name);
-             let stats = Stat.statSync(path);
-             {name, mtimeMs: stats.mtimeMs};
-           },
-           xs,
-         )
-       )
+  |> IO.map(xs =>
+       xs
+       |> Array.filter((entry: ReadDir.DirectoryEntry.t) =>
+            Filename.extension(entry.name)
+            |> String.eq(".org")
+            && ReadDir.DirectoryEntry.isFile(entry)
+          )
+       |> Array.map(({name}: ReadDir.DirectoryEntry.t) => {
+            let path = Filename.concat(dir, name);
+            let stats = Stat.statSync(path);
+            {name, mtimeMs: stats.mtimeMs};
+          })
+       |> (xs => (dir, xs))
      );
 
 let getWorkspaces = (~workspaces=Config.workspaces, ()) =>
   workspaces
-  |> List.map(x => {
-       let files = getDirFiles(x);
-       files |> IO.map(xs => (x, xs));
-     });
+  |> List.map(x =>
+       x
+       |> getDirFiles
+       |> IO.tapError(_ => Config.log({j|Workspace $x doesn't exist|j}))
+       // Turn the error into Void so it can't fail
+       |> IO.summonError
+     )
+  |> List.IO.sequence
+  // Reject the void values so we get a list of only succesful entries
+  |> IO.map(List.mapOption(Result.getOk));

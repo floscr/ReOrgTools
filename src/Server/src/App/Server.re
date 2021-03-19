@@ -7,7 +7,7 @@ App.use(app, Middleware.urlencoded(~extended=false, ()));
 
 App.use(app, Cors.t);
 
-App.get(app, ~path="/files", Route__Files.t);
+/* App.get(app, ~path="/files", Route__Files.t); */
 App.get(app, ~path="/file/:id", Route__File.t);
 
 App.useOnPath(
