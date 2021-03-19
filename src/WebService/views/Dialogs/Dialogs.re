@@ -91,6 +91,7 @@ let make = () => {
                  )
                  |> Option.map(((id, x)) =>
                       <div
+                        onClick=ReactEvent.Mouse.stopPropagation
                         className=Styles.dialog
                         key={id ++ (i |> Int.toString)}>
                         x
