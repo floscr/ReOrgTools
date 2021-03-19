@@ -76,6 +76,7 @@ let make = (~xs: array(ReOrga.sectionAst)) => {
   <div className=Styles.root>
     {groupByTodo(acc, xs)
      |> StringMap.toArray
+     |> Array.reject(((_, tail)) => Array.isEmpty(tail))
      |> Array.map(((head, tail)) => {
           <div key={"kanban-column-" ++ head} className=Styles.column>
             <header className=Styles.columnHeader> {head |> s} </header>
