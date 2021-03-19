@@ -5,6 +5,10 @@ open Relude.Globals;
 module Styles = {
   open Css;
 
+  let workspaceList =
+    style([listStyleType(none), margin(zero), padding(zero)]);
+  let workspaceListItem = style([margin(zero)]);
+
   let button =
     style([
       padding2(~v=Theme.Spacing.xsmall, ~h=Theme.Spacing.large),
@@ -49,13 +53,7 @@ let renderFiles = (~onClick, xs) =>
   |> Array.sortBy(fileCompare)
   |> Array.map(({name}: Shared__API__Workspaces.File.t) => {
        let base = name |> makeName;
-       <button
-         key=name
-         className=Styles.button
-         onClick={_ => {
-           ReasonReactRouter.push("/file/" ++ base);
-           onClick();
-         }}>
+       <button key=name className=Styles.button onClick={_ => onClick(base)}>
          {base |> s}
        </button>;
      })
@@ -63,18 +61,22 @@ let renderFiles = (~onClick, xs) =>
 
 [@react.component]
 let make = (~workspaces, ~onFileClick) => {
+  let onClick = base => {
+    ReasonReactRouter.push("/file/" ++ base);
+    onFileClick();
+  };
   switch (workspaces) {
   | [] => "No files found" |> s
   | xs =>
     xs
     |> List.map(((workspace, files)) =>
-         <li key=workspace>
+         <li className=Styles.workspaceListItem key=workspace>
            {workspace |> s}
-           {renderFiles(~onClick={onFileClick}, files)}
+           {renderFiles(~onClick, files)}
          </li>
        )
     |> List.toArray
     |> React.array
-    |> (xs => <ul> xs </ul>)
+    |> (xs => <ul className=Styles.workspaceList> xs </ul>)
   };
 };
