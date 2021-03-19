@@ -31,8 +31,27 @@ let getDirFiles = dir =>
      );
 
 let getWorkspaces = (~workspaces=Config.workspaces, ()) =>
-  workspaces
-  |> List.map(x => {
-       let files = getDirFiles(x);
-       files |> IO.map(xs => (x, xs));
-     });
+  IO.Pure(workspaces |> List.toArray)
+  |> IO.flatMap(xs =>
+       xs
+       |> Array.map(getDirFiles)
+       |> Array.foldLeft(
+            (accumulator, current) =>
+              IO.flatMap(
+                entries => IO.map(entry => [entry, ...entries], current),
+                accumulator,
+              ),
+            IO.Pure([]),
+          )
+     );
+/* |> IO.flatMap(xs => */
+/*      xs */
+/*      |> Js.Array.reduce( */
+/*           (accumulator, current) => */
+/*             IO.flatMap( */
+/*               entries => */
+/*                 IO.map(entry => [entry, ...entries], current), */
+/*               accumulator, */
+/*             ), */
+/*           IO.Pure([]), */
+/*         ) */
