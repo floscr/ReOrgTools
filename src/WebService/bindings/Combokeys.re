@@ -12,7 +12,7 @@ type t;
 external bind: (string, Dom.keyboardEvent => bool) => unit = "";
 
 [@bs.send.pipe: t]
-external bindArray: (array(string), Dom.keyboardEvent => unit) => unit =
+external bindArray: (array(string), Dom.keyboardEvent => bool) => unit =
   "bind";
 
 [@bs.send.pipe: t] external detach: unit => unit = "";
