@@ -203,84 +203,65 @@ let make = (~close) => {
     };
   };
 
-  let combokeys: ref(option(Combokeys.t)) = ref(None);
-  let getCombokeys = () =>
-    switch (combokeys^) {
-    | None =>
-      let keys =
-        Combokeys.init(
-          Webapi.Dom.document |> Webapi.Dom.Document.documentElement,
-        )
-        |> Combokeys.initGlobalBindPlugin;
-      combokeys := Some(keys);
-      keys;
-    | Some(x) => x
-    };
-  let bindShortcuts = _ => {
-    let keys = getCombokeys();
-    [|
-      (
-        [|"ctrl+k", "esc"|],
-        _ => {
-          close();
-          false;
-        },
-      ),
-      (
-        [|"ctrl+n", "down"|],
-        _ => {
-          SelectNext(boundsRef.current) |> send;
-          false;
-        },
-      ),
-      (
-        [|"ctrl+p", "up"|],
-        _ => {
-          SelectPrev(boundsRef.current) |> send;
-          false;
-        },
-      ),
-    |]
-    |> Array.forEach(((a, fn)) => Combokeys.bindGlobalArray(a, fn, keys));
-  };
-  let detachShortcuts = () => {
-    getCombokeys() |> Combokeys.detach();
-    combokeys := None;
-  };
-  React.useEffect0(_ => {
-    bindShortcuts();
-    Some(() => detachShortcuts());
-  });
+  let bindings = [|
+    (
+      [|"ctrl+k", "esc"|],
+      _ => {
+        close();
+        false;
+      },
+    ),
+    (
+      [|"ctrl+n", "down"|],
+      _ => {
+        SelectNext(boundsRef.current) |> send;
+        false;
+      },
+    ),
+    (
+      [|"ctrl+p", "up"|],
+      _ => {
+        SelectPrev(boundsRef.current) |> send;
+        false;
+      },
+    ),
+  |];
 
-  <div className=Styles.root>
-    <input
-      autoFocus=true
-      className=Styles.input
-      autoComplete="off"
-      name=id
-      value={state.query}
-      onChange
-      onKeyDown
-      onBlur={e => e->ReactEvent.Synthetic.preventDefault}
-      placeholder="Pick File"
-    />
-    <div className=Styles.resultsRoot>
-      <ul className=Styles.resultsList>
-        {results
-         |> Array.mapWithIndex(
-              ((_, _, {name}: Shared__API__Workspaces.File.t), i) => {
-              let isSelected =
-                state.selection |> Option.filter(Int.eq(i)) |> Option.isSome;
-              <React.Fragment key={i |> Int.toString}>
-                <Item
-                  isSelected
-                  onClick={_ => onSubmit(~index=Some(i), results) |> ignore}
-                  value={name |> Filename.chop_extension}
-                />
-              </React.Fragment>;
-            })
-         |> React.array}
-      </ul>
+  <ComboKeysWrapper bindings>
+    <div className=Styles.root>
+      <input
+        autoFocus=true
+        className=Styles.input
+        autoComplete="off"
+        name=id
+        value={state.query}
+        onChange
+        onKeyDown
+        onBlur={e => e->ReactEvent.Synthetic.preventDefault}
+        placeholder="Pick File"
+      />
+      <div className=Styles.resultsRoot>
+        <ul className=Styles.resultsList>
+          {results
+           |> Array.mapWithIndex(
+                ((_, _, {name}: Shared__API__Workspaces.File.t), i) => {
+                let isSelected =
+                  state.selection
+                  |> Option.filter(Int.eq(i))
+                  |> Option.isSome;
+                <React.Fragment key={i |> Int.toString}>
+                  <Item
+                    isSelected
+                    onClick={_ =>
+                      onSubmit(~index=Some(i), results) |> ignore
+                    }
+                    value={name |> Filename.chop_extension}
+                  />
+                </React.Fragment>;
+              })
+           |> React.array}
+        </ul>
+      </div>
     </div>
-  </div>;
+  </ComboKeysWrapper>;
 };
