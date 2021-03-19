@@ -61,12 +61,7 @@ module Styles = {
     style([
       backgroundColor(var(ThemeKeys.grey15)),
       boxShadow(
-        Shadow.box(
-          ~spread=px(2),
-          ~x=px(2),
-          ~inset=true,
-          var(ThemeKeys.accentMain),
-        ),
+        Shadow.box(~x=px(2), ~inset=true, var(ThemeKeys.accentMain)),
       ),
     ]);
 };
@@ -122,7 +117,7 @@ module Item = {
     let className =
       ClassName.pure(Styles.resultsItem)
       |> ClassName.condAppend(isSelected, Styles.resultsItemFocused)
-      |> Box.unwrap;
+      |> ClassName.unwrap;
 
     React.useEffect1(
       () => {
