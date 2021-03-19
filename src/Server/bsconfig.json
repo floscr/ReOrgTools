@@ -5,6 +5,10 @@
   },
   "sources": [
     {
+      "dir": "../Shared",
+      "subdirs": false
+    },
+    {
       "dir": "src",
       "subdirs": true
     },

@@ -23,7 +23,13 @@ describe("IO basics", () => {
     // Extract filenames from Api.file
     |> IO.map(
          List.map(((a, fs)) =>
-           (a, Array.map(({name}: Api.file) => name, fs))
+           (
+             a,
+             Array.map(
+               ({name}: Shared__API__Workspaces.File.t) => name,
+               fs,
+             ),
+           )
          ),
        )
     |> IO.bimap(expect >> toEqual(result), _ => fail("Failed"))
