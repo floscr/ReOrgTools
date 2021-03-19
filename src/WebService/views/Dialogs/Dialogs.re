@@ -43,7 +43,14 @@ let make = () => {
     };
   let bindShortcuts = () => {
     Keys.get() |> Combokeys.pause();
-    getCombokeys();
+    getCombokeys()
+    |> Combokeys.bindArray(
+         [|"escape"|],
+         _ => {
+           close();
+           false;
+         },
+       );
   };
   let detachShortcuts = () => {
     Keys.get() |> Combokeys.unpause();
