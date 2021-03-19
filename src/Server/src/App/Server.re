@@ -27,7 +27,9 @@ let onListen = e =>
     Js.log(e);
     Node.Process.exit(1);
   | _ =>
-    Js.log("Listening at http://localhost:" ++ Config.port->string_of_int)
+    Js.log(
+      "Listening at http://localhost:" ++ Config.backendPort->string_of_int,
+    )
   };
 
-App.listen(app, ~port=Config.port, ~onListen, ());
+App.listen(app, ~port=Config.backendPort, ~onListen, ());
