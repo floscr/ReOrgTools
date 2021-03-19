@@ -60,3 +60,9 @@ include Implementation;
 module Wrapper = {
   include ReductiveContext.Make(Implementation);
 };
+
+module Stores = {
+  module Workspaces = ReductiveStore__Workspaces;
+  module OrgDocument = ReductiveStore__OrgDocuments;
+  module Dialogs = ReductiveStore__Dialogs;
+};
