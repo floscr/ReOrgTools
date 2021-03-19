@@ -57,7 +57,7 @@ module Implementation = {
 
 include Implementation;
 
-module Wrapper = {
+module Store = {
   include ReductiveContext.Make(Implementation);
 };
 

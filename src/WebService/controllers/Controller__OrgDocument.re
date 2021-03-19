@@ -6,11 +6,9 @@ open ReductiveStore;
 
 [@react.component]
 let make = (~id, ~header, ~workspaceIndex) => {
-  open ReductiveStore__OrgDocuments;
+  let dispatch = Store.useDispatch();
 
-  let dispatch = ReductiveStore.Wrapper.useDispatch();
-
-  let files = Wrapper.useSelector(Selector.OrgDocuments.files);
+  let files = Store.useSelector(Selector.OrgDocuments.files);
   let file = StringMap.get(id, files);
 
   ReludeReact.Effect.useEffect1WithEq(
@@ -23,7 +21,10 @@ let make = (~id, ~header, ~workspaceIndex) => {
       API__OrgDocument.Request.make(~workspaceIndex, ~file=id)
       |> IO.tap(
            Localforage.Localforage_IO.set(
-             File.makeForageId(~id, ~workspace=workspaceIndex),
+             Stores.OrgDocument.File.makeForageId(
+               ~id,
+               ~workspace=workspaceIndex,
+             ),
            )
            >> IO.unsafeRunAsync(ignore),
          )
@@ -53,14 +54,14 @@ let make = (~id, ~header, ~workspaceIndex) => {
 
   file
   |> Option.map(x =>
-       switch ((x: File.t)) {
-       | ReductiveStore__OrgDocuments.File.Fetched({ast}) =>
-         <OrgDocument__Root ast header />
-       | ReductiveStore__OrgDocuments.File.Cached({ast}) =>
-         <OrgDocument__Root ast header />
-       | ReductiveStore__OrgDocuments.File.InProgress => "Loading" |> s
-       | _ => React.null
-       }
+       ReductiveStore__OrgDocuments.(
+         switch ((x: File.t)) {
+         | File.Fetched({ast}) => <OrgDocument__Root ast header />
+         | File.Cached({ast}) => <OrgDocument__Root ast header />
+         | File.InProgress => "Loading" |> s
+         | _ => React.null
+         }
+       )
      )
   |> Option.getOrElseLazy(() => React.null);
 };

@@ -43,7 +43,7 @@ let showMain = (~id=?, ~header, ~workspaceIndex=0, ()) => {
 
 [@react.component]
 let make = () => {
-  let dispatch = ReductiveStore.Wrapper.useDispatch();
+  let dispatch = ReductiveStore.Store.useDispatch();
 
   let openFilePicker = _ =>
     dispatch(

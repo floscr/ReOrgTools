@@ -31,8 +31,8 @@ module Styles = {
 [@react.component]
 let make = () => {
   open ReductiveStore__Dialogs;
-  let dispatch = Wrapper.useDispatch();
-  let dialogs = Wrapper.useSelector(Selector.Dialogs.dialogs);
+  let dispatch = Store.useDispatch();
+  let dialogs = Store.useSelector(Selector.Dialogs.dialogs);
 
   let close = _ => dispatch(DialogsAction(CloseDialogs));
 

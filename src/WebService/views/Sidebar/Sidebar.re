@@ -46,8 +46,7 @@ let reducer =
 
 [@react.component]
 let make = (~id, ~workspaceIndex) => {
-  open ReductiveStore__OrgDocuments;
-  let files = Wrapper.useSelector(Selector.OrgDocuments.files);
+  let files = Store.useSelector(Selector.OrgDocuments.files);
   let file = id |> Option.flatMap(x => StringMap.get(x, files));
 
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
@@ -58,7 +57,7 @@ let make = (~id, ~workspaceIndex) => {
   <div className=Styles.root>
     <IconButton style=Styles.backIcon id="arrow_back" />
     {switch (state.mode, file) {
-     | (Outline, Some(File.Fetched({ast}))) =>
+     | (Outline, Some(ReductiveStore__OrgDocuments.File.Fetched({ast}))) =>
        <>
          <button onClick=onBackClick> {"<- Go back" |> s} </button>
          <Outline ast />
