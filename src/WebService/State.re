@@ -16,6 +16,7 @@ type globalState = {page: pageState};
 let initialGlobalState = {page: EmptyPage};
 
 type action =
+  | FetchPagesProgress
   | FetchPagesSuccess(API__OrgDocument__Types.OrgDocumentType.t)
   | FetchPagesFailure(ReludeFetch.Error.t(string))
   | NoOp;
@@ -33,6 +34,7 @@ let reducer =
           ast: Org.parseOrga(text, {todo: Some([|"TODO"|])}),
         }),
     })
+  | FetchPagesProgress => Update({...state, page: FetchingPage})
   | NoOp => NoUpdate
   | _ => NoUpdate
   };

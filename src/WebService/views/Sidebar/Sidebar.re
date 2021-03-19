@@ -51,7 +51,7 @@ let reducer =
   };
 
 [@react.component]
-let make = (~page, ~id) => {
+let make = (~page) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
   let onFileClick = () => send(SwitchMode(Outline));

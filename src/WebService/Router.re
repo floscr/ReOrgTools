@@ -21,11 +21,15 @@ module Styles = {
     style([gridColumnStart(2), padding(innerSpacing), overflow(hidden)]);
 };
 
-let showMain = (~id, ~header, ~send, ~state) => {
+let showMain = (~id=?, ~header, ~send, ~state, ()) => {
   <>
-    <aside className=Styles.sidebar> <Sidebar page={state.page} id /> </aside>
+    <aside className=Styles.sidebar> <Sidebar page={state.page} /> </aside>
     <article className=Styles.main>
-      <Controller__OrgDocument id header ast={state.page} send />
+      {switch (id) {
+       | Some(id) =>
+         <Controller__OrgDocument id header ast={state.page} send />
+       | _ => React.null
+       }}
     </article>
   </>;
 };
@@ -41,8 +45,8 @@ let make = () => {
 
   <main className=Styles.root>
     {switch (url.path) {
-     | ["file", id] => showMain(~id=Some(id), ~header, ~send, ~state)
-     | _ => showMain(~id=None, ~header, ~send, ~state)
+     | ["file", id] => showMain(~id, ~header, ~send, ~state, ())
+     | _ => showMain(~header, ~send, ~state, ())
      }}
   </main>;
 };
