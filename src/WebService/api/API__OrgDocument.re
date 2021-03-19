@@ -4,14 +4,8 @@ open Relude.Globals;
 module D = Decode.AsResult.OfParseError;
 
 module Response = {
-  let ((<$>), (<*>)) = D.(map, apply);
-
-  let make = (text): OrgDocumentType.t => {text: text};
-
-  let decodeOne = make <$> D.field("text", D.string);
-
   let decode = (url, json) => {
-    decodeOne(json)
+    Shared__API__File.File.decodeJson(json)
     |> Relude.IO.fromResult
     |> Relude.IO.mapRight(e => {
          let readableError = D.ParseError.failureToDebugString(e);
@@ -21,15 +15,15 @@ module Response = {
 };
 
 module type Request = {
-  let getPageIO:
+  let make:
     (~workspaceIndex: int, ~file: string) =>
-    Relude.IO.t(OrgDocumentType.t, ReludeFetch.Error.t(string));
+    Relude.IO.t(Shared__API__File.File.t, ReludeFetch.Error.t(string));
 };
 
 module Request: Request = {
   open Relude.IO;
 
-  let getPageIO = (~workspaceIndex: int, ~file: string) => {
+  let make = (~workspaceIndex: int, ~file: string) => {
     let url =
       ReludeURL.(
         URI.makeWithLabels(

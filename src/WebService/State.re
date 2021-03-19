@@ -6,6 +6,7 @@ module File = {
     text: string,
     ast: ReOrga.orgAst,
     workspace: string,
+    mtimeMs: float,
   };
 
   type t =
@@ -27,7 +28,7 @@ type action =
   | FetchWorkspacesSuccess(Shared__API__Workspaces.Workspaces.t)
   | FetchWorkspacesFailure(ReludeFetch.Error.t(string))
   | FetchPagesProgress(string)
-  | FetchPagesSuccess(string, API__OrgDocument__Types.OrgDocumentType.t)
+  | FetchPagesSuccess(string, Shared__API__File.File.t)
   | FetchPagesFailure(string, ReludeFetch.Error.t(string))
   | NoOp;
 
@@ -46,12 +47,13 @@ let reducer =
   /* Js.log2(state, action |> actionToName); */
   switch (action) {
   | FetchWorkspacesSuccess(workspaces) => Update({...state, workspaces})
-  | FetchPagesSuccess(id, {text}) =>
+  | FetchPagesSuccess(id, {text, mtimeMs}) =>
     let file =
       File.Fetched({
         text,
         ast: Org.parseOrga(text, {todo: Some([|"TODO"|])}),
         workspace: "",
+        mtimeMs,
       });
     Update({
       ...state,

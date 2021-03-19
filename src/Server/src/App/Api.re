@@ -13,7 +13,11 @@ type getDirEntriesError =
 let getFile = path =>
   IO.Suspend(() => Config.log({j|Reading from file "$path"|j}))
   |> IO.flatMap(() => ReadFile.readText(path))
-  |> IO.mapError(error => ReadEntryError({name: path, error}));
+  |> IO.mapError(error => ReadEntryError({name: path, error}))
+  |> IO.map(text => {
+       let stats = Stat.statSync(path);
+       ({text, mtimeMs: stats.mtimeMs}: Shared__API__File.File.t);
+     });
 
 let getDirFiles = dir =>
   IO.Suspend(() => Config.log({j|Reading from entries dir "$dir"|j}))

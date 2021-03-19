@@ -2,8 +2,6 @@ open Express;
 open ExpressUtils;
 open Relude.Globals;
 
-let encode = text => Json.Encode.(object_([("text", string(text))]));
-
 let t =
   PromiseMiddleware.from((_next, req, res) => {
     let file =
@@ -29,7 +27,7 @@ let t =
     |> resolve(
          res,
          fun
-         | Ok(x) => x |> encode |> Response.sendJson
+         | Ok(x) => x |> Shared__API__File.File.encodeJson |> Response.sendJson
          | _ => Response.sendStatus(Response.StatusCode.NotFound),
        )
     |> Utils.log;

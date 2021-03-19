@@ -1,4 +1,8 @@
-open FilesTypes;
+open Relude.Globals;
+
+module FilesType = {
+  type t = {name: string};
+};
 
 module D = Decode.AsResult.OfParseError;
 
