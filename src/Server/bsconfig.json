@@ -43,7 +43,7 @@
   ],
   "ppx-flags": ["bs-let/ppx"],
   "warnings": {
-    "error": "+101"
+    "error": "+101-33"
   },
   "refmt": 3
 }
