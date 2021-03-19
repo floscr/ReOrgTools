@@ -3,14 +3,14 @@ open Relude.Globals;
 
 module Styles = {
   open Css;
-  let innerSpacing = Theme.Spacing.large;
+  let innerSpacing = FixedTheme.Spacing.large;
 
   let root =
     style([
       position(relative),
       padding(innerSpacing),
       paddingRight(
-        `calc((`sub, innerSpacing, Theme.Spacing.scrollbarWidth)),
+        `calc((`sub, innerSpacing, FixedTheme.Spacing.scrollbarWidth)),
       ),
       backgroundColor(var(ThemeKeys.grey00)),
       overflowY(scroll),

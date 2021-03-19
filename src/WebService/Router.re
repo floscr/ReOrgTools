@@ -4,7 +4,7 @@ open Relude.Globals;
 
 module Styles = {
   open Css;
-  let innerSpacing = Theme.Spacing.xlarge;
+  let innerSpacing = FixedTheme.Spacing.xlarge;
 
   let root = style([display(grid), gridTemplateColumns([vw(20.), auto])]);
 

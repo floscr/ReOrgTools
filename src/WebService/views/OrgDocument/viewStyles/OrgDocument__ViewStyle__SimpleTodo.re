@@ -4,20 +4,19 @@ open OrgDocument__Utils;
 
 module Styles = {
   open Css;
-  open Theme;
 
   let headline =
     style([
       width(pct(100.)),
-      marginBottom(Spacing.medium),
-      padding(Spacing.medium),
+      marginBottom(FixedTheme.Spacing.medium),
+      padding(FixedTheme.Spacing.medium),
       border(px(1), `solid, var(ThemeKeys.grey10)),
-      borderRadius(BorderRadius.small),
+      borderRadius(FixedTheme.BorderRadius.small),
       display(`flex),
       alignItems(center),
       cursor(`pointer),
     ]);
-  let checkbox = style([marginRight(Spacing.small)]);
+  let checkbox = style([marginRight(FixedTheme.Spacing.small)]);
 };
 
 let rec renderHeadline =

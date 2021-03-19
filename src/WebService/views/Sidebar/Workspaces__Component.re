@@ -12,20 +12,20 @@ module Styles = {
     style([
       fontWeight(medium),
       color(var(ThemeKeys.grey20)),
-      padding(Theme.Spacing.large),
+      padding(FixedTheme.Spacing.large),
       fontSize(rem(1.)),
     ]);
 
   let button =
     style([
-      padding2(~v=Theme.Spacing.xsmall, ~h=Theme.Spacing.large),
+      padding2(~v=FixedTheme.Spacing.xsmall, ~h=FixedTheme.Spacing.large),
       lineHeight(`abs(1.)),
       borderRadius(px(50)),
       cursor(pointer),
       width(pct(100.)),
       fontWeight(medium),
       textAlign(`left),
-      transition(~duration=Theme.Timing.hoverShort, "all"),
+      transition(~duration=FixedTheme.Timing.hoverShort, "all"),
       selector(":hover", [backgroundColor(var(ThemeKeys.grey10))]),
       selector(
         ":focus",
