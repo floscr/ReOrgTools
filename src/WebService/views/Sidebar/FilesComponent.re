@@ -8,6 +8,29 @@ let initialState = {files: None};
 
 module Styles = {
   open Css;
+
+  let button =
+    style([
+      padding2(~v=Theme.Spacing.xsmall, ~h=Theme.Spacing.large),
+      lineHeight(`abs(1.)),
+      borderRadius(px(50)),
+      cursor(pointer),
+      width(pct(100.)),
+      fontWeight(medium),
+      textAlign(`left),
+      transition(~duration=Theme.Timing.hoverShort, "all"),
+      selector(":hover", [backgroundColor(Theme.BaseTheme.grey2)]),
+      selector(
+        ":focus",
+        [
+          outlineStyle(none),
+          borderRadius(px(50)),
+          boxShadow(
+            Shadow.box(~spread=px(3), ~inset=true, rgba(0, 0, 0, pct(7.))),
+          ),
+        ],
+      ),
+    ]);
 };
 
 type action =
@@ -53,6 +76,7 @@ module Functor = (Request: FilesAPI.FilesRequest) => {
               let base = name |> makeName;
               <button
                 key=name
+                className=Styles.button
                 onClick={_ => {
                   ReasonReactRouter.push("/file/" ++ base);
                   onFileClick();
