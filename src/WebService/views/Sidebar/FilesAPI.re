@@ -33,10 +33,17 @@ module type FilesRequest = {
 module FilesRequest: FilesRequest = {
   open Relude.IO;
 
-  let optionsUrl = "http://localhost:4000/files";
+  let defaultUrl =
+    ReludeURL.(
+      Shared__Config.frontendUrl(
+        ~path=Path.make([PathSegment.make("files")]),
+        (),
+      )
+    )
+    |> ReludeURL.URI.show;
 
   let getFilesIO = (url: option(string)) => {
-    let url = Belt.Option.getWithDefault(url, optionsUrl);
+    let url = Belt.Option.getWithDefault(url, defaultUrl);
 
     ReludeFetch.get(url)
     >>= ReludeFetch.Response.StatusCode.ensure2xx

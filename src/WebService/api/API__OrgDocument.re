@@ -26,13 +26,7 @@ module Request: Request = {
   let make = (~workspaceIndex: int, ~file: string) => {
     let url =
       ReludeURL.(
-        URI.makeWithLabels(
-          ~scheme=Scheme("http"),
-          ~authority=
-            Authority.fromHostnameAndPort(
-              Hostname.make("localhost"),
-              Port.make(4000),
-            ),
+        Shared__Config.backendUrl(
           ~path=
             Path.make([
               PathSegment.make("file"),

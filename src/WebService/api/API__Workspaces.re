@@ -17,7 +17,14 @@ module type Request = {
 module Request: Request = {
   open Relude.IO;
 
-  let url = "http://localhost:4000/workspaces";
+  let url =
+    ReludeURL.(
+      Shared__Config.backendUrl(
+        ~path=Path.make([PathSegment.make("workspaces")]),
+        (),
+      )
+    )
+    |> ReludeURL.URI.show;
 
   let make = () => {
     ReludeFetch.get(url)

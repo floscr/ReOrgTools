@@ -28,7 +28,11 @@ let onListen = e =>
     Node.Process.exit(1);
   | _ =>
     Js.log(
-      "Listening at http://localhost:" ++ Config.backendPort->string_of_int,
+      "Listening at "
+      ++ (
+        Shared__Config.backendUrl(~path=ReludeURL.Path.make([]), ())
+        |> ReludeURL.URI.show
+      ),
     )
   };
 

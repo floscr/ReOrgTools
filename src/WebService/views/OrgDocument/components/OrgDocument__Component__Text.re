@@ -4,14 +4,38 @@ open ReOrga;
 open OrgDocument__Utils;
 
 let renderAttachment = (~attachmentId=None, {value, description}) => {
-  let url =
+  let src =
     attachmentId
-    |> Option.map(x =>
-         x |> String.splitAt(2) |> (((a, b)) => {j|$a/$b/$value|j})
+    |> Option.map(String.splitAt(2))
+    |> Option.map(((a, b)) => [a, b])
+    |> Option.map(xs => List.map(ReludeURL.PathSegment.make, xs))
+    |> Option.map(xs =>
+         ReludeURL.(
+           Shared__Config.backendUrl(
+             ~path=
+               Path.make(
+                 [PathSegment.make("attachments"), ...xs]
+                 |> List.append(PathSegment.make(value)),
+               ),
+             (),
+           )
+         )
        )
-    |> Option.getOrElse(value);
+    |> Option.getOrElseLazy(x =>
+         ReludeURL.(
+           Shared__Config.backendUrl(
+             ~path=
+               Path.make([
+                 PathSegment.make("attachments"),
+                 PathSegment.make(value),
+               ]),
+             (),
+           )
+         )
+       )
+    |> ReludeURL.URI.show;
 
-  <img src={j|http://localhost:4000/attachments/$url|j} />;
+  <img src />;
 };
 
 let renderLink = (~attachmentId=None, {protocol, description, value} as link) => {

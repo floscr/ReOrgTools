@@ -18,6 +18,8 @@
     "@glennsl/bs-json",
     "bs-bastet",
     "bs-decode",
+    "relude-url",
+    "relude-parse",
     "relude",
   ],
   "refmt": 3

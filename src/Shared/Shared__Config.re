@@ -27,11 +27,9 @@ module Env = {
 };
 
 module Defaults = {
-  let backendPort = 4000;
   let frontendPort = 8080;
+  let backendPort = 4000;
 };
-
-let orgDir = Env.unsafeGet("ORG_DIR");
 
 let frontendPort =
   Env.get("FRONTEND_PORT")
@@ -42,6 +40,36 @@ let backendPort =
   Env.get("BACKEND_PORT")
   |> Option.flatMap(String.toInt)
   |> Option.getOrElse(Defaults.backendPort);
+
+let frontendUrl =
+  switch (Env.nodeEnv) {
+  | _ =>
+    ReludeURL.(
+      URI.makeWithLabels(
+        ~scheme=Scheme("http"),
+        ~authority=
+          Authority.fromHostnameAndPort(
+            Hostname.make("localhost"),
+            Port.make(frontendPort),
+          ),
+      )
+    )
+  };
+
+let backendUrl =
+  switch (Env.nodeEnv) {
+  | _ =>
+    ReludeURL.(
+      URI.makeWithLabels(
+        ~scheme=Scheme("http"),
+        ~authority=
+          Authority.fromHostnameAndPort(
+            Hostname.make("localhost"),
+            Port.make(backendPort),
+          ),
+      )
+    )
+  };
 
 let intToBool = x =>
   String.toInt(x)

@@ -33,6 +33,8 @@
     "bs-express",
     "bs-decode",
     "relude",
+    "relude-url",
+    "relude-parse",
     "reorga",
     "shared",
   ],

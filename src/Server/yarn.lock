@@ -4069,6 +4069,16 @@ registry-url@^5.0.0:
   dependencies:
     rc "^1.2.8"
 
+relude-parse@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/relude-parse/-/relude-parse-0.8.0.tgz#6aa7e2b1d5bc1b28d4ee2eb0a304c63f73fad25c"
+  integrity sha512-KsPpD4Wi5Nswe9FpeT5I2/DvD+pClgB6kmVXYqd94WrS6wxsxHUyl0ueSGWTTjbsrubNSph2YtxD1zElIGdBbA==
+
+relude-url@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/relude-url/-/relude-url-0.4.0.tgz#c82f5584cde43033faff27de4189340d7d88374c"
+  integrity sha512-Rrb6kgOtUaOhQoWZp3BqKaFn4TeYx0dYmqCn/AAOck/9aoWnjYtnzxoe/vt15NVnvVSav5ftYtqQm5VRFyqk3w==
+
 "relude@git+https://github.com/floscr/relude.git":
   version "0.65.0"
   resolved "git+https://github.com/floscr/relude.git#6c0e62dd9c2823e124c8baf4896360c2901c1192"
