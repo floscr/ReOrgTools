@@ -78,6 +78,8 @@ module Dom = {
        });
   };
 
+  let setDefaultTheme = () => Theme.getStorage() |> setTheme;
+
   let currentTheme = () => {
     getRootHtmlElement()
     |> Option.map(getCssVar("--theme"))

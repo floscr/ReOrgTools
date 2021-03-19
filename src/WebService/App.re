@@ -56,6 +56,8 @@ Css.(
   global("a:hover", [textDecoration(none)]),
 );
 
+CssTheme.Dom.setDefaultTheme();
+
 [@react.component]
 let make = () => {
   <CssTheme.Provider> <Router /> </CssTheme.Provider>;
