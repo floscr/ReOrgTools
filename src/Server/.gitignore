@@ -9,3 +9,4 @@ npm-debug.log
 /node_modules/
 .env
 /src/**/*.js
+/__tests__/**/*.js
