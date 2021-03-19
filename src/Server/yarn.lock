@@ -1020,6 +1020,11 @@ bs-axios@0.0.39:
   dependencies:
     bs-stdlib-shims "^0.1.0"
 
+bs-decode@^0.11.2:
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/bs-decode/-/bs-decode-0.11.2.tgz#5a4ab770dba809e0be85a28f0d97350ffc3adfff"
+  integrity sha512-KU+NM4bNhnSJKAnmicPuv171zIJ49yEsCzzTv9PAOw1hHW7ICWFNmFTpRk6AwUbV4+SVAyRCdcQjRBhoJEHPAA==
+
 bs-express@^0.9.0:
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/bs-express/-/bs-express-0.9.0.tgz#2429708616c4e66f69707505b06dd035406f091c"

@@ -1,10 +1,14 @@
 open Relude.Globals;
 
+module Decode = Decode.AsResult.OfParseError;
+
 module File = {
   type t = {
     name: string,
     mtimeMs: float,
   };
+
+  let make = (name, mtimeMs) => {name, mtimeMs};
 
   let encodeJson =
     Json.Encode.(
@@ -14,9 +18,19 @@ module File = {
           ("mtimeMs", Json.Encode.float(mtimeMs)),
         ])
     );
+
+  let decodeJson = json =>
+    Decode.Pipeline.(
+      succeed(make)
+      |> field("name", string)
+      |> field("mtimeMs", floatFromNumber)
+      |> run(json)
+    );
 };
 
 module Workspaces = {
+  type t = list((string, array(File.t)));
+
   let encodeJson = xs => {
     Json.Encode.(
       xs
@@ -29,4 +43,9 @@ module Workspaces = {
          )
     );
   };
+
+  let decodeArray =
+    Array.map((x: Js.Json.t) =>
+      Decode.(tuple(string, array(File.decodeJson)), x)
+    );
 };

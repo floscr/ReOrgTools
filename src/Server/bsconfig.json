@@ -35,6 +35,7 @@
     "bs-axios",
     "bs-bastet",
     "bs-express",
+    "bs-decode",
     "relude",
     "reorga"
   ],
@@ -43,7 +44,8 @@
   ],
   "ppx-flags": ["bs-let/ppx"],
   "warnings": {
-    "error": "+101-33"
+    "number": "-33",
+    "error": "+101"
   },
   "refmt": 3
 }
