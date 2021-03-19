@@ -123,7 +123,10 @@ type orgItem =
       parent: sectionAst,
     })
   | Stars(stars)
-  | Todo({keyword: string})
+  | Todo({
+      keyword: string,
+      position: positionAst,
+    })
   | Tags(tags)
   | Link(link)
   | List({
@@ -172,7 +175,11 @@ let getItem = item => {
       position: item.position,
       tags: nullableOrEmptyArray(item.tags),
     })
-  | ["todo"] => Todo({keyword: nullableOrEmptyStr(item.keyword)})
+  | ["todo"] =>
+    Todo({
+      keyword: nullableOrEmptyStr(item.keyword),
+      position: item.position,
+    })
   | ["stars"] => Stars({level: item.level})
   | ["planning"] =>
     switch (item.timestamp |> Js.Nullable.toOption) {
