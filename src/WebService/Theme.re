@@ -7,6 +7,8 @@ module BaseTheme = {
   let grey3 = hex("9a9a9a");
   let grey4 = hex("333333");
 
+  let blue = hex("3d97dd");
+
   let sidebarBgColor = grey1;
 };
 

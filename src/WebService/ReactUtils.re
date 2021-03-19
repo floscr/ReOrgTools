@@ -22,7 +22,14 @@ module Icon = {
 
 module Styles = {
   open Css;
-  let iconButton = style([lineHeight(`abs(1.))]);
+  let iconButton =
+    style([
+      lineHeight(`abs(1.)),
+      selector(
+        ":focus",
+        [outlineStyle(none), color(Theme.BaseTheme.purple)],
+      ),
+    ]);
 };
 
 module IconButton = {
