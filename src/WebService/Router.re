@@ -12,13 +12,9 @@ module Styles = {
     style([
       position(fixed),
       width(vw(20.)),
-      overflowY(scroll),
       height(vh(100.)),
-      padding(innerSpacing),
-      paddingRight(
-        `calc((`sub, innerSpacing, Theme.Spacing.scrollbarWidth)),
-      ),
-      backgroundColor(Theme.BaseTheme.sidebarBgColor),
+      display(flexBox),
+      flexDirection(column),
     ]);
 
   let main =
