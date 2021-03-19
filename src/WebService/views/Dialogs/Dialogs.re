@@ -57,13 +57,10 @@ let make = () => {
     Keys.getCombokeys() |> Combokeys.pause();
 
     getCombokeys()
-    |> Combokeys.bindArray(
-         [|"cmd+k", "ctrl+k", "esc"|],
-         _ => {
-           close();
-           false;
-         },
-       );
+    |> Combokeys.bind("esc", _ => {
+         close();
+         false;
+       });
   };
 
   let detachShortcuts = () => {
@@ -97,7 +94,10 @@ let make = () => {
                  (
                    switch (x) {
                    | FilePicker =>
-                     Some((Dialogs__FilePicker.id, <Dialogs__FilePicker />))
+                     Some((
+                       Dialogs__FilePicker.id,
+                       <Dialogs__FilePicker close />,
+                     ))
                    | _ => None
                    }
                  )
