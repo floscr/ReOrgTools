@@ -170,7 +170,7 @@ let make = (~close) => {
     |> Array.filter(((_, _, {name}: Shared__API__Workspaces.File.t)) =>
          name |> String.toLowerCase |> String.contains(~search=query)
        );
-  React.Ref.setCurrent(boundsRef, results |> Array.length);
+  boundsRef.current = results |> Array.length;
 
   let onSubmit = (~index=None, results) => {
     results
@@ -190,8 +190,6 @@ let make = (~close) => {
        });
   };
 
-  let selectNext = () => SelectNext(boundsRef |> React.Ref.current) |> send;
-  let selectPrev = () => SelectPrev(boundsRef |> React.Ref.current) |> send;
   let onChange = event => {
     send(ChangeQuery(event->ReactEvent.Form.target##value));
   };
@@ -231,14 +229,14 @@ let make = (~close) => {
       (
         [|"ctrl+n", "down"|],
         _ => {
-          SelectNext(boundsRef |> React.Ref.current) |> send;
+          SelectNext(boundsRef.current) |> send;
           false;
         },
       ),
       (
         [|"ctrl+p", "up"|],
         _ => {
-          SelectPrev(boundsRef |> React.Ref.current) |> send;
+          SelectPrev(boundsRef.current) |> send;
           false;
         },
       ),
