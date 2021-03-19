@@ -1,6 +1,3 @@
-open Relude.Globals;
-open Express;
-
 let resolve = (res, handler, x) =>
   x
   |> Relude.Js.Promise.fromIOWithResult
