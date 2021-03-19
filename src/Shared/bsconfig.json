@@ -13,7 +13,7 @@
       "in-source": true
     }
   ],
-  "suffix": ".bs.js",
+  "suffix": ".js",
   "bs-dependencies": [
     "@glennsl/bs-json",
     "bs-bastet",
