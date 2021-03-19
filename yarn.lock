@@ -4362,10 +4362,20 @@ relude-fetch@^0.8.0:
   resolved "https://registry.yarnpkg.com/relude-fetch/-/relude-fetch-0.8.0.tgz#d85766597f73dc06dfdd8a2c2bb5bbd2ef5dd70e"
   integrity sha512-UE26Z824OovseUVIRKX++4iQwcPgRY76KPFyhtmQji7mDls9vKlhPQRolvlEuk1hU5uYPOjJ3vbHeZrEhVaHbQ==
 
+relude-parse@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/relude-parse/-/relude-parse-0.8.0.tgz#6aa7e2b1d5bc1b28d4ee2eb0a304c63f73fad25c"
+  integrity sha512-KsPpD4Wi5Nswe9FpeT5I2/DvD+pClgB6kmVXYqd94WrS6wxsxHUyl0ueSGWTTjbsrubNSph2YtxD1zElIGdBbA==
+
 relude-reason-react@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/relude-reason-react/-/relude-reason-react-0.10.0.tgz#68d26c905d29cd3a1ff2a32e5a1691afcf8bcae3"
   integrity sha512-0vwS1axapPKxcwCMvKQoeVXQilPXl9iaQ9hxzn+VqtMTkTtaBGaPHfKl+TYB/GXSl0fHiCDc4s8qqnZFfMQ4kA==
+
+relude-url@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/relude-url/-/relude-url-0.4.0.tgz#c82f5584cde43033faff27de4189340d7d88374c"
+  integrity sha512-Rrb6kgOtUaOhQoWZp3BqKaFn4TeYx0dYmqCn/AAOck/9aoWnjYtnzxoe/vt15NVnvVSav5ftYtqQm5VRFyqk3w==
 
 "relude@git+https://github.com/floscr/relude.git":
   version "0.65.0"

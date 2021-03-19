@@ -8,7 +8,7 @@ let make = (~id, ~header, ~send, ~file, ~workspaceIndex) => {
   ReludeReact.Effect.useEffect1WithEq(
     () => {
       State.FetchPagesProgress(id) |> send;
-      API__OrgDocument.Request.getPageIO(id)
+      API__OrgDocument.Request.getPageIO(~workspaceIndex, ~file=id)
       |> Relude.IO.unsafeRunAsync(
            fun
            | Ok(data) => State.FetchPagesSuccess(id, data) |> send

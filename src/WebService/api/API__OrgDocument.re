@@ -1,4 +1,5 @@
 open API__OrgDocument__Types;
+open Relude.Globals;
 
 module D = Decode.AsResult.OfParseError;
 
@@ -21,16 +22,33 @@ module Response = {
 
 module type Request = {
   let getPageIO:
-    string => Relude.IO.t(OrgDocumentType.t, ReludeFetch.Error.t(string));
+    (~workspaceIndex: int, ~file: string) =>
+    Relude.IO.t(OrgDocumentType.t, ReludeFetch.Error.t(string));
 };
 
 module Request: Request = {
   open Relude.IO;
 
-  let baseUrl = "http://localhost:4000/file/";
-
-  let getPageIO = (file: string) => {
-    let url = baseUrl ++ file ++ ".org";
+  let getPageIO = (~workspaceIndex: int, ~file: string) => {
+    let url =
+      ReludeURL.(
+        URI.makeWithLabels(
+          ~scheme=Scheme("http"),
+          ~authority=
+            Authority.fromHostnameAndPort(
+              Hostname.make("localhost"),
+              Port.make(4000),
+            ),
+          ~path=
+            Path.make([
+              PathSegment.make("file"),
+              PathSegment.make(workspaceIndex |> Int.toString),
+              PathSegment.make(file ++ ".org"),
+            ]),
+          (),
+        )
+      )
+      |> ReludeURL.URI.show;
 
     ReludeFetch.get(url)
     >>= ReludeFetch.Response.StatusCode.ensure2xx
