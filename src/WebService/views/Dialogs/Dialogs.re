@@ -49,23 +49,15 @@ let make = () => {
       keys;
     | Some(x) => x
     };
-
   let bindShortcuts = () => {
     Keys.get() |> Combokeys.pause();
-
     getCombokeys();
-    /* |> Combokeys.bind("esc", _ => { */
-    /*      close(); */
-    /*      false; */
-    /*    }); */
   };
-
   let detachShortcuts = () => {
     Keys.get() |> Combokeys.unpause();
     getCombokeys() |> Combokeys.detach();
     combokeys := None;
   };
-
   React.useEffect1(
     _ => {
       switch (dialogs) {
