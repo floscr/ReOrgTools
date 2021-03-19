@@ -41,7 +41,9 @@ module Defaults = {
 let orgDir = Env.unsafeGet("ORG_DIR");
 
 let workspaces =
-  Env.get("WORKSPACES") |> Option.map(String.splitList(~delimiter=","));
+  Env.get("WORKSPACES")
+  |> Option.map(String.splitList(~delimiter=","))
+  |> Option.getOrElse(List.empty);
 
 let port =
   Env.get("PORT")
