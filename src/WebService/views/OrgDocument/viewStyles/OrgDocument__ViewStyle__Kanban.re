@@ -30,6 +30,7 @@ module Styles = {
       minWidth(px(300)),
       display(`flex),
       flexDirection(column),
+      backgroundColor(var(ThemeKeys.grey00)),
     ]);
 
   let columnContent =
@@ -52,6 +53,7 @@ module Styles = {
       display(`flex),
       alignItems(center),
       cursor(`pointer),
+      backgroundColor(var(ThemeKeys.bgColor)),
     ]);
 };
 
