@@ -5,6 +5,7 @@ module File = {
   type content = {
     text: string,
     ast: ReOrga.orgAst,
+    workspace: string,
   };
 
   type t =
@@ -42,6 +43,7 @@ let reducer =
       File.Fetched({
         text,
         ast: Org.parseOrga(text, {todo: Some([|"TODO"|])}),
+        workspace: "",
       });
     Update({
       ...state,
