@@ -4,37 +4,18 @@ open Relude.Globals;
 
 module Styles = {
   open Css;
-  let innerSpacing = rem(2.);
+  let innerSpacing = Theme.Spacing.xxlarge;
 
   let root = style([display(grid), gridTemplateColumns([vw(20.), auto])]);
 
   let sidebar =
     style([
-      selector(
-        "&::-webkit-scrollbar",
-        [width(px(8)), backgroundColor(rgba(0, 0, 0, `num(0.2)))],
-      ),
-      selector(
-        "&::-webkit-scrollbar-thumb",
-        [
-          unsafe("boxShadow", "inset 0 0 6px rgba(0,0,0,0.3)"),
-          unsafe("borderRadius", "10px"),
-          backgroundColor(rgba(0, 0, 0, `num(0.1))),
-        ],
-      ),
-      selector(
-        "&::-webkit-scrollbar-track",
-        [
-          unsafe("boxShadow", "inset 0 0 6px rgba(0,0,0,0.3)"),
-          unsafe("borderRadius", "10px"),
-          backgroundColor(rgba(0, 0, 0, `num(0.1))),
-        ],
-      ),
       position(fixed),
       width(vw(20.)),
       overflowY(scroll),
       height(vh(100.)),
       padding(innerSpacing),
+      backgroundColor(Theme.BaseTheme.sidebarBgColor),
     ]);
 
   let main =

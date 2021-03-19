@@ -26,6 +26,21 @@ Css.(
       margin(zero),
     ],
   ),
+  // Scrollbar
+  global("::-webkit-scrollbar", [width(px(14))]),
+  global(
+    "::-webkit-scrollbar-thumb",
+    [
+      border(px(4), solid, rgba(0, 0, 0, `num(0.0))),
+      backgroundClip(paddingBox),
+      borderRadius(px(50)),
+      backgroundColor(rgba(0, 0, 0, `num(0.15))),
+    ],
+  ),
+  global(
+    "::-webkit-scrollbar-button",
+    [width(zero), height(zero), display(none)],
+  ),
   global("img", [maxWidth(`percent(100.))]),
   global("h1, h2, h3, h4, h5, h6", [margin(zero)]),
   /* global("html, body", [height(vh(100.))]), */
