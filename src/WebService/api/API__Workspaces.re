@@ -6,7 +6,6 @@ module Response = {
     |> Relude.IO.fromResult
     |> Relude.IO.mapRight(e => {
          let readableError = Decode.ParseError.failureToDebugString(e);
-         Js.log(readableError);
          ReludeFetch.Error.decodeError({url, innerError: readableError});
        });
 };

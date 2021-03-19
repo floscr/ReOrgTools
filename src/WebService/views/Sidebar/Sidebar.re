@@ -33,12 +33,12 @@ module Styles = {
 };
 
 type mode =
-  | FileBrowser
+  | Workspaces
   | Outline;
 
 type state = {mode};
 
-let initialState = {mode: FileBrowser};
+let initialState = {mode: Workspaces};
 
 type action =
   | SwitchMode(mode);
@@ -51,12 +51,12 @@ let reducer =
   };
 
 [@react.component]
-let make = (~file) => {
+let make = (~file, ~workspaces) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
   let theme = React.useContext(CssTheme.Context.themeContext);
 
   let onFileClick = () => send(SwitchMode(Outline));
-  let onBackClick = _ => send(SwitchMode(FileBrowser));
+  let onBackClick = _ => send(SwitchMode(Workspaces));
 
   <div className=Styles.root>
     <header className=Styles.header> {"Files" |> s} </header>
@@ -67,8 +67,7 @@ let make = (~file) => {
          <button onClick=onBackClick> {"<- Go back" |> s} </button>
          <Outline ast />
        </>
-     | _ => React.null
-     /* | _ => <Files onFileClick /> */
+     | _ => <Workspaces__Component workspaces onFileClick />
      }}
   </div>;
 };

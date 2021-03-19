@@ -25,7 +25,9 @@ let showMain = (~id=?, ~header, ~send, ~state, ()) => {
   let file = id |> Option.flatMap(x => StringMap.get(x, state.filesCache));
 
   <>
-    <aside className=Styles.sidebar> <Sidebar file /> </aside>
+    <aside className=Styles.sidebar>
+      <Sidebar workspaces={state.workspaces} file />
+    </aside>
     <article className=Styles.main>
       {switch (id) {
        | Some(id) => <Controller__OrgDocument id header file send />
