@@ -58,16 +58,14 @@ function encodeJson$1(xs) {
               }), Relude_List.toArray(xs));
 }
 
-var decodeArray = Curry._1(Relude_Array.map, (function (x) {
-        return /* tuple */[
-                Curry._2(Decode_AsResult_OfParseError.tuple, Decode_AsResult_OfParseError.string, Curry._1(Decode_AsResult_OfParseError.array, decodeJson)),
-                x
-              ];
-      }));
+var decodeOne = Curry._2(Decode_AsResult_OfParseError.tuple, Decode_AsResult_OfParseError.string, Curry._1(Decode_AsResult_OfParseError.array, decodeJson));
+
+var decodeMany = Curry._1(Decode_AsResult_OfParseError.list, decodeOne);
 
 var Workspaces = {
   encodeJson: encodeJson$1,
-  decodeArray: decodeArray
+  decodeOne: decodeOne,
+  decodeMany: decodeMany
 };
 
 var Decode;
@@ -75,4 +73,4 @@ var Decode;
 exports.Decode = Decode;
 exports.$$File = $$File;
 exports.Workspaces = Workspaces;
-/* decodeArray Not a pure module */
+/* decodeOne Not a pure module */

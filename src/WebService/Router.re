@@ -45,6 +45,12 @@ let make = () => {
   let params = URLSearchParams.make(url.search);
   let header = params |> URLSearchParams.get("header");
 
+  ReludeReact.Effect.useIOOnMount(
+    API__Workspaces.Request.make(),
+    data => State.FetchWorkspacesSuccess(data) |> send,
+    error => State.FetchWorkspacesFailure(error) |> send,
+  );
+
   <main className=Styles.root>
     {switch (url.path) {
      | ["file", id] => showMain(~id, ~header, ~send, ~state, ())

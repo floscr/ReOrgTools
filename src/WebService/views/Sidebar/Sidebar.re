@@ -67,7 +67,8 @@ let make = (~file) => {
          <button onClick=onBackClick> {"<- Go back" |> s} </button>
          <Outline ast />
        </>
-     | _ => <Files onFileClick />
+     | _ => React.null
+     /* | _ => <Files onFileClick /> */
      }}
   </div>;
 };

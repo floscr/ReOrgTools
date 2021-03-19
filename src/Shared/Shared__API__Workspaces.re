@@ -44,8 +44,6 @@ module Workspaces = {
     );
   };
 
-  let decodeArray =
-    Array.map((x: Js.Json.t) =>
-      Decode.(tuple(string, array(File.decodeJson)), x)
-    );
+  let decodeOne = Decode.(tuple(string, array(File.decodeJson)));
+  let decodeMany = Decode.(list(decodeOne));
 };
