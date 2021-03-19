@@ -8,6 +8,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@glennsl/bs-json": "^5.0.2",
     "@mobily/re-date": "^0.10.0",
     "bs-bastet": "git+https://github.com/floscr/bastet.git",
     "bs-css-emotion": "^2.4.0",

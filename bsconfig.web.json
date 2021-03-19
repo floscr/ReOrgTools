@@ -7,6 +7,10 @@
     {
       "dir": "src/WebService",
       "subdirs": true
+    },
+    {
+      "dir": "src/Shared",
+      "subdirs": false
     }
   ],
   "bsc-flags": [
@@ -20,6 +24,7 @@
   ],
   "suffix": ".bs.js",
   "bs-dependencies": [
+    "@glennsl/bs-json",
     "bs-bastet",
     "bs-css",
     "bs-css-emotion",
@@ -32,5 +37,9 @@
     "relude-reason-react",
     "reorga",
   ],
+  "warnings": {
+    "number": "-33",
+    "error": "+101"
+  },
   "refmt": 3
 }
