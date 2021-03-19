@@ -12,7 +12,7 @@ module Styles = {
       paddingRight(
         `calc((`sub, innerSpacing, Theme.Spacing.scrollbarWidth)),
       ),
-      backgroundColor(Theme.BaseTheme.sidebarBgColor),
+      backgroundColor(var(ThemeKeys.grey00)),
       overflowY(scroll),
       flexGrow(1.),
       flexShrink(1.),
@@ -26,9 +26,12 @@ type mode =
   | Workspaces
   | Outline;
 
-type state = {mode};
+type state = {
+  mode,
+  x: int,
+};
 
-let initialState = {mode: Workspaces};
+let initialState = {mode: Workspaces, x: 1};
 
 type action =
   | SwitchMode(mode);
@@ -43,7 +46,6 @@ let reducer =
 [@react.component]
 let make = (~file, ~workspaces, ~workspaceIndex) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
-  let theme = React.useContext(CssTheme.Context.themeContext);
 
   let onFileClick = () => send(SwitchMode(Outline));
   let onBackClick = _ => send(SwitchMode(Workspaces));

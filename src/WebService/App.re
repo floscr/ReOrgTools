@@ -19,8 +19,8 @@ Css.(
   global(
     "body",
     [
-      backgroundColor(Theme.LightTheme.bgColor),
-      color(Theme.LightTheme.textColor),
+      backgroundColor(var(ThemeKeys.bgColor)),
+      color(var(ThemeKeys.textColor)),
       fontFamilies([`custom("IBM Plex Sans"), `sansSerif]),
       lineHeight(`abs(1.15)),
       margin(zero),
@@ -52,7 +52,7 @@ Css.(
   /* global("h4", [fontSize(rem(1.563))]), */
   /* global("h5", [fontSize(rem(1.25))]), */
   /* global("h6", [fontSize(rem(0.8))]), */
-  global("a", [color(Theme.LightTheme.textColor), fontWeight(semiBold)]),
+  global("a", [color(var(ThemeKeys.textColor)), fontWeight(semiBold)]),
   global("a:hover", [textDecoration(none)]),
 );
 

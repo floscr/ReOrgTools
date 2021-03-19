@@ -6,6 +6,14 @@ module type Colors = {
   let key: string;
 
   let bgColor: cssVar;
+  let textColor: cssVar;
+
+  let grey00: cssVar;
+  let grey10: cssVar;
+  let grey20: cssVar;
+  let grey30: cssVar;
+
+  let blue: cssVar;
 };
 
 module Theme = {
@@ -75,10 +83,17 @@ module Dom = {
     |> Option.tap(el => {
          el |> setCssVar(("--theme", ThemeModule.key));
          el |> setCssVar(ThemeModule.bgColor);
+         el |> setCssVar(ThemeModule.textColor);
+         el |> setCssVar(ThemeModule.grey00);
+         el |> setCssVar(ThemeModule.grey10);
+         el |> setCssVar(ThemeModule.grey20);
+         el |> setCssVar(ThemeModule.grey30);
+         el |> setCssVar(ThemeModule.blue);
+         ();
        });
   };
 
-  let setDefaultTheme = () => Theme.getStorage() |> setTheme;
+  let setDefaultTheme = () => Theme.getStorage() |> setTheme |> ignore;
 
   let currentTheme = () => {
     getRootHtmlElement()
@@ -129,7 +144,7 @@ module Provider = {
       () => {
         if (mounted.current) {
           theme |> Theme.setStorage;
-          theme |> Dom.setTheme;
+          theme |> Dom.setTheme |> ignore;
           ();
         } else {
           mounted.current = true;

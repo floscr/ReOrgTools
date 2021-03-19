@@ -1,3 +1,5 @@
+include LightTheme;
+
 let key = "dark";
 
-let bgColor = ("--bg-color", "#333");
+let bgColor = (ThemeKeys.bgColor, "#333");

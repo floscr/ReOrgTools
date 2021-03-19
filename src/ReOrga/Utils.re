@@ -3,6 +3,11 @@ let log = x => {
   x;
 };
 
+module Tuple2 = {
+  let head = ((a, _)) => a;
+  let tail = ((_, b)) => b;
+};
+
 let mapOption = (f, x) =>
   switch (x) {
   | Some(x) => f(x)

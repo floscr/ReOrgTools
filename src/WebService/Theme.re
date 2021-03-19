@@ -1,24 +1,3 @@
-module BaseTheme = {
-  open Css;
-  let bgColor = hex("fff");
-
-  let grey1 = hex("f5f5f5");
-  let grey2 = hex("E0E0E0");
-  let grey3 = hex("9a9a9a");
-  let grey4 = hex("333333");
-
-  let blue = hex("3d97dd");
-
-  let sidebarBgColor = grey1;
-};
-
-module LightTheme = {
-  open Css;
-  include BaseTheme;
-  let bgColor = hex("fefefe");
-  let textColor = hex("333");
-};
-
 module Spacing = {
   open Css;
 

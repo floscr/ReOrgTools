@@ -27,7 +27,7 @@ module Styles = {
       lineHeight(`abs(1.)),
       selector(
         ":focus",
-        [outlineStyle(none), color(Theme.BaseTheme.blue)],
+        [outlineStyle(none), color(var(ThemeKeys.blue))],
       ),
     ]);
 };

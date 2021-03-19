@@ -11,7 +11,7 @@ module Styles = {
   let header =
     style([
       fontWeight(medium),
-      color(Theme.BaseTheme.grey3),
+      color(var(ThemeKeys.grey20)),
       padding(Theme.Spacing.large),
       fontSize(rem(1.)),
     ]);
@@ -26,7 +26,7 @@ module Styles = {
       fontWeight(medium),
       textAlign(`left),
       transition(~duration=Theme.Timing.hoverShort, "all"),
-      selector(":hover", [backgroundColor(Theme.BaseTheme.grey2)]),
+      selector(":hover", [backgroundColor(var(ThemeKeys.grey10))]),
       selector(
         ":focus",
         [
