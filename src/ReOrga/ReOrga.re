@@ -1,3 +1,4 @@
+open Relude.Globals;
 open Utils;
 
 type error;
@@ -157,7 +158,7 @@ type orgItem =
     });
 
 let getItem = item => {
-  let t = Js.String.split(".", item.type_) |> Array.to_list;
+  let t = Js.String.split(".", item.type_) |> Array.toList;
 
   switch (t) {
   | ["section"] =>
