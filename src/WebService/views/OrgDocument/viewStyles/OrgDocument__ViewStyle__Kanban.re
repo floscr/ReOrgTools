@@ -14,7 +14,7 @@ module Styles = {
       left(zero),
       right(zero),
       bottom(zero),
-      overflowX(scroll),
+      overflowX(auto),
       overflowY(hidden),
       display(`flex),
       backgroundColor(var(ThemeKeys.grey20)),
