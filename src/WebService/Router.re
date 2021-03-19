@@ -40,6 +40,17 @@ let showMain = (~id=?, ~header, ~send, ~state, ~workspaceIndex=0, ()) => {
 
 [@react.component]
 let make = () => {
+  let dispatch = ReductiveStore.Wrapper.useDispatch();
+
+  let openFilePicker = _ =>
+    dispatch(
+      ReductiveStore.DialogsAction(
+        ReductiveStore__Dialogs.OpenDialog(
+          ReductiveStore__Dialogs.FilePicker,
+        ),
+      ),
+    );
+
   let (state, send) =
     ReludeReact.Reducer.useReducer(reducer, initialGlobalState);
   open Webapi.Url;
@@ -69,7 +80,7 @@ let make = () => {
   let bindShortcuts = () => {
     getCombokeys()
     |> Combokeys.bind("ctrl+k", _ => {
-         Js.log("Launch FilePicker");
+         openFilePicker();
          false;
        });
   };

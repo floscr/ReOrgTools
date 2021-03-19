@@ -25,6 +25,7 @@
   "suffix": ".bs.js",
   "bs-dependencies": [
     "@glennsl/bs-json",
+    "reductive",
     "bs-bastet",
     "bs-css",
     "bs-css-emotion",

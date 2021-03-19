@@ -4346,6 +4346,13 @@ reason-react@>=0.8.0:
   resolved "https://registry.yarnpkg.com/reason-react/-/reason-react-0.8.0.tgz#a55143f95a872596c92b54595e7904c03ee7c9db"
   integrity sha512-97AfK3eCF6vfP8rnbq3k6GgXsZt//OiPMINTUk5luJ8W0Wt/JaYsDG6eWKP8Zx3gPpxSU1EPjB1pUm6o6fBnFA==
 
+reductive@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/reductive/-/reductive-2.1.1.tgz#de39ccf6326a7713e563e35c5ad233917c554f21"
+  integrity sha512-i5xctIaWc3yyQ1bAGT9d4XmK1Z2nWrY9XWQzYqGbHOnTcxJE1AXq4ZaqDQLOpUYYxJz9Uhl+1TQz6svIB/Rc7g==
+  dependencies:
+    use-subscription "^1.0.0"
+
 referrer-policy@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/referrer-policy/-/referrer-policy-1.2.0.tgz#b99cfb8b57090dc454895ef897a4cc35ef67a98e"
@@ -5318,6 +5325,13 @@ url@^0.11.0:
   dependencies:
     punycode "1.3.2"
     querystring "0.2.0"
+
+use-subscription@^1.0.0:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/use-subscription/-/use-subscription-1.5.1.tgz#73501107f02fad84c6dd57965beb0b75c68c42d1"
+  integrity sha512-Xv2a1P/yReAjAbhylMfFplFKj9GssgTwN7RlcTxBujFQcloStWNDQdc4g4NRWH9xS4i/FDk04vQBptAXoF3VcA==
+  dependencies:
+    object-assign "^4.1.1"
 
 use@^3.1.0:
   version "3.1.1"

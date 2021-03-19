@@ -1,5 +1,8 @@
 open ReactUtils;
+
 open Relude.Globals;
+
+open ReductiveStore;
 
 module Styles = {
   open Css;
@@ -28,35 +31,17 @@ module Styles = {
     ]);
 };
 
-type dialog =
-  | FilePicker;
-
-type state = {dialogs: array(dialog)};
-
-let initialState = {dialogs: [|FilePicker|]};
-
-type action =
-  | OpenDialog(dialog)
-  | CloseDialogs;
-
-let reducer =
-    (state: state, action: action): ReludeReact.Reducer.update(action, state) =>
-  switch (action) {
-  | OpenDialog(x) =>
-    Update({...state, dialogs: Array.append(x, state.dialogs)})
-  | CloseDialogs => Update({dialogs: [||]})
-  | _ => NoUpdate
-  };
-
-let renderDialog =
-  fun
-  | FilePicker => <Dialogs__FilePicker />;
-
 [@react.component]
 let make = () => {
-  let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
+  open ReductiveStore__Dialogs;
+
+  let dispatch = Wrapper.useDispatch();
+  let dialogs = Wrapper.useSelector(Selector.DialogsStore.dialogs);
+
+  let close = _ => dispatch(DialogsAction(CloseDialogs));
 
   let combokeys: ref(option(Combokeys.t)) = ref(None);
+
   let getCombokeys = () =>
     switch (combokeys^) {
     | None =>
@@ -71,10 +56,11 @@ let make = () => {
   let bindShortcuts = () => {
     getCombokeys()
     |> Combokeys.bind("esc", _ => {
-         send(CloseDialogs);
+         close();
          false;
        });
   };
+
   let detachShortcuts = () => {
     let c = getCombokeys();
     c |> Combokeys.detach();
@@ -83,16 +69,16 @@ let make = () => {
 
   React.useEffect1(
     _ => {
-      switch (state.dialogs) {
+      switch (dialogs) {
       | [||] => detachShortcuts() |> (_ => None)
       | _ => bindShortcuts() |> (_ => None)
       };
       Some(() => detachShortcuts());
     },
-    [|Array.length(state.dialogs)|],
+    [|Array.length(dialogs)|],
   );
 
-  Option.some(state.dialogs)
+  Option.some(dialogs)
   |> Option.filter(Array.isNotEmpty)
   |> Option.flatMap(_ =>
        Webapi.Dom.(Document.querySelector("body", document))
@@ -101,15 +87,23 @@ let make = () => {
        () => React.null,
        ReactDOMRe.createPortal(
          <div className=Styles.root>
-           {state.dialogs
+           {dialogs
             |> Array.mapWithIndex((x, i) =>
                  (
                    switch (x) {
-                   | FilePicker => <Dialogs__FilePicker />
-                   | _ => React.null
+                   | FilePicker =>
+                     Some((Dialogs__FilePicker.id, <Dialogs__FilePicker />))
+                   | _ => None
                    }
                  )
-                 |> (x => <div className=Styles.dialog> x </div>)
+                 |> Option.map(((id, x)) =>
+                      <div
+                        className=Styles.dialog
+                        key={id ++ (i |> Int.toString)}>
+                        x
+                      </div>
+                    )
+                 |> Option.getOrElse(React.null)
                )
             |> React.array}
          </div>,
