@@ -21,25 +21,33 @@ module Styles = {
         "> * + *",
         [borderRight(px(1), `solid, var(ThemeKeys.grey10))],
       ),
+      backgroundColor(var(ThemeKeys.grey20)),
     ]);
 
   let column =
     style([
       overflow(hidden),
       flexGrow(1.),
-      minWidth(px(300)),
+      width(vw(80.)),
+      maxWidth(px(300)),
       display(`flex),
       flexDirection(column),
       backgroundColor(var(ThemeKeys.grey00)),
     ]);
 
   let columnContent =
-    style([padding(Spacing.medium), flexGrow(1.), overflowY(auto)]);
+    style([
+      padding(Spacing.medium),
+      flexGrow(1.),
+      overflowY(auto),
+      backgroundColor(var(ThemeKeys.grey00)),
+    ]);
 
   let columnHeader =
     style([
       padding2(~h=Spacing.medium, ~v=Spacing.large),
       borderBottom(px(1), `solid, var(ThemeKeys.grey10)),
+      borderRight(px(1), `solid, var(ThemeKeys.grey10)),
       backgroundColor(var(ThemeKeys.bgColor)),
     ]);
 };

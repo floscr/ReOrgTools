@@ -4,7 +4,7 @@ open OrgDocument__Utils;
 
 module Styles = {
   open Css;
-  let root = style([position(relative)]);
+  let root = style([position(relative), flexGrow(1.), flexShrink(1.)]);
 
   let mainWrapper =
     style([

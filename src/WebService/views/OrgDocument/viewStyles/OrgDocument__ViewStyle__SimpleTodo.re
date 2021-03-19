@@ -17,7 +17,7 @@ module Styles = {
       justifyContent(flexStart),
       cursor(`pointer),
       backgroundColor(var(ThemeKeys.bgColor)),
-      textAlign(left),
+      textAlign(`left),
     ]);
   let checkbox = style([marginRight(FixedTheme.Spacing.small)]);
 };
