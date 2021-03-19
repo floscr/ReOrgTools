@@ -99,6 +99,32 @@ let reducer =
   | NoOp => NoUpdate
   };
 
+module Item = {
+  [@react.component]
+  let make = (~isSelected: bool, ~value: string, ~onClick: unit => unit) => {
+    let rootRef: React.ref(Js.Nullable.t(Dom.element)) =
+      React.useRef(Js.Nullable.null);
+
+    React.useEffect1(
+      () => {
+        if (isSelected) {
+          ReactUtils.scrollIntoViewIfNeeded(rootRef);
+        };
+
+        None;
+      },
+      [|isSelected|],
+    );
+
+    <li
+      ref={ReactDOMRe.Ref.domRef(rootRef)}
+      className={Styles.resultsItem(~isSelected)}
+      onClick={ReactUtils.omit(onClick)}>
+      {value |> s}
+    </li>;
+  };
+};
+
 [@react.component]
 let make = (~close) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
@@ -193,11 +219,13 @@ let make = (~close) => {
               ((a, {name}: Shared__API__Workspaces.File.t), i) => {
               let isSelected =
                 state.selection |> Option.filter(Int.eq(i)) |> Option.isSome;
-              <li
-                key={i |> Int.toString}
-                className={Styles.resultsItem(~isSelected)}>
-                {name |> Filename.chop_extension |> s}
-              </li>;
+              <React.Fragment key={i |> Int.toString}>
+                <Item
+                  isSelected
+                  onClick={() => Js.log("foo")}
+                  value={name |> Filename.chop_extension}
+                />
+              </React.Fragment>;
             })
          |> React.array}
       </ul>
