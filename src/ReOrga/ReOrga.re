@@ -261,19 +261,22 @@ module Org = {
     | _ => None
     };
 
-  let rec filterAllHeadlines = (xs, fn) =>
-    Js.Array.reduce(
-      (acc, cur) => {
-        switch (fn(cur)) {
-        | Headline(_) as x => List.append(acc, [x])
-        | Section({children}) =>
-          Belt.List.concat(acc, filterAllHeadlines(children, fn))
-        | _ => acc
-        }
-      },
-      [],
-      xs,
-    );
+  let rec narrowToHeadlineWithText = (~text, xs: array(sectionAst)) =>
+    xs
+    |> Array.foldLeft(
+         (acc, cur) => {
+           acc
+           |> Option.orElseLazy(~fallback=() =>
+                switch (getItem(cur)) {
+                | Headline({content}) when content === text => Some(cur)
+                | Section({children}) =>
+                  narrowToHeadlineWithText(~text, children)
+                | _ => acc
+                }
+              )
+         },
+         None,
+       );
 
   let defaultOptions = {todo: Some([|"TODO"|])};
   [@bs.module "orga"]
