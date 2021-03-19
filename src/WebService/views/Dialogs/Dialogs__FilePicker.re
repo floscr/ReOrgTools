@@ -175,6 +175,7 @@ let make = (~close) => {
   let onSubmit = (~index=None, results) => {
     results
     |> Array.at(index |> Option.getOrElse(0))
+    |> Option.orElse(~fallback=results |> Array.head)
     |> Option.flatMap(
          ((_, workspaceName, {name}: Shared__API__Workspaces.File.t)) =>
          workspaces
