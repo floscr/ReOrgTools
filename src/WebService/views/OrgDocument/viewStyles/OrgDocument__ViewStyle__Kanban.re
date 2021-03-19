@@ -42,19 +42,6 @@ module Styles = {
       borderBottom(px(1), `solid, var(ThemeKeys.grey10)),
       backgroundColor(var(ThemeKeys.bgColor)),
     ]);
-
-  let item =
-    style([
-      width(pct(100.)),
-      marginBottom(FixedTheme.Spacing.medium),
-      padding(FixedTheme.Spacing.medium),
-      border(px(1), `solid, var(ThemeKeys.grey10)),
-      borderRadius(FixedTheme.BorderRadius.small),
-      display(`flex),
-      alignItems(center),
-      cursor(`pointer),
-      backgroundColor(var(ThemeKeys.bgColor)),
-    ]);
 };
 
 type mapT = StringMap.t(array(ReOrga.sectionAst));
@@ -90,14 +77,20 @@ let make = (~xs: array(ReOrga.sectionAst)) => {
     {groupByTodo(acc, xs)
      |> StringMap.toArray
      |> Array.map(((head, tail)) => {
-          <div className=Styles.column>
+          <div key={"kanban-column-" ++ head} className=Styles.column>
             <header className=Styles.columnHeader> {head |> s} </header>
             <section className=Styles.columnContent>
               {tail
-               |> Array.map((cur: ReOrga.sectionAst) =>
+               |> Array.mapWithIndex((cur: ReOrga.sectionAst, i) =>
                     switch (cur |> getItem) {
-                    | Headline({content}) =>
-                      <div className=Styles.item> {content |> s} </div>
+                    | Headline({content, level, position, children}) =>
+                      OrgDocument__ViewStyle__SimpleTodo.renderHeadline(
+                        ~position,
+                        ~level,
+                        ~properties=None,
+                        ~showTodo=false,
+                        children,
+                      )
                     | _ => React.null
                     }
                   )

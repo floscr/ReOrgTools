@@ -14,13 +14,22 @@ module Styles = {
       borderRadius(FixedTheme.BorderRadius.small),
       display(`flex),
       alignItems(center),
+      justifyContent(flexStart),
       cursor(`pointer),
+      backgroundColor(var(ThemeKeys.bgColor)),
+      textAlign(left),
     ]);
   let checkbox = style([marginRight(FixedTheme.Spacing.small)]);
 };
 
 let rec renderHeadline =
-        (~position, ~level, ~properties, xs: array(ReOrga.sectionAst)) => {
+        (
+          ~position,
+          ~level,
+          ~properties,
+          ~showTodo=true,
+          xs: array(ReOrga.sectionAst),
+        ) => {
   module P = OrgDocument__Component__Headline;
 
   let {content}: P.headlineProps = xs |> P.makeHeadlineProps;
@@ -32,7 +41,7 @@ let rec renderHeadline =
      |> Array.mapWithIndex((x, i) => {
           OrgDocument__Component__Text.(
             switch (getItem(x)) {
-            | Todo({keyword}) =>
+            | Todo({keyword}) when showTodo =>
               <input type_="checkbox" className=Styles.checkbox />
             | PlainText(_) => renderPlainText(x)
             | Link(x) => renderLink(~attachmentId=atid, x)
