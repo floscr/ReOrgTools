@@ -8,6 +8,14 @@ module Styles = {
     style([listStyleType(none), margin(zero), padding(zero)]);
   let workspaceListItem = style([margin(zero)]);
 
+  let header =
+    style([
+      fontWeight(medium),
+      color(Theme.BaseTheme.grey3),
+      padding(Theme.Spacing.large),
+      fontSize(rem(1.)),
+    ]);
+
   let button =
     style([
       padding2(~v=Theme.Spacing.xsmall, ~h=Theme.Spacing.large),
@@ -65,7 +73,9 @@ let make = (~workspaces, ~workspaceIndex, ~onFileClick) => {
     xs
     |> List.mapWithIndex(((workspace, files), index) =>
          <li className=Styles.workspaceListItem key=workspace>
-           {workspace |> s}
+           <header className=Styles.header>
+             {workspace |> Filename.basename |> s}
+           </header>
            {renderFiles(~onClick, ~index, files)}
          </li>
        )

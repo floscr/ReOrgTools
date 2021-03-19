@@ -19,14 +19,6 @@ module Styles = {
       flexShrink(1.),
     ]);
 
-  let header =
-    style([
-      fontWeight(medium),
-      color(Theme.BaseTheme.grey3),
-      padding(Theme.Spacing.large),
-      fontSize(rem(1.)),
-    ]);
-
   let backIcon =
     style([position(absolute), top(innerSpacing), right(innerSpacing)]);
 };
@@ -58,7 +50,6 @@ let make = (~file, ~workspaces, ~workspaceIndex) => {
   let onBackClick = _ => send(SwitchMode(Workspaces));
 
   <div className=Styles.root>
-    <header className=Styles.header> {"Files" |> s} </header>
     <IconButton style=Styles.backIcon id="arrow_back" />
     {switch (state.mode, file) {
      | (Outline, Some(State.File.Fetched({ast}))) =>

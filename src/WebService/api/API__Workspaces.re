@@ -20,7 +20,6 @@ module Request: Request = {
   let url = "http://localhost:4000/workspaces";
 
   let make = () => {
-    Js.log("Fetching workspaces");
     ReludeFetch.get(url)
     >>= ReludeFetch.Response.StatusCode.ensure2xx
     >>= ReludeFetch.Response.json
