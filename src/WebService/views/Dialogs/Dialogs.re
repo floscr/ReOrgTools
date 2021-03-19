@@ -57,10 +57,13 @@ let make = () => {
     Keys.getCombokeys() |> Combokeys.pause();
 
     getCombokeys()
-    |> Combokeys.bind("esc", _ => {
-         close();
-         false;
-       });
+    |> Combokeys.bindArray(
+         [|"cmd+k", "ctrl+k", "esc"|],
+         _ => {
+           close();
+           false;
+         },
+       );
   };
 
   let detachShortcuts = () => {

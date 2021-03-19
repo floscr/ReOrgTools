@@ -67,11 +67,13 @@ let make = () => {
 
   let bindShortcuts = () => {
     Keys.getCombokeys()
-    |> Combokeys.bind("ctrl+k", _ => {
-         Js.log("Open File Picker");
-         openFilePicker();
-         false;
-       });
+    |> Combokeys.bindArray(
+         [|"cmd+k", "ctrl+k"|],
+         _ => {
+           openFilePicker();
+           false;
+         },
+       );
   };
   let detachShortcuts = () => {
     let c = Keys.getCombokeys();
