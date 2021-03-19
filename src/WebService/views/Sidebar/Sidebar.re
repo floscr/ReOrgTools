@@ -1,6 +1,5 @@
 open ReactUtils;
 open Relude.Globals;
-open ReactUtils;
 
 module Styles = {
   open Css;
