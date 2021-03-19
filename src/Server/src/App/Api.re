@@ -7,7 +7,8 @@ type getDirEntriesError =
   | ReadEntryError({
       name: string,
       error: Error.t,
-    });
+    })
+  | ReadWordkspaceError;
 
 let getFile = path =>
   IO.Suspend(() => Config.log({j|Reading from file "$path"|j}))

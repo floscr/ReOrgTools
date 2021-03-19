@@ -21,17 +21,17 @@ module Styles = {
     style([gridColumnStart(2), padding(innerSpacing), overflow(hidden)]);
 };
 
-let showMain = (~id=?, ~header, ~send, ~state, ()) => {
+let showMain = (~id=?, ~header, ~send, ~state, ~workspaceIndex=0, ()) => {
   let file = id |> Option.flatMap(x => StringMap.get(x, state.filesCache));
 
   <>
     <aside className=Styles.sidebar>
-      <Sidebar workspaces={state.workspaces} file />
+      <Sidebar workspaces={state.workspaces} workspaceIndex file />
     </aside>
     <article className=Styles.main>
       {switch (id) {
-       | Some(id) => <Controller__OrgDocument id header file send />
-
+       | Some(id) =>
+         <Controller__OrgDocument id header file send workspaceIndex />
        | _ => React.null
        }}
     </article>
@@ -55,7 +55,10 @@ let make = () => {
 
   <main className=Styles.root>
     {switch (url.path) {
-     | ["file", id] => showMain(~id, ~header, ~send, ~state, ())
+     | ["file", workspaceIndex, id] =>
+       let workspaceIndex =
+         workspaceIndex |> String.toInt |> Option.getOrElse(0);
+       showMain(~id, ~header, ~send, ~state, ~workspaceIndex, ());
      | _ => showMain(~header, ~send, ~state, ())
      }}
   </main>;

@@ -51,7 +51,7 @@ let reducer =
   };
 
 [@react.component]
-let make = (~file, ~workspaces) => {
+let make = (~file, ~workspaces, ~workspaceIndex) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
   let theme = React.useContext(CssTheme.Context.themeContext);
 
@@ -67,7 +67,7 @@ let make = (~file, ~workspaces) => {
          <button onClick=onBackClick> {"<- Go back" |> s} </button>
          <Outline ast />
        </>
-     | _ => <Workspaces__Component workspaces onFileClick />
+     | _ => <Workspaces__Component workspaces workspaceIndex onFileClick />
      }}
   </div>;
 };

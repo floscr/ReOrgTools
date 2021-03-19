@@ -33,26 +33,20 @@ module Styles = {
     ]);
 };
 
-let makeName = name =>
-  name
-  |> String.splitAsArray(~delimiter=".org")
-  |> Array.head
-  |> Option.getOrElse(name);
-
 let fileCompare =
   Ord.by(
     ({name}: Shared__API__Workspaces.File.t) => name |> String.toLowerCase,
     String.compare,
   );
 
-let renderFiles = (~onClick, xs) =>
+let renderFiles = (~onClick, ~index, xs) =>
   xs
   |> Array.reject(({name}: Shared__API__Workspaces.File.t) =>
        String.contains(~search=".sync-conflict", name)
      )
   |> Array.sortBy(fileCompare)
   |> Array.map(({name}: Shared__API__Workspaces.File.t) => {
-       let base = name |> makeName;
+       let base = name |> Filename.chop_extension;
        <button key=name className=Styles.button onClick={_ => onClick(base)}>
          {base |> s}
        </button>;
@@ -60,19 +54,20 @@ let renderFiles = (~onClick, xs) =>
   |> React.array;
 
 [@react.component]
-let make = (~workspaces, ~onFileClick) => {
-  let onClick = base => {
-    ReasonReactRouter.push("/file/" ++ base);
+let make = (~workspaces, ~workspaceIndex, ~onFileClick) => {
+  let onClick = file => {
+    let index = Int.toString(workspaceIndex);
+    ReasonReactRouter.push({j|/file/$index/$file|j});
     onFileClick();
   };
   switch (workspaces) {
   | [] => "No files found" |> s
   | xs =>
     xs
-    |> List.map(((workspace, files)) =>
+    |> List.mapWithIndex(((workspace, files), index) =>
          <li className=Styles.workspaceListItem key=workspace>
            {workspace |> s}
-           {renderFiles(~onClick, files)}
+           {renderFiles(~onClick, ~index, files)}
          </li>
        )
     |> List.toArray

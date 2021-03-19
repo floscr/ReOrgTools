@@ -4,7 +4,7 @@ open Relude.Globals;
 open ReOrga;
 
 [@react.component]
-let make = (~id, ~header, ~send, ~file) => {
+let make = (~id, ~header, ~send, ~file, ~workspaceIndex) => {
   ReludeReact.Effect.useEffect1WithEq(
     () => {
       State.FetchPagesProgress(id) |> send;
