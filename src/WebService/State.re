@@ -15,9 +15,9 @@ module File = {
     | Forbidden;
 };
 
-type globalState = {files: StringMap.t(File.t)};
+type globalState = {filesCache: StringMap.t(File.t)};
 
-let initialGlobalState = {files: StringMap.make()};
+let initialGlobalState = {filesCache: StringMap.make()};
 
 type action =
   | FetchPagesProgress(string)
@@ -45,7 +45,7 @@ let reducer =
       });
     Update({
       ...state,
-      files:
+      filesCache:
         StringMap.update(
           id,
           Option.foldLazy(
@@ -54,20 +54,20 @@ let reducer =
             | File.Fetched(x) => Some(file)
             | _ => Some(file),
           ),
-          state.files,
+          state.filesCache,
         ),
     });
   | FetchPagesProgress(id) =>
     Update({
       ...state,
-      files:
+      filesCache:
         StringMap.update(
           id,
           Option.foldLazy(
             _ => Some(File.InProgress),
             _ => Some(File.InProgress),
           ),
-          state.files,
+          state.filesCache,
         ),
     })
   | NoOp => NoUpdate

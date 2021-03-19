@@ -22,7 +22,7 @@ module Styles = {
 };
 
 let showMain = (~id=?, ~header, ~send, ~state, ()) => {
-  let file = id |> Option.flatMap(x => StringMap.get(x, state.files));
+  let file = id |> Option.flatMap(x => StringMap.get(x, state.filesCache));
 
   <>
     <aside className=Styles.sidebar> <Sidebar file /> </aside>
