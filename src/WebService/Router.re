@@ -45,19 +45,6 @@ let showMain = (~id=?, ~header, ~workspaceIndex=0, ()) => {
 let make = () => {
   let dispatch = State.Store.useDispatch();
 
-  dispatch(
-    State.DialogsAction(
-      State__Dialogs.OpenDialog(
-        State__Dialogs.Lightbox({
-          index: None,
-          items: [|
-            "http://localhost:4000/attachments/6d/cfa2c7-caee-481b-9d3d-7eb1f5696d6c/_20210406_12103331e7bd307e09c6ae7b8809ff6f49f3e4.png",
-          |],
-        }),
-      ),
-    ),
-  );
-
   let openFilePicker = _ =>
     dispatch(
       State.DialogsAction(
