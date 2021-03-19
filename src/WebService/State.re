@@ -21,26 +21,19 @@ module File = {
   let makeForageId = (~id, ~workspace) => {j|$workspace/$id|j};
 };
 
-type globalState = {
-  workspaces: Shared__API__Workspaces.Workspaces.t,
-  filesCache: StringMap.t(File.t),
-};
+type globalState = {filesCache: StringMap.t(File.t)};
 
-let initialGlobalState = {workspaces: [], filesCache: StringMap.make()};
+let initialGlobalState = {filesCache: StringMap.make()};
 
 type action =
-  | FetchWorkspacesSuccess(Shared__API__Workspaces.Workspaces.t)
-  | FetchWorkspacesFailure(ReludeFetch.Error.t(string))
   | FetchPagesProgress(string)
   | FetchPagesSuccess(string, int, Shared__API__File.File.t)
   | FetchPagesFailure(string, ReludeFetch.Error.t(string))
   | CachePage(string)
   | NoOp;
 
-let actionToName =
+let actiontoname =
   fun
-  | FetchWorkspacesSuccess(_) => "FetchWorkspacesSuccess"
-  | FetchWorkspacesFailure(_) => "FetchWorkspacesFailure"
   | FetchPagesProgress(_) => "FetchPagesProgress"
   | FetchPagesSuccess(_) => "FetchPagesSuccess"
   | FetchPagesFailure(_) => "FetchPagesFailure"
@@ -52,7 +45,6 @@ let reducer =
     : ReludeReact.Reducer.update(action, globalState) => {
   /* Js.log2(state, action |> actionToName); */
   switch (action) {
-  | FetchWorkspacesSuccess(workspaces) => Update({...state, workspaces})
   | FetchPagesSuccess(id, workspaceIndex, {text, mtimeMs}) =>
     let file =
       File.Fetched({

@@ -56,11 +56,11 @@ let make = () => {
   let bindShortcuts = () => {
     Keys.getCombokeys() |> Combokeys.pause();
 
-    getCombokeys()
-    |> Combokeys.bind("esc", _ => {
-         close();
-         false;
-       });
+    getCombokeys();
+    /* |> Combokeys.bind("esc", _ => { */
+    /*      close(); */
+    /*      false; */
+    /*    }); */
   };
 
   let detachShortcuts = () => {

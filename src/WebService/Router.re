@@ -34,9 +34,7 @@ let showMain = (~id=?, ~header, ~send, ~state, ~workspaceIndex=0, ()) => {
   let file = id |> Option.flatMap(x => StringMap.get(x, state.filesCache));
 
   <>
-    <aside className=Styles.sidebar>
-      <Sidebar workspaces={state.workspaces} workspaceIndex file />
-    </aside>
+    <aside className=Styles.sidebar> <Sidebar workspaceIndex file /> </aside>
     <article className=Styles.main>
       {switch (id) {
        | Some(id) =>
@@ -60,6 +58,18 @@ let make = () => {
       ),
     );
 
+  ReductiveStore__Workspaces.(
+    ReludeReact.Effect.useIOOnMount(
+      Request.make(),
+      data =>
+        ReductiveStore.WorkspaceAction(Store.FetchWorkspacesSuccess(data))
+        |> dispatch,
+      error =>
+        ReductiveStore.WorkspaceAction(Store.FetchWorkspacesFailure(error))
+        |> dispatch,
+    )
+  );
+
   let (state, send) =
     ReludeReact.Reducer.useReducer(reducer, initialGlobalState);
   open Webapi.Url;
@@ -67,12 +77,6 @@ let make = () => {
   let url = ReasonReactRouter.useUrl();
   let params = URLSearchParams.make(url.search);
   let header = params |> URLSearchParams.get("header");
-
-  ReludeReact.Effect.useIOOnMount(
-    API__Workspaces.Request.make(),
-    data => State.FetchWorkspacesSuccess(data) |> send,
-    error => State.FetchWorkspacesFailure(error) |> send,
-  );
 
   let bindShortcuts = () => {
     Keys.getCombokeys()

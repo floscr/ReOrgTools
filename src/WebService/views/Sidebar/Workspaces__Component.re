@@ -1,5 +1,6 @@
 open ReactUtils;
 open Relude.Globals;
+open ReductiveStore;
 
 module Styles = {
   open Css;
@@ -62,7 +63,10 @@ let renderFiles = (~onClick, ~index, xs) =>
   |> React.array;
 
 [@react.component]
-let make = (~workspaces, ~workspaceIndex, ~onFileClick) => {
+let make = (~workspaceIndex, ~onFileClick) => {
+  open ReductiveStore__Workspaces;
+  let workspaces = Wrapper.useSelector(Selector.WorkspacesStore.workspaces);
+
   let onClick = (file, index) => {
     ReasonReactRouter.push({j|/file/$index/$file|j});
     onFileClick();

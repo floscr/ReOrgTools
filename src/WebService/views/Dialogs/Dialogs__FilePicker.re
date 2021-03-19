@@ -47,9 +47,8 @@ let make = (~close) => {
   let bindShortcuts = _ => {
     getCombokeys()
     |> Combokeys.bindGlobalArray(
-         [|"cmd+k", "ctrl+k"|],
+         [|"cmd+k", "ctrl+k", "esc"|],
          _ => {
-           Js.log("What");
            close();
            false;
          },
@@ -76,8 +75,17 @@ let make = (~close) => {
       name=id
       value=query
       onChange
-      onBlur={_ => close() |> ignore}
+      onBlur={e => e->ReactEvent.Synthetic.preventDefault}
       placeholder="Pick File"
     />
+    <button
+      onClick={e => {
+        Js.log("Foo");
+
+        ReactEvent.Mouse.preventDefault(e);
+        ReactEvent.Mouse.stopPropagation(e);
+      }}>
+      {"Foo" |> s}
+    </button>
   </div>;
 };

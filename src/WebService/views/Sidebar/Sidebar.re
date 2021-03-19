@@ -44,9 +44,8 @@ let reducer =
   };
 
 [@react.component]
-let make = (~file, ~workspaces, ~workspaceIndex) => {
+let make = (~file, ~workspaceIndex) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
-
   let onFileClick = () => send(SwitchMode(Outline));
   let onBackClick = _ => send(SwitchMode(Workspaces));
 
@@ -58,7 +57,7 @@ let make = (~file, ~workspaces, ~workspaceIndex) => {
          <button onClick=onBackClick> {"<- Go back" |> s} </button>
          <Outline ast />
        </>
-     | _ => <Workspaces__Component workspaces workspaceIndex onFileClick />
+     | _ => <Workspaces__Component workspaceIndex onFileClick />
      }}
   </div>;
 };
