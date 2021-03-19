@@ -4,6 +4,7 @@ module BaseTheme = {
 
   let grey1 = hex("f5f5f5");
   let grey2 = hex("E0E0E0");
+  let grey3 = hex("9a9a9a");
   let grey4 = hex("333333");
 
   let sidebarBgColor = grey1;
