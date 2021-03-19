@@ -29,3 +29,6 @@ let getDirFiles = dir =>
          Array.map(({name}: ReadDir.DirectoryEntry.t) => name, xs)
        )
      );
+
+let getWorkspaces = (~workspaces=Config.workspaces) =>
+  workspaces |> List.map(getDirFiles);
