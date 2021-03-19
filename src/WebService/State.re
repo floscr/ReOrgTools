@@ -3,18 +3,22 @@ open Relude.Globals;
 
 module File = {
   type content = {
+    id: string,
     text: string,
     ast: ReOrga.orgAst,
-    workspace: string,
+    workspace: int,
     mtimeMs: float,
   };
 
   type t =
+    | Cached(content)
     | Fetched(content)
     | InProgress
     | Empty
     | NotFound
     | Forbidden;
+
+  let makeForageId = (~id, ~workspace) => {j|$workspace/$id|j};
 };
 
 type globalState = {
@@ -28,8 +32,9 @@ type action =
   | FetchWorkspacesSuccess(Shared__API__Workspaces.Workspaces.t)
   | FetchWorkspacesFailure(ReludeFetch.Error.t(string))
   | FetchPagesProgress(string)
-  | FetchPagesSuccess(string, Shared__API__File.File.t)
+  | FetchPagesSuccess(string, int, Shared__API__File.File.t)
   | FetchPagesFailure(string, ReludeFetch.Error.t(string))
+  | CachePage(string)
   | NoOp;
 
 let actionToName =
@@ -39,6 +44,7 @@ let actionToName =
   | FetchPagesProgress(_) => "FetchPagesProgress"
   | FetchPagesSuccess(_) => "FetchPagesSuccess"
   | FetchPagesFailure(_) => "FetchPagesFailure"
+  | CachePage(_) => "FetchCachePage"
   | NoOp => "NoOp";
 
 let reducer =
@@ -47,14 +53,22 @@ let reducer =
   /* Js.log2(state, action |> actionToName); */
   switch (action) {
   | FetchWorkspacesSuccess(workspaces) => Update({...state, workspaces})
-  | FetchPagesSuccess(id, {text, mtimeMs}) =>
+  | FetchPagesSuccess(id, workspaceIndex, {text, mtimeMs}) =>
     let file =
       File.Fetched({
+        id,
         text,
         ast: Org.parseOrga(text, {todo: Some([|"TODO"|])}),
-        workspace: "",
+        workspace: workspaceIndex,
         mtimeMs,
       });
+
+    Localforage.Localforage_IO.set(
+      File.makeForageId(~id, ~workspace=workspaceIndex),
+      text,
+    )
+    |> IO.unsafeRunAsync(ignore);
+
     Update({
       ...state,
       filesCache:
@@ -69,6 +83,7 @@ let reducer =
           state.filesCache,
         ),
     });
+
   | FetchPagesProgress(id) =>
     Update({
       ...state,
