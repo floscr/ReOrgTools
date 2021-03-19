@@ -1,6 +1,7 @@
 module Fonts = {
   open Css;
 
+  let small = rem(0.9);
   let regular = rem(1.);
   let large = rem(1.2);
 };

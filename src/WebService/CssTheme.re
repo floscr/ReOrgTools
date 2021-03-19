@@ -10,9 +10,11 @@ module type Colors = {
 
   let grey00: cssVar;
   let grey10: cssVar;
+  let grey15: cssVar;
   let grey20: cssVar;
-  let grey30: cssVar;
+  let grey40: cssVar;
 
+  let accentMain: cssVar;
   let blue: cssVar;
 };
 
@@ -86,8 +88,10 @@ module Dom = {
          el |> setCssVar(ThemeModule.textColor);
          el |> setCssVar(ThemeModule.grey00);
          el |> setCssVar(ThemeModule.grey10);
+         el |> setCssVar(ThemeModule.grey15);
          el |> setCssVar(ThemeModule.grey20);
-         el |> setCssVar(ThemeModule.grey30);
+         el |> setCssVar(ThemeModule.grey40);
+         el |> setCssVar(ThemeModule.accentMain);
          el |> setCssVar(ThemeModule.blue);
          ();
        });
