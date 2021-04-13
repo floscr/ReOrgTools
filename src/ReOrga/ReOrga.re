@@ -114,6 +114,8 @@ type orgItem =
       level: int,
       position: positionAst,
       tags: array(string),
+      actionable: bool,
+      keyword: option(string),
     })
   | Paragraph({children: array(sectionAst)})
   | PlainText(plainText)
@@ -175,6 +177,8 @@ let getItem = item => {
       level: item.level,
       position: item.position,
       tags: nullableOrEmptyArray(item.tags),
+      actionable: item.actionable,
+      keyword: item.keyword |> Js.Nullable.toOption,
     })
   | ["todo"] =>
     Todo({

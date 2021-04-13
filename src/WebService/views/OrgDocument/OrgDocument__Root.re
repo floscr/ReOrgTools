@@ -4,6 +4,7 @@ open OrgDocument__Utils;
 
 module Styles = {
   open Css;
+  let root = style([position(relative)]);
 
   let mainWrapper =
     style([
@@ -64,13 +65,14 @@ let make = (~ast: ReOrga.orgAst, ~header: option(string)) => {
     |> Option.map(x => [|x.parent|])
     |> Option.getOrElse(children);
 
-  Js.Dict.get(properties, "reorg_view")
-  |> (
-    fun
-    | Some(x) when x === "SIMPLE_TODO" =>
-      <div className=Styles.mainWrapper>
-        <OrgDocument__ViewStyle__SimpleTodo ast />
-      </div>
-    | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div>
-  );
+  <div className=Styles.root> <OrgDocument__ViewStyle__Kanban xs /> </div>;
+  /* Js.Dict.get(properties, "reorg_view") */
+  /* |> ( */
+  /*   fun */
+  /*   | Some(x) when x === "SIMPLE_TODO" => */
+  /*     <div className=Styles.mainWrapper> */
+  /*       <OrgDocument__ViewStyle__SimpleTodo ast /> */
+  /*     </div> */
+  /*   | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div> */
+  /* ); */
 };

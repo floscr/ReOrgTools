@@ -26,7 +26,8 @@ module Styles = {
       flexDirection(column),
     ]);
 
-  let main = style([gridColumnStart(2), padding(innerSpacing)]);
+  let main =
+    style([gridColumnStart(2), display(`flex), flexDirection(column)]);
 };
 
 let showMain = (~id=?, ~header, ~workspaceIndex=0, ()) => {
