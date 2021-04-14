@@ -9,14 +9,16 @@ module Styles = {
 
   let root =
     style([
-      position(absolute),
-      top(zero),
-      left(zero),
-      right(zero),
-      bottom(zero),
+      /* position(absolute), */
+      /* top(zero), */
+      /* left(zero), */
+      /* right(zero), */
+      /* bottom(zero), */
       overflowX(auto),
       overflowY(hidden),
       display(`flex),
+      flexGrow(1.),
+      flexShrink(1.),
       backgroundColor(var(ThemeKeys.grey20)),
     ]);
 

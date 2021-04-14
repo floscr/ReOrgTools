@@ -16,10 +16,50 @@ module Styles = {
       flexGrow(1.),
       display(`flex),
       backgroundColor(var(ThemeKeys.bgColor)),
+      justifyContent(spaceEvenly),
     ]);
+  let foo = style([flex(`num(1.))]);
 };
 
 [@react.component]
-let make = (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t) => {
-  <header className=Styles.root> {"Hello" |> s} </header>;
+let make =
+    (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t, ~layoutType) => {
+  open Types__URLSearchParams.Layouts;
+
+  let onChange = (x: Js.Nullable.t(ReactSelect.t)) =>
+    x
+    |> Js.Nullable.toOption
+    |> Option.tap(({value}: ReactSelect.t) =>
+         ReludeURL.(
+           Webapi.Dom.(
+             window
+             |> Window.location
+             |> Location.href
+             |> (x => URI.parser |> ReludeParse.Parser.runParser(x))
+             |> Result.map(
+                  URI.setQueryParam(
+                    QueryParam.make1(
+                      QueryKey.make("layoutType"),
+                      QueryValue.make(value),
+                    ),
+                  ),
+                )
+             |> Result.map(URI.show)
+             |> Result.tap(ReasonReactRouter.replace)
+           )
+         )
+         |> ignore
+       )
+    |> ignore;
+
+  <header className=Styles.root>
+    <div className=Styles.foo>
+      <ReactSelect
+        options=reactSelectOptions
+        value={layoutType |> toReactSelect}
+        isSearchable=false
+        onChange
+      />
+    </div>
+  </header>;
 };

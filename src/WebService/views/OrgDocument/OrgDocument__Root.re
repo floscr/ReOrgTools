@@ -72,7 +72,9 @@ let make = (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t) => {
   |> Option.getOrElse(layoutType)
   |> Types__URLSearchParams.(
        fun
-       | Kanban => <OrgDocument__ViewStyle__Kanban xs />
+       | Kanban => {
+           <OrgDocument__ViewStyle__Kanban xs />;
+         }
        | SimpleTodo =>
          <div className=Styles.mainWrapper>
            <OrgDocument__ViewStyle__SimpleTodo ast />
@@ -82,7 +84,7 @@ let make = (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t) => {
   |> (
     xs =>
       <div className=Styles.root>
-        <OrgDocument__Toolbar ast queryParams />
+        <OrgDocument__Toolbar ast queryParams layoutType />
         xs
       </div>
   );

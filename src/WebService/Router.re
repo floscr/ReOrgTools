@@ -12,7 +12,6 @@ module Styles = {
       left(zero),
       right(zero),
       bottom(zero),
-      overflow(auto),
       display(grid),
       gridTemplateColumns([vw(20.), auto]),
     ]);
@@ -27,8 +26,36 @@ module Styles = {
     ]);
 
   let main =
-    style([gridColumnStart(2), display(`flex), flexDirection(column)]);
+    style([
+      gridColumnStart(2),
+      display(`flex),
+      flexDirection(column),
+      overflow(auto),
+    ]);
 };
+
+type state = {isDocumentScrolled: bool};
+
+let initialState = {isDocumentScrolled: false};
+
+type action =
+  | SetScrollState(int)
+  | NoOp;
+
+let reducer =
+    (state: state, action: action): ReludeReact.Reducer.update(action, state) =>
+  switch (action) {
+  | SetScrollState(scrollTop) =>
+    Update({
+      ...state,
+      isDocumentScrolled:
+        scrollTop
+        |> Option.some
+        |> Option.reject(Int.eq(Int.zero))
+        |> Option.foldLazy(_ => false, _ => true),
+    })
+  | NoOp => NoUpdate
+  };
 
 let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ()) => {
   <>
@@ -45,6 +72,11 @@ let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ()) => {
 [@react.component]
 let make = () => {
   let dispatch = State.Store.useDispatch();
+
+  let rootRef: React.ref(Js.Nullable.t(Dom.element)) =
+    React.useRef(Js.Nullable.null);
+
+  let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
   let openFilePicker = _ =>
     dispatch(
@@ -89,7 +121,7 @@ let make = () => {
     Some(() => detachShortcuts());
   });
 
-  <main className=Styles.root>
+  <main className=Styles.root ref={ReactDOMRe.Ref.domRef(rootRef)}>
     {switch (url.path) {
      | ["file", workspaceIndex, id] =>
        let workspaceIndex =

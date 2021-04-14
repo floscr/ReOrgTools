@@ -8,6 +8,9 @@ module Layouts = {
     | Kanban;
 
   let default = Document;
+  let options = [|Document, SimpleTodo, Kanban|];
+
+  // String Encoding (properties)
 
   let fromString =
     fun
@@ -21,6 +24,14 @@ module Layouts = {
     | Document => "DOCUMENT"
     | SimpleTodo => "SIMPLE_TODO"
     | Kanban => "KANBAN";
+
+  let toReactSelect =
+    fun
+    | Document => ReactSelect.{label: "Document", value: "DOCUMENT"}
+    | SimpleTodo => ReactSelect.{label: "Todo", value: "SIMPLE_TODO"}
+    | Kanban => ReactSelect.{label: "Kanban", value: "KANBAN"};
+
+  let reactSelectOptions = options |> Array.map(toReactSelect);
 };
 
 type t = {
