@@ -16,9 +16,11 @@ module Styles = {
       flexGrow(1.),
       display(`flex),
       backgroundColor(var(ThemeKeys.bgColor)),
-      justifyContent(spaceEvenly),
+      justifyContent(spaceBetween),
+      alignItems(center),
     ]);
-  let foo = style([flex(`num(1.))]);
+
+  let selectWrapper = style([flex(`num(1.)), maxWidth(px(250))]);
 };
 
 [@react.component]
@@ -53,7 +55,12 @@ let make =
     |> ignore;
 
   <header className=Styles.root>
-    <div className=Styles.foo>
+    <div>
+      {ast.properties->Js.Dict.get("title")
+       |> Option.getOrElse(String.empty)
+       |> s}
+    </div>
+    <div className=Styles.selectWrapper>
       <ReactSelect
         options=reactSelectOptions
         value={layoutType |> toReactSelect}
