@@ -42,7 +42,11 @@ let rec renderHeadline =
           OrgDocument__Component__Text.(
             switch (getItem(x)) {
             | Todo({keyword}) when showTodo =>
-              <input type_="checkbox" className=Styles.checkbox />
+              <input
+                type_="checkbox"
+                defaultChecked={keyword == "DONE"}
+                className=Styles.checkbox
+              />
             | PlainText(_) => renderPlainText(x)
             | Link(x) => renderLink(~attachmentId=atid, x)
             | _ => React.null
