@@ -10,7 +10,7 @@ module Styles = {
     style([
       position(sticky),
       top(zero),
-      padding(FixedTheme.Spacing.large),
+      padding(FixedTheme.Spacing.medium),
       borderBottom(px(1), solid, var(ThemeKeys.grey10)),
       flexShrink(1.),
       flexGrow(1.),
