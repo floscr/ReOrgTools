@@ -1,5 +1,6 @@
 open ReOrga;
 open ReactUtils;
+open Relude.Globals;
 
 module Styles = {
   open Css;
@@ -26,60 +27,58 @@ module Styles = {
     ]);
 };
 
-let renderTable = xs => {
-  let hasTableHead =
-    switch (Js.Array.slice(~start=0, ~end_=2, xs) |> Array.map(getItem)) {
-    | [|TableRow(_), TableHr(_)|] => true
-    | _ => false
-    };
+let renderRow = (~group="", xs) =>
+  xs
+  |> Array.mapWithIndex((x, i) => {
+       let rowKey = {j|$group-$i|j};
+       switch (x |> getItem) {
+       | TableRow({children}) =>
+         <tr key=rowKey>
+           {children
+            |> Array.mapWithIndex((x, i) => {
+                 let key = {j|$rowKey-$i|j};
+                 switch (x |> getItem) {
+                 | TableCell({children}) =>
+                   <th key>
+                     {OrgDocument__Component__Text.renderParagraphs(children)}
+                   </th>
+                 | _ => React.null
+                 };
+               })
+            |> React.array}
+         </tr>
+       | _ => React.null
+       };
+     })
+  |> React.array;
 
-  /* let lastIndex = Array.length(xs) - 1; */
-  /* let hasTableFoot = */
-  /*   switch (Array.sub(xs, lastIndex - 3, lastIndex) |> Array.map(getItem)) { */
-  /*   | [|TableHr(_), TableRow(_)|] => true */
-  /*   | _ => false */
-  /*   }; */
+let renderTable = xs => {
+  let (thead, tbody) =
+    xs
+    |> Array.take(3)
+    |> (
+      ys =>
+        switch (ys |> Array.map(getItem)) {
+        | [|TableRow(_), TableHr(_), _|] => (
+            Some(Array.take(2, xs)),
+            Some(Array.drop(2, xs)),
+          )
+        | [|TableHr(_), TableRow(_), TableHr(_)|] => (
+            Some(ys),
+            Some(Array.drop(3, xs)),
+          )
+        | _ => (None, Some(xs))
+        }
+    );
 
   <table className=Styles.table>
-    <tbody>
-      {Belt.Array.mapWithIndex(
-         xs,
-         (rowIndex, x) => {
-           let rowKey = string_of_int(rowIndex);
-           switch (getItem(x)) {
-           | TableRow({children}) =>
-             <tr key=rowKey>
-               {Belt.Array.mapWithIndex(
-                  children,
-                  (cellIndex, x) => {
-                    let cellKey = string_of_int(cellIndex);
-                    let key = {j|$rowKey-$cellKey|j};
-                    switch (getItem(x)) {
-                    | TableCell({children}) =>
-                      <th key>
-                        {OrgDocument__Component__Text.renderParagraphs(
-                           children,
-                         )}
-                      </th>
-                    | _ => React.null
-                    };
-                  },
-                )
-                |> React.array}
-             </tr>
-             |> (
-               x =>
-                 switch (rowIndex, hasTableHead) {
-                 | (0, true) => <thead> x </thead>
-                 /* | (lastIndex, _, true) => <tfoot> x </tfoot> */
-                 | _ => x
-                 }
-             )
-           | _ => React.null
-           };
-         },
-       )
-       |> React.array}
-    </tbody>
+    {thead
+     |> Option.map(renderRow(~group="thead"))
+     |> Option.map(xs => <thead> xs </thead>)
+     |> Option.getOrElse(React.null)}
+    {tbody
+     |> Option.map(renderRow(~group="tbody"))
+     |> Option.map(xs => <tbody> xs </tbody>)
+     |> Option.getOrElse(React.null)}
   </table>;
 };
