@@ -2,6 +2,52 @@
 #+OPTIONS: toc:nil
 # Adapted from http://karl-voit.at/2017/09/23/orgmode-as-markup-only/
 
+* Tables
+
+|----------------+-----------+-----------+-------|
+| Country        | Abstracts | Downloads | Ratio |
+|----------------+-----------+-----------+-------|
+| United States  |         7 |       497 |  71.0 |
+| Unknown        |         4 |        83 |  20.8 |
+| United Kingdom |         3 |        41 |  13.7 |
+| Germany        |         3 |        29 |   9.7 |
+| Netherlands    |         2 |        21 |  10.5 |
+| Japan          |         1 |        18 |  18.0 |
+|----------------+-----------+-----------+-------|
+
+| Country        | Abstracts | Downloads | Ratio |
+|----------------+-----------+-----------+-------|
+| United States  |         7 |       497 |  71.0 |
+| Unknown        |         4 |        83 |  20.8 |
+| United Kingdom |         3 |        41 |  13.7 |
+| Germany        |         3 |        29 |   9.7 |
+| Netherlands    |         2 |        21 |  10.5 |
+| Japan          |         1 |        18 |  18.0 |
+|----------------+-----------+-----------+-------|
+
+** Table without header footer
+
+|----------------+-----------+-----------+-------|
+| United States  |         7 |       497 |  71.0 |
+| Unknown        |         4 |        83 |  20.8 |
+| United Kingdom |         3 |        41 |  13.7 |
+| Germany        |         3 |        29 |   9.7 |
+| Netherlands    |         2 |        21 |  10.5 |
+|----------------+-----------+-----------+-------|
+| Japan          |         1 |        18 |  18.0 |
+
+
+| Country        | Abstracts | Downloads | Ratio |
+|----------------+-----------+-----------+-------|
+| United States  |         7 |       497 |  71.0 |
+| Unknown        |         4 |        83 |  20.8 |
+| United Kingdom |         3 |        41 |  13.7 |
+| Germany        |         3 |        29 |   9.7 |
+| Netherlands    |         2 |        21 |  10.5 |
+|----------------+-----------+-----------+-------|
+| Japan          |         1 |        18 |  18.0 |
+|----------------+-----------+-----------+-------|
+
 * Top Level Heading
 ** Second Level Heading
 *** Third Level Heading
