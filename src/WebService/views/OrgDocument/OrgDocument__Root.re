@@ -61,6 +61,8 @@ let make = (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t) => {
   let {children, properties} = ast;
   let {narrowToHeader, layoutType}: Types__URLSearchParams.t = queryParams;
 
+  Js.log(ast);
+
   let xs =
     narrowToHeader
     |> Option.flatMap(text => Org.narrowToHeadlineWithText(~text, children))
