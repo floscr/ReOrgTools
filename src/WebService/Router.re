@@ -31,6 +31,21 @@ module Styles = {
       display(`flex),
       flexDirection(column),
       overflow(auto),
+      selector(
+        "::-webkit-scrollbar",
+        [
+          backgroundColor(hex("00000008")),
+          borderLeft(px(1), solid, hex("e2e2e2")),
+          boxShadow(
+            Shadow.box(
+              ~x=px(1),
+              ~blur=px(5),
+              ~inset=true,
+              rgba(0, 0, 0, pct(8.)),
+            ),
+          ),
+        ],
+      ),
     ]);
 };
 
