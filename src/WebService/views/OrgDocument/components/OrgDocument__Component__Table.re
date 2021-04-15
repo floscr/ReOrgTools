@@ -1,6 +1,31 @@
 open ReOrga;
 open ReactUtils;
 
+module Styles = {
+  open Css;
+  open FixedTheme;
+
+  let table =
+    style([
+      border(px(1), `solid, var(ThemeKeys.grey10)),
+      borderCollapse(`collapse),
+      margin(zero),
+      padding(zero),
+      tableLayout(`fixed),
+      selector("tr", [border(px(1), `solid, var(ThemeKeys.grey10))]),
+      selector(
+        "th",
+        [
+          padding(Spacing.small),
+          textAlign(`left),
+          fontWeight(`normal),
+          border(px(1), `solid, var(ThemeKeys.grey10)),
+        ],
+      ),
+      selector("thead", [backgroundColor(var(ThemeKeys.grey00))]),
+    ]);
+};
+
 let renderTable = xs => {
   let hasTableHead =
     switch (Js.Array.slice(~start=0, ~end_=2, xs) |> Array.map(getItem)) {
@@ -15,7 +40,7 @@ let renderTable = xs => {
   /*   | _ => false */
   /*   }; */
 
-  <table>
+  <table className=Styles.table>
     <tbody>
       {Belt.Array.mapWithIndex(
          xs,
