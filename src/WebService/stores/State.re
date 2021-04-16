@@ -1,14 +1,16 @@
 module Implementation = {
   type state = {
     dialogsState: State__Dialogs.state,
-    workspacesState: State__Workspaces.Store.state,
     orgDocumentsState: State__OrgDocuments.Store.state,
+    settingsState: State__Settings.state,
+    workspacesState: State__Workspaces.Store.state,
   };
 
   type action =
     | DialogsAction(State__Dialogs.action)
-    | WorkspaceAction(State__Workspaces.Store.action)
-    | OrgDocumentsAction(State__OrgDocuments.Store.action);
+    | OrgDocumentsAction(State__OrgDocuments.Store.action)
+    | SettingsAction(State__Settings.action)
+    | WorkspaceAction(State__Workspaces.Store.action);
 
   let reducer = (state, action) =>
     switch (action) {
@@ -16,15 +18,19 @@ module Implementation = {
         ...state,
         dialogsState: State__Dialogs.reducer(state.dialogsState, a),
       }
-    | WorkspaceAction(a) => {
-        ...state,
-        workspacesState:
-          State__Workspaces.Store.reducer(state.workspacesState, a),
-      }
     | OrgDocumentsAction(a) => {
         ...state,
         orgDocumentsState:
           State__OrgDocuments.Store.reducer(state.orgDocumentsState, a),
+      }
+    | SettingsAction(a) => {
+        ...state,
+        settingsState: State__Settings.reducer(state.settingsState, a),
+      }
+    | WorkspaceAction(a) => {
+        ...state,
+        workspacesState:
+          State__Workspaces.Store.reducer(state.workspacesState, a),
       }
     };
 
@@ -33,8 +39,9 @@ module Implementation = {
       ~reducer,
       ~preloadedState={
         dialogsState: State__Dialogs.initial,
-        workspacesState: State__Workspaces.Store.initialState,
         orgDocumentsState: State__OrgDocuments.Store.initialState,
+        settingsState: State__Settings.initialState,
+        workspacesState: State__Workspaces.Store.initialState,
       },
       (),
     );
@@ -43,11 +50,14 @@ module Implementation = {
     module Dialogs = {
       let dialogs = state => state.dialogsState.dialogs;
     };
-    module Workspaces = {
-      let workspaces = state => state.workspacesState.workspaces;
-    };
     module OrgDocuments = {
       let files = state => state.orgDocumentsState.filesCache;
+    };
+    module Settings = {
+      let settings = state => state.settingsState;
+    };
+    module Workspaces = {
+      let workspaces = state => state.workspacesState.workspaces;
     };
   };
 };
@@ -59,7 +69,8 @@ module Store = {
 };
 
 module Stores = {
-  module Workspaces = State__Workspaces;
-  module OrgDocument = State__OrgDocuments;
   module Dialogs = State__Dialogs;
+  module OrgDocument = State__OrgDocuments;
+  module Settings = State__Settings;
+  module Workspaces = State__Workspaces;
 };
