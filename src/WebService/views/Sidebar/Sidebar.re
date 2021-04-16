@@ -41,7 +41,6 @@ let reducer =
     (state: state, action: action): ReludeReact.Reducer.update(action, state) =>
   switch (action) {
   | SwitchMode(mode) => Update({...state, mode})
-  | _ => NoUpdate
   };
 
 [@react.component]

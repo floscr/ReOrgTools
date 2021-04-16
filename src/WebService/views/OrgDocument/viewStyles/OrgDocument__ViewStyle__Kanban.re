@@ -113,12 +113,11 @@ let make = (~xs: array(ReOrga.sectionAst)) => {
             <header className=Styles.columnHeader> {head |> s} </header>
             <section className=Styles.columnContent>
               {tail
-               |> Array.mapWithIndex((cur: ReOrga.sectionAst, i) =>
+               |> Array.mapWithIndex((cur: ReOrga.sectionAst, _i) =>
                     switch (cur |> getItem) {
-                    | Headline({content, level, position, children}) =>
+                    | Headline({position, children}) =>
                       OrgDocument__ViewStyle__SimpleTodo.renderHeadline(
                         ~position,
-                        ~level,
                         ~properties=None,
                         ~showTodo=false,
                         children,

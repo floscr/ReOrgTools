@@ -91,7 +91,8 @@ let make = () => {
   let rootRef: React.ref(Js.Nullable.t(Dom.element)) =
     React.useRef(Js.Nullable.null);
 
-  let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
+  let (_state, _send) =
+    ReludeReact.Reducer.useReducer(reducer, initialState);
 
   let openFilePicker = _ =>
     dispatch(

@@ -22,14 +22,8 @@ module Styles = {
   let checkbox = style([marginRight(FixedTheme.Spacing.small)]);
 };
 
-let rec renderHeadline =
-        (
-          ~position,
-          ~level,
-          ~properties,
-          ~showTodo=true,
-          xs: array(ReOrga.sectionAst),
-        ) => {
+let renderHeadline =
+    (~position, ~properties, ~showTodo=true, xs: array(ReOrga.sectionAst)) => {
   module P = OrgDocument__Component__Headline;
 
   let {content}: P.headlineProps = xs |> P.makeHeadlineProps;
@@ -58,16 +52,16 @@ let rec renderHeadline =
   </button>;
 };
 
-let rec renderItems = (~level=0, ~properties=?, xs) => {
+let rec renderItems = (~properties=?, xs) => {
   xs
   |> Array.mapWithIndex((x, i) => {
        switch (x |> getItem) {
        | Headline({children, level, position, keyword})
            when keyword |> Option.isSome =>
-         renderHeadline(~position, ~level, ~properties, children)
+         renderHeadline(~position, ~properties, children)
 
        | Section({children, level, properties}) =>
-         renderItems(~level, ~properties, children) |> wrapWithKey(level, i)
+         renderItems(~properties, children) |> wrapWithKey(level, i)
 
        | _ => React.null
        }

@@ -3,7 +3,7 @@ open ReactUtils;
 open ReOrga;
 open OrgDocument__Utils;
 
-let renderAttachment = (~attachmentId=None, {value, description}) => {
+let renderAttachment = (~attachmentId=None, {value}) => {
   let dispatch = State.Store.useDispatch();
 
   let src =
@@ -23,7 +23,7 @@ let renderAttachment = (~attachmentId=None, {value, description}) => {
            )
          )
        )
-    |> Option.getOrElseLazy(x =>
+    |> Option.getOrElseLazy(_ =>
          ReludeURL.(
            Shared__Config.backendUrl(
              ~path=
@@ -47,7 +47,7 @@ let renderAttachment = (~attachmentId=None, {value, description}) => {
   <img src onClick={_ => onClick() |> dispatch} />;
 };
 
-let renderLink = (~attachmentId=None, {protocol, description, value} as link) => {
+let renderLink = (~attachmentId=None, {description, value} as link) => {
   link
   |> Option.some
   |> Option.flatMap(({protocol}) => protocol)
@@ -72,7 +72,6 @@ let renderPlainText = x =>
     | Underline => <u> str </u>
     | StrikeThrough => <del> str </del>
     | Verbatim => <code> str </code>
-    | _ => str
     };
   | _ => React.null
   };
