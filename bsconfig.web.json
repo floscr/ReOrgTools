@@ -14,6 +14,7 @@
     }
   ],
   "bsc-flags": [
+    "-w -23",
     "-bs-super-errors"
   ],
   "package-specs": [
