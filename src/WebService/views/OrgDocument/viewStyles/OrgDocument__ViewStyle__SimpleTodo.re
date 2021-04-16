@@ -33,7 +33,7 @@ let renderHeadline =
   <button className=Styles.headline key=id id>
     {content
      |> Array.mapWithIndex((x, i) => {
-          OrgDocument__Component__Text.(
+          (
             switch (getItem(x)) {
             | Todo({keyword}) when showTodo =>
               <input
@@ -41,8 +41,9 @@ let renderHeadline =
                 defaultChecked={keyword == "DONE"}
                 className=Styles.checkbox
               />
-            | PlainText(_) => renderPlainText(x)
-            | Link(x) => renderLink(~attachmentId=atid, x)
+            | PlainText(_) => OrgDocument__Component__Text.renderPlainText(x)
+            | Link(x) =>
+              OrgDocument__Component__Text.renderLink(~attachmentId=atid, x)
             | _ => React.null
             }
           )
