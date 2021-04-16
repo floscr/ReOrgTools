@@ -51,6 +51,8 @@ let renderUrlLink = ({value, description}: ReOrga.link) =>
   <a href=value> {description |> Option.getOrElse(value) |> s} </a>;
 
 let renderYoutube = (link: ReOrga.link) => {
+  let (showIframe, setShowIframe) = React.useState(() => false);
+
   let videoId =
     ReludeURL.(
       URI.parser
@@ -64,7 +66,16 @@ let renderYoutube = (link: ReOrga.link) => {
   <>
     {renderUrlLink(link)}
     {videoId
-     |> Option.map(videoId => <ReactYoutube videoId />)
+     |> Option.map(videoId =>
+          switch (showIframe) {
+          | true => <ReactYoutube videoId />
+          | _ =>
+            <img
+              src={j|https://img.youtube.com/vi/$videoId/hqdefault.jpg|j}
+              onClick={_ => setShowIframe(_ => true)}
+            />
+          }
+        )
      |> Option.getOrElse(React.null)}
   </>;
 };
