@@ -47,14 +47,41 @@ let renderAttachment = (~attachmentId=None, {value}) => {
   <img src onClick={_ => onClick() |> dispatch} />;
 };
 
+let renderUrlLink = ({value, description}: ReOrga.link) =>
+  <a href=value> {description |> Option.getOrElse(value) |> s} </a>;
+
+let renderYoutube = (link: ReOrga.link) => {
+  let videoId =
+    ReludeURL.(
+      URI.parser
+      |> ReludeParse.Parser.runParser(link.value)
+      |> Result.toOption
+      |> Option.flatMap(URI.getQueryParam(URI.QueryKey.make("v")))
+      |> Option.flatMap(List.head)
+      |> Option.map(QueryValue.show)
+    );
+
+  <>
+    {renderUrlLink(link)}
+    {videoId
+     |> Option.map(videoId => <ReactYoutube videoId />)
+     |> Option.getOrElse(React.null)}
+  </>;
+};
+
 type domLink =
   | Link(link)
+  | Youtube(link)
   | Attachment(link);
 
-let detectLinkType = link =>
+let detectLinkType = (link: ReOrga.link) =>
   switch (link) {
   | {protocol} when Option.eqBy(String.eq, Some("attachment"), protocol) =>
     Attachment(link)
+
+  | {value} when String.contains(~search="youtube.com", value) =>
+    Youtube(link)
+
   | _ => Link(link)
   };
 
@@ -64,8 +91,8 @@ let renderLink = (~attachmentId=None, {description, value} as link) => {
   |> (
     fun
     | Attachment(link) => renderAttachment(~attachmentId, link)
-    | Link(link) =>
-      <a href=value> {description |> Option.getOrElse(value) |> s} </a>
+    | Youtube(link) => renderYoutube(link)
+    | Link(link) => renderUrlLink(link)
   );
 };
 
