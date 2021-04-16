@@ -83,8 +83,29 @@ let make = (~xs: array(ReOrga.sectionAst)) => {
   let acc: mapT =
     Config.todoKeyWords |> Array.map(x => (x, [||])) |> StringMap.fromArray;
 
+  let todos = groupByTodo(acc, xs);
+
+  let tags = () =>
+    todos
+    |> StringMap.valueArray
+    |> Array.flatten
+    |> Array.foldLeft(
+         (acc, cur) => {
+           cur
+           |> getItem
+           |> (
+             fun
+             | Headline({tags}) => Array.concat(acc, tags)
+             | _ => acc
+           )
+         },
+         [||],
+       )
+    |> Array.distinctBy(String.eq)
+    |> Utils.log;
+
   <div className=Styles.root>
-    {groupByTodo(acc, xs)
+    {todos
      |> StringMap.toArray
      |> Array.reject(((_, tail)) => Array.isEmpty(tail))
      |> Array.map(((head, tail)) => {
