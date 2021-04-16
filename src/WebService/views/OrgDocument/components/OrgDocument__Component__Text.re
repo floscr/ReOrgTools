@@ -3,6 +3,27 @@ open ReactUtils;
 open ReOrga;
 open OrgDocument__Utils;
 
+module Styles = {
+  open Css;
+  open FixedTheme;
+
+  let playerThumbnail =
+    style([
+      borderRadius(BorderRadius.xsmall),
+      overflow(hidden),
+      width(px(640)),
+      marginTop(Spacing.medium),
+      cursor(pointer),
+    ]);
+
+  let player =
+    style([
+      borderRadius(BorderRadius.xsmall),
+      overflow(hidden),
+      marginTop(Spacing.medium),
+    ]);
+};
+
 let renderAttachment = (~attachmentId=None, {value}) => {
   let dispatch = State.Store.useDispatch();
 
@@ -68,10 +89,16 @@ let renderYoutube = (link: ReOrga.link) => {
     {videoId
      |> Option.map(videoId =>
           switch (showIframe) {
-          | true => <ReactYoutube videoId />
+          | true =>
+            <ReactYoutube
+              videoId
+              className=Styles.player
+              onReady={e => e##target##playVideo()}
+            />
           | _ =>
             <img
-              src={j|https://img.youtube.com/vi/$videoId/hqdefault.jpg|j}
+              src={j|https://img.youtube.com/vi/$videoId/maxresdefault.jpg|j}
+              className=Styles.playerThumbnail
               onClick={_ => setShowIframe(_ => true)}
             />
           }

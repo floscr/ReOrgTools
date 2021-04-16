@@ -22,6 +22,7 @@ module Spacing = {
 module BorderRadius = {
   open Css;
 
+  let xsmall = px(4);
   let small = px(5);
 };
 
