@@ -47,18 +47,26 @@ let renderAttachment = (~attachmentId=None, {value}) => {
   <img src onClick={_ => onClick() |> dispatch} />;
 };
 
+type domLink =
+  | Link(link)
+  | Attachment(link);
+
+let detectLinkType = link =>
+  switch (link) {
+  | {protocol} when Option.eqBy(String.eq, Some("attachment"), protocol) =>
+    Attachment(link)
+  | _ => Link(link)
+  };
+
 let renderLink = (~attachmentId=None, {description, value} as link) => {
   link
-  |> Option.some
-  |> Option.flatMap(({protocol}) => protocol)
-  |> Option.flatMap(
-       fun
-       | "attachment" => renderAttachment(~attachmentId, link) |> Option.some
-       | _ => None,
-     )
-  |> Option.getOrElseLazy(_ =>
-       <a href=value> {description |> Option.getOrElse(value) |> s} </a>
-     );
+  |> detectLinkType
+  |> (
+    fun
+    | Attachment(link) => renderAttachment(~attachmentId, link)
+    | Link(link) =>
+      <a href=value> {description |> Option.getOrElse(value) |> s} </a>
+  );
 };
 
 let renderPlainText = x =>
