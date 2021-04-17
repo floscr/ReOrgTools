@@ -6,14 +6,24 @@ module Styles = {
   open Css;
   open FixedTheme;
 
-  let root = style([position(relative), flexGrow(1.), flexShrink(1.)]);
+  let root =
+    style([
+      display(`flex),
+      flexDirection(column),
+      position(relative),
+      flexGrow(1.),
+      flexShrink(1.),
+    ]);
 
   let mainWrapper =
     style([
-      paddingTop(Spacing.xlarge),
-      margin2(~v=zero, ~h=auto),
+      padding2(~h=Spacing.xxlarge, ~v=Spacing.xlarge),
+      flexGrow(1.),
+      flexShrink(1.),
       maxWidth(px(750)),
       wordWrap(breakWord),
+      width(pct(100.)),
+      margin2(~v=zero, ~h=auto),
     ]);
 };
 
