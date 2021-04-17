@@ -47,7 +47,8 @@ let rec renderItems = (~level=0, ~properties=?, xs) => {
          |> (x => <p key={makeKey(level, i)}> x </p>)
 
        | Block(_) as x =>
-         OrgDocument__Block.renderBlock(x) |> wrapWithKey(level, i)
+         OrgDocument__Component__Block.renderBlock(x)
+         |> wrapWithKey(level, i)
 
        | List({children, ordered}) =>
          OrgDocument__Component__List.renderList(children, ordered)
