@@ -5,41 +5,8 @@ open Dialogs__Style;
 
 let id = "Dialogs__FilePicker";
 
-type state = {
-  query: string,
-  selection: option(int),
-};
-
-let initialState = {query: "", selection: Some(0)};
-
-type action =
-  | ChangeQuery(string)
-  | SelectNext(int)
-  | SelectPrev(int)
-  | NoOp;
-
-let reducer =
-    (state: state, action: action): ReludeReact.Reducer.update(action, state) =>
-  switch (action) {
-  | ChangeQuery(query) => Update({...state, query})
-  | SelectNext(bounds) =>
-    Update({
-      ...state,
-      selection: Menu.selectNext(~bounds, ~index=state.selection),
-    })
-  | SelectPrev(bounds) =>
-    Update({
-      ...state,
-      selection: Menu.selectPrev(~bounds, ~index=state.selection),
-    })
-
-  | NoOp => NoUpdate
-  };
-
 [@react.component]
 let make = (~close) => {
-  let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
-  let query = state.query |> String.toLowerCase;
   let workspaces = Store.useSelector(Selector.Workspaces.workspaces);
 
   let results =
@@ -57,9 +24,6 @@ let make = (~close) => {
            |> Array.concat(acc);
          },
          [||],
-       )
-    |> Array.filter(((_, _, {name}: Shared__API__Workspaces.File.t)) =>
-         name |> String.toLowerCase |> String.contains(~search=query)
        );
 
   let onSubmit = (~index=None, results) => {
@@ -80,19 +44,6 @@ let make = (~close) => {
        });
   };
 
-  let onChange = event => {
-    send(ChangeQuery(event->ReactEvent.Form.target##value));
-  };
-  let onKeyDown = event => {
-    switch (event |> ReactEvent.Keyboard.key) {
-    | "Enter" =>
-      onSubmit(~index=state.selection, results) |> ignore;
-      ReactEvent.Keyboard.preventDefault(event);
-    | "Escape" => close()
-    | _ => ()
-    };
-  };
-
   let bindings = [|
     (
       [|"ctrl+k", "ctrl+shift+k", "esc"|],
@@ -101,38 +52,38 @@ let make = (~close) => {
         false;
       },
     ),
-    (
-      [|"ctrl+n", "down"|],
-      _ => {
-        SelectNext(results |> Array.length) |> send;
-        false;
-      },
-    ),
-    (
-      [|"ctrl+p", "up"|],
-      _ => {
-        SelectPrev(results |> Array.length) |> send;
-        false;
-      },
-    ),
   |];
 
+  let filter = (~query) =>
+    Array.filter(((_, _, {name}: Shared__API__Workspaces.File.t)) =>
+      name |> String.toLowerCase |> String.contains(~search=query)
+    );
+
   <RoundedDialogWrapper bindings key={results |> Array.length |> Int.toString}>
-    <Menu onChange onKeyDown placeholder="Pick File" value={state.query}>
-      {results
-       |> Array.mapWithIndex(
-            ((_, _, {name}: Shared__API__Workspaces.File.t), i) => {
-            let isSelected =
-              state.selection |> Option.filter(Int.eq(i)) |> Option.isSome;
-            <React.Fragment key={i |> Int.toString}>
-              <Menu.Item
-                isSelected
-                onClick={_ => onSubmit(~index=Some(i), results) |> ignore}
-                value={name |> Filename.chop_extension}
-              />
-            </React.Fragment>;
-          })
-       |> React.array}
-    </Menu>
+    <Menu
+      onSubmit={({selection, query}) =>
+        results |> filter(~query) |> onSubmit(~index=selection) |> ignore
+      }
+      onEscape=close
+      placeholder="Pick File"
+      items={({selection, query}) => results |> filter(~query)}
+      renderItems={({selection, query}) =>
+        results
+        |> filter(~query)
+        |> Array.mapWithIndex(
+             ((_, _, {name}: Shared__API__Workspaces.File.t), i) => {
+             let isSelected =
+               selection |> Option.filter(Int.eq(i)) |> Option.isSome;
+             <React.Fragment key={i |> Int.toString}>
+               <Menu.Item
+                 isSelected
+                 onClick={_ => onSubmit(~index=Some(i), results) |> ignore}
+                 value={name |> Filename.chop_extension}
+               />
+             </React.Fragment>;
+           })
+        |> React.array
+      }
+    />
   </RoundedDialogWrapper>;
 };

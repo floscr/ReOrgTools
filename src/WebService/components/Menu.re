@@ -68,6 +68,19 @@ module Styles = {
     ]);
 };
 
+type state = {
+  query: string,
+  selection: option(int),
+};
+
+let initialState = {query: "", selection: Some(0)};
+
+type action =
+  | ChangeQuery(string)
+  | SelectNext(int)
+  | SelectPrev(int)
+  | NoOp;
+
 let selectPrev = (~bounds: int, ~index: option(int)) =>
   index
   |> Option.map(x => Int.subtract(x, 1))
@@ -79,6 +92,24 @@ let selectNext = (~bounds: int, ~index: option(int)) =>
   |> Option.map(Int.add(1))
   |> Option.reject(a => Int.greaterThan(a, bounds))
   |> Option.orElse(~fallback=Some(0));
+
+let reducer =
+    (state: state, action: action): ReludeReact.Reducer.update(action, state) =>
+  switch (action) {
+  | ChangeQuery(query) => Update({...state, query})
+  | SelectNext(bounds) =>
+    Update({
+      ...state,
+      selection: selectNext(~bounds, ~index=state.selection),
+    })
+  | SelectPrev(bounds) =>
+    Update({
+      ...state,
+      selection: selectPrev(~bounds, ~index=state.selection),
+    })
+
+  | NoOp => NoUpdate
+  };
 
 module Item = {
   [@react.component]
@@ -114,25 +145,63 @@ module Item = {
 [@react.component]
 let make =
     (
-      ~onChange: ReactEvent.Form.t => unit,
-      ~onKeyDown: ReactEvent.Keyboard.t => unit,
+      ~onSubmit: state => unit,
+      ~onEscape: unit => unit,
       ~placeholder: string,
-      ~value: string,
-      ~children,
+      ~items: state => array('a),
+      ~renderItems: state => React.element,
     ) => {
-  <div className=Styles.root>
-    <input
-      autoFocus=true
-      className=Styles.input
-      autoComplete="off"
-      value
-      onChange
-      onBlur={e => e->ReactEvent.Synthetic.preventDefault}
-      onKeyDown
-      placeholder
-    />
-    <div className=Styles.resultsRoot>
-      <ul className=Styles.resultsList> children </ul>
+  let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
+  let query = state.query |> String.toLowerCase;
+
+  let results = items(state);
+
+  let onChange = event => {
+    send(ChangeQuery(event->ReactEvent.Form.target##value));
+  };
+
+  let onKeyDown = event => {
+    switch (event |> ReactEvent.Keyboard.key) {
+    | "Enter" =>
+      onSubmit(state);
+      ReactEvent.Keyboard.preventDefault(event);
+    | "Escape" => onEscape()
+    | _ => ()
+    };
+  };
+
+  let bindings = [|
+    (
+      [|"ctrl+n", "down"|],
+      _ => {
+        SelectNext(results |> Array.length) |> send;
+        false;
+      },
+    ),
+    (
+      [|"ctrl+p", "up"|],
+      _ => {
+        SelectPrev(results |> Array.length) |> send;
+        false;
+      },
+    ),
+  |];
+
+  <ComboKeysWrapper bindings key={results |> Array.length |> Int.toString}>
+    <div className=Styles.root>
+      <input
+        autoFocus=true
+        className=Styles.input
+        autoComplete="off"
+        value={state.query}
+        onChange
+        onBlur={e => e->ReactEvent.Synthetic.preventDefault}
+        onKeyDown
+        placeholder
+      />
+      <div className=Styles.resultsRoot>
+        <ul className=Styles.resultsList> {renderItems(state)} </ul>
+      </div>
     </div>
-  </div>;
+  </ComboKeysWrapper>;
 };
