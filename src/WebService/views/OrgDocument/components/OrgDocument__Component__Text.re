@@ -71,40 +71,43 @@ let renderAttachment = (~attachmentId=None, {value}) => {
 let renderUrlLink = ({value, description}: ReOrga.link) =>
   <a href=value> {description |> Option.getOrElse(value) |> s} </a>;
 
-let renderYoutube = (link: ReOrga.link) => {
-  let (showIframe, setShowIframe) = React.useState(() => false);
+module YoutubeComponent = {
+  [@react.component]
+  let make = (~link: ReOrga.link) => {
+    let (showIframe, setShowIframe) = React.useState(() => false);
 
-  let videoId =
-    ReludeURL.(
-      URI.parser
-      |> ReludeParse.Parser.runParser(link.value)
-      |> Result.toOption
-      |> Option.flatMap(URI.getQueryParam(URI.QueryKey.make("v")))
-      |> Option.flatMap(List.head)
-      |> Option.map(QueryValue.show)
-    );
+    let videoId =
+      ReludeURL.(
+        URI.parser
+        |> ReludeParse.Parser.runParser(link.value)
+        |> Result.toOption
+        |> Option.flatMap(URI.getQueryParam(URI.QueryKey.make("v")))
+        |> Option.flatMap(List.head)
+        |> Option.map(QueryValue.show)
+      );
 
-  <>
-    {renderUrlLink(link)}
-    {videoId
-     |> Option.map(videoId =>
-          switch (showIframe) {
-          | true =>
-            <ReactYoutube
-              videoId
-              className=Styles.player
-              onReady={e => e##target##playVideo()}
-            />
-          | _ =>
-            <img
-              src={j|https://img.youtube.com/vi/$videoId/maxresdefault.jpg|j}
-              className=Styles.playerThumbnail
-              onClick={_ => setShowIframe(_ => true)}
-            />
-          }
-        )
-     |> Option.getOrElse(React.null)}
-  </>;
+    <>
+      {renderUrlLink(link)}
+      {videoId
+       |> Option.map(videoId =>
+            switch (showIframe) {
+            | true =>
+              <ReactYoutube
+                videoId
+                className=Styles.player
+                onReady={e => e##target##playVideo()}
+              />
+            | _ =>
+              <img
+                src={j|https://img.youtube.com/vi/$videoId/maxresdefault.jpg|j}
+                className=Styles.playerThumbnail
+                onClick={_ => setShowIframe(_ => true)}
+              />
+            }
+          )
+       |> Option.getOrElse(React.null)}
+    </>;
+  };
 };
 
 type domLink =
@@ -129,7 +132,7 @@ let renderLink = (~attachmentId=None, {description, value} as link) => {
   |> (
     fun
     | Attachment(link) => renderAttachment(~attachmentId, link)
-    | Youtube(link) => renderYoutube(link)
+    | Youtube(link) => <YoutubeComponent link />
     | Link(link) => renderUrlLink(link)
   );
 };
