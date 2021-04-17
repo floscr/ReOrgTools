@@ -17,15 +17,15 @@ let make = (~id, ~queryParams, ~workspaceIndex) => {
       |> dispatch;
 
       API__OrgDocument.Request.make(~workspaceIndex, ~file=id)
-      |> IO.tap(
-           Localforage.Localforage_IO.set(
-             Stores.OrgDocument.File.makeForageId(
-               ~id,
-               ~workspace=workspaceIndex,
-             ),
-           )
-           >> IO.unsafeRunAsync(ignore),
-         )
+      |> IO.tap(data => {
+           let id = Stores.OrgDocument.File.encodeUrlId(~id, ~workspaceIndex);
+           // Cache File
+           Localforage.Localforage_IO.set(id, data)
+           |> IO.unsafeRunAsync(ignore);
+
+           // Save last seen file in settings
+           SettingsAction(State__Settings.SaveLastViewdFile(id)) |> dispatch;
+         })
       |> IO.unsafeRunAsync(
            fun
            | Ok(data) =>

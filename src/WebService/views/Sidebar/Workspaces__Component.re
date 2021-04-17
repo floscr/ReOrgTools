@@ -66,8 +66,8 @@ let renderFiles = (~onClick, ~index, xs) =>
 let make = (~workspaceIndex, ~onFileClick) => {
   let workspaces = Store.useSelector(Selector.Workspaces.workspaces);
 
-  let onClick = (file, index) => {
-    ReasonReactRouter.push({j|/file/$index/$file|j});
+  let onClick = (id, workspaceIndex) => {
+    API__Routes.Routes.openFile(~workspaceIndex, ~id);
     onFileClick();
   };
   switch (workspaces) {

@@ -1,12 +1,13 @@
 open Relude.Globals;
 
 type lastViewedFile = option(string);
+let makeLastViewedFile = (x: string): lastViewedFile => Some(x);
 
 type state = {lastViewedFile};
 
 type action =
-  | SaveLastViewdFile(lastViewedFile)
-  /* | SaveState(state) */
+  | SaveLastViewdFile(string)
+  | SaveState(state)
   /* | LoadState */
   | ResetState;
 
@@ -23,9 +24,7 @@ module Encode = {
 module Decode = {
   module Decode = Decode.AsResult.OfParseError;
 
-  let make = lastViewedFile => {
-    lastViewedFile;
-  };
+  let make = lastViewedFile => {lastViewedFile: lastViewedFile};
 
   let decodeJson = json =>
     Decode.Pipeline.(
@@ -37,7 +36,8 @@ module Decode = {
 
 let reducer = (state, action) => {
   switch (action) {
-  | SaveLastViewdFile(lastViewedFile) =>
+  | SaveLastViewdFile((lastViewedFile: string)) =>
+    let lastViewedFile = lastViewedFile |> makeLastViewedFile;
     let state = {...state, lastViewedFile};
 
     Localforage.Localforage_IO.set(
@@ -47,6 +47,7 @@ let reducer = (state, action) => {
     |> IO.unsafeRunAsync(ignore);
 
     state;
+  | SaveState(state) => state
   | ResetState => initialState
   };
 };

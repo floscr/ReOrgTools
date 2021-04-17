@@ -100,6 +100,32 @@ let make = () => {
         State__Dialogs.OpenDialog(State__Dialogs.FilePicker),
       ),
     );
+  open Webapi.Url;
+
+  let url = ReasonReactRouter.useUrl();
+  let params = URLSearchParams.make(url.search);
+  let queryParams = Types__URLSearchParams.make(params);
+  let isHomePage = url.path |> List.isEmpty;
+
+  ReludeReact.Effect.useIOOnMount(
+    Localforage.Localforage_IO.get(Types__LocalStorage.settings),
+    data =>
+      data
+      |> Js.Nullable.toOption
+      |> Option.flatMap(State__Settings.Decode.decodeJson >> Result.toOption)
+      |> Option.tap(x =>
+           State.SettingsAction(State__Settings.SaveState(x)) |> dispatch
+         )
+      |> Option.filter(_ => isHomePage)
+      |> Option.flatMap(({lastViewedFile}: State__Settings.state) =>
+           lastViewedFile
+         )
+      |> Option.tap(ReasonReactRouter.replace)
+      /* |> Option.filter() */
+      /* |> Option.tap(ReasonReactRouter.url) */
+      |> ignore,
+    error => Js_console.error(error),
+  );
 
   State__Workspaces.(
     ReludeReact.Effect.useIOOnMount(
@@ -111,11 +137,6 @@ let make = () => {
         |> dispatch,
     )
   );
-  open Webapi.Url;
-
-  let url = ReasonReactRouter.useUrl();
-  let params = URLSearchParams.make(url.search);
-  let queryParams = Types__URLSearchParams.make(params);
 
   let bindShortcuts = () => {
     Keys.get()
