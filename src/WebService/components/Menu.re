@@ -1,3 +1,4 @@
+open Relude.Globals;
 open ReactUtils;
 
 module Styles = {
@@ -66,6 +67,18 @@ module Styles = {
       ),
     ]);
 };
+
+let selectPrev = (~bounds: int, ~index: option(int)) =>
+  index
+  |> Option.map(x => Int.subtract(x, 1))
+  |> Option.reject(a => Int.lessThan(a, 0))
+  |> Option.orElse(~fallback=Some(bounds));
+
+let selectNext = (~bounds: int, ~index: option(int)) =>
+  index
+  |> Option.map(Int.add(1))
+  |> Option.reject(a => Int.greaterThan(a, bounds))
+  |> Option.orElse(~fallback=Some(0));
 
 module Item = {
   [@react.component]

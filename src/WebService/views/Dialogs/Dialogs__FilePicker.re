@@ -26,20 +26,12 @@ let reducer =
   | SelectNext(bounds) =>
     Update({
       ...state,
-      selection:
-        state.selection
-        |> Option.map(Int.add(1))
-        |> Option.reject(a => Int.greaterThan(a, bounds))
-        |> Option.orElse(~fallback=Some(0)),
+      selection: Menu.selectNext(~bounds, ~index=state.selection),
     })
   | SelectPrev(bounds) =>
     Update({
       ...state,
-      selection:
-        state.selection
-        |> Option.map(x => Int.subtract(x, 1))
-        |> Option.reject(a => Int.lessThan(a, 0))
-        |> Option.orElse(~fallback=Some(bounds)),
+      selection: Menu.selectPrev(~bounds, ~index=state.selection),
     })
 
   | NoOp => NoUpdate
