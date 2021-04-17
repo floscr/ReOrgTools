@@ -141,7 +141,7 @@ let make = () => {
   let bindShortcuts = () => {
     Keys.get()
     |> Combokeys.bindArray(
-         [|"cmd+k", "ctrl+k"|],
+         [|"cmd+k", "ctrl+k", "ctrl+shift+k"|],
          _ => {
            openFilePicker();
            false;

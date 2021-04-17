@@ -202,7 +202,7 @@ let make = (~close) => {
 
   let bindings = [|
     (
-      [|"ctrl+k", "esc"|],
+      [|"ctrl+k", "ctrl+shift+k", "esc"|],
       _ => {
         close();
         false;
