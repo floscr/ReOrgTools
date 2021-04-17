@@ -66,6 +66,6 @@ module Localforage_IO = {
     |> IO.mapError(_ => "")
     |> IO.condError(
          Js.Nullable.toOption >> Option.isSome,
-         {js|$key not found in db|js},
+         {j|Key "$key" not found in db|j},
        );
 };
