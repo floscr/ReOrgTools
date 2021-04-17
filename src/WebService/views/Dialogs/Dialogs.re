@@ -86,6 +86,11 @@ let make = () => {
                        Dialogs__FilePicker.id,
                        <Dialogs__FilePicker close />,
                      ))
+                   | CommandsMenu =>
+                     Some((
+                       Dialogs__CommandsMenu.id,
+                       <Dialogs__CommandsMenu close />,
+                     ))
                    | Lightbox({index, items}) =>
                      Some((
                        Dialogs__Lightbox.id,

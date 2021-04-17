@@ -100,10 +100,15 @@ let make = () => {
         State__Dialogs.OpenDialog(State__Dialogs.FilePicker),
       ),
     );
-  open Webapi.Url;
+  let openCommandsMenu = _ =>
+    dispatch(
+      State.DialogsAction(
+        State__Dialogs.OpenDialog(State__Dialogs.CommandsMenu),
+      ),
+    );
 
   let url = ReasonReactRouter.useUrl();
-  let params = URLSearchParams.make(url.search);
+  let params = Webapi.Url.URLSearchParams.make(url.search);
   let queryParams = Types__URLSearchParams.make(params);
   let isHomePage = url.path |> List.isEmpty;
 
@@ -144,6 +149,14 @@ let make = () => {
          [|"cmd+k", "ctrl+k", "ctrl+shift+k"|],
          _ => {
            openFilePicker();
+           false;
+         },
+       );
+    Keys.get()
+    |> Combokeys.bindArray(
+         [|"ctrl+shift+p"|],
+         _ => {
+           openCommandsMenu();
            false;
          },
        );
