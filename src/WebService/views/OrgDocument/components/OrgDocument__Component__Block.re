@@ -11,7 +11,6 @@ module Styles = {
   let pre =
     style([
       overflow(scroll),
-      margin(Spacing.medium),
       padding(Spacing.medium),
       backgroundColor(var(ThemeKeys.grey00)),
     ]);
