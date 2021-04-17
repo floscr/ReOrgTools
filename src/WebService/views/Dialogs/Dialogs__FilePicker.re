@@ -6,12 +6,11 @@ open Dialogs__Style;
 let id = "Dialogs__FilePicker";
 
 type state = {
-  options: array(string),
   query: string,
   selection: option(int),
 };
 
-let initialState = {options: [||], query: "", selection: Some(0)};
+let initialState = {query: "", selection: Some(0)};
 
 type action =
   | ChangeQuery(string)
