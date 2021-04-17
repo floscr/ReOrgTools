@@ -3,11 +3,24 @@ open ReOrga;
 open OrgDocument__Utils;
 open ReactUtils;
 
+module Styles = {
+  open Css;
+  open FixedTheme;
+
+  let pre =
+    style([
+      overflow(scroll),
+      margin(Spacing.medium),
+      padding(Spacing.medium),
+      backgroundColor(var(ThemeKeys.grey00)),
+    ]);
+};
+
 let renderBlock = x => {
   switch (x) {
   | Block({attributes, name, params, value}) =>
     switch (name) {
-    | "QUOTE" => <pre> {value |> s} </pre>
+    | "QUOTE" => <pre className=Styles.pre> {value |> s} </pre>
     | "SRC" =>
       <section>
         {Js.Dict.entries(attributes)
