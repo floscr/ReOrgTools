@@ -16,23 +16,27 @@ let validateList = (fns: list('x => bool), xs: list('x)) =>
     |> Option.isNone;
   };
 
+let validateUrl = (~url: string, ~validations: list('x => bool)) =>
+  URI.parser
+  |> ReludeParse.Parser.runParser(url)
+  |> Result.toOption
+  |> Option.map(URI.pathSegments)
+  |> Option.filter(validations |> validateList)
+  |> Option.isSome;
+
 module Routes = {
   let fileUrl = (~workspaceIndex: int, ~id: string) => {j|/file/$workspaceIndex/$id|j};
 
   let openFile = (~workspaceIndex: int, ~id: string) =>
     ReasonReactRouter.replace(fileUrl(~workspaceIndex, ~id));
 
-  let fileUrlValidations = [
-    PathSegment.show >> String.eq("file"),
-    PathSegment.show >> String.toInt >> Option.isSome,
-    _ => true,
-  ];
-
   let isFileRoute = url =>
-    URI.parser
-    |> ReludeParse.Parser.runParser(url)
-    |> Result.toOption
-    |> Option.map(URI.pathSegments)
-    |> Option.filter(fileUrlValidations |> validateList)
-    |> Option.isSome;
+    validateUrl(
+      ~url,
+      ~validations=[
+        PathSegment.show >> String.eq("file"),
+        PathSegment.show >> String.toInt >> Option.isSome,
+        _ => true,
+      ],
+    );
 };
