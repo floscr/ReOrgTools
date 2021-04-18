@@ -30,9 +30,11 @@ let make = (~close) => {
   let items =
     [||]
     |> (
-      isFileUrl
-        ? Array.append({command: ToggleFavorite, label: "Toggle Favorite"})
-        : identity
+      switch (isFileUrl) {
+      | true =>
+        Array.append({command: ToggleFavorite, label: "Toggle Favorite"})
+      | _ => identity
+      }
     );
 
   let onSubmit = (~index=None, results) => {
