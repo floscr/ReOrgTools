@@ -11,6 +11,11 @@
     {
       "dir": "src/Shared",
       "subdirs": false
+    },
+    {
+      "dir": "__tests__",
+      "subdirs": true,
+      "type": "dev"
     }
   ],
   "bsc-flags": [
@@ -40,6 +45,9 @@
     "relude-parse",
     "relude-reason-react",
     "reorga",
+  ],
+  "bs-dev-dependencies": [
+    "@glennsl/bs-jest"
   ],
   "warnings": {
     "number": "-33",
