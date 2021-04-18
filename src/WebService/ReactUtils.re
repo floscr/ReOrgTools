@@ -1,3 +1,5 @@
+let id = x => x;
+
 let omit = (f, _) => f();
 
 module ClassName = {
