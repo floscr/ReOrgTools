@@ -55,6 +55,7 @@ let make = (~id, ~workspaceIndex) => {
 
   <div className=Styles.root>
     <IconButton style=Styles.backIcon id="arrow_back" />
+    <Sidebar__Bookmarks />
     {switch (state.mode, file) {
      | (Outline, Some(State__OrgDocuments.File.Fetched({ast}))) =>
        <>

@@ -1,4 +1,4 @@
-let id = x => x;
+let identity: 'a => 'a = x => x;
 
 let omit = (f, _) => f();
 

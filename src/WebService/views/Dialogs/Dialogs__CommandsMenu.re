@@ -18,6 +18,7 @@ type command =
 type commandItem = {
   command,
   label: string,
+  action: unit => unit,
 };
 
 type commandItems = array(commandItem);
@@ -25,14 +26,24 @@ type commandItems = array(commandItem);
 [@react.component]
 let make = (~close) => {
   let url = ReasonReactRouter.useUrl();
+  let dispatch = Store.useDispatch();
   let isFileUrl = url.path |> API__Routes.Routes.isFilePath;
-
   let items =
     [||]
     |> (
       switch (isFileUrl) {
       | true =>
-        Array.append({command: ToggleFavorite, label: "Toggle Favorite"})
+        Array.append({
+          command: ToggleFavorite,
+          label: "Toggle Favorite",
+          action: _ =>
+            SettingsAction(
+              State__Settings.ToggleBookmark(
+                Webapi.Dom.(window->Window.location->Location.href),
+              ),
+            )
+            |> dispatch,
+        })
       | _ => identity
       }
     );
@@ -41,7 +52,7 @@ let make = (~close) => {
     results
     |> Array.at(index |> Option.getOrElse(0))
     |> Option.orElse(~fallback=results |> Array.head)
-    |> Option.tap(({command}: commandItem) => Js.log(command)) /* ExecuteCommand(command) |> send */;
+    |> Option.tap(({command, action}: commandItem) => action());
   };
 
   let bindings = [|

@@ -3,15 +3,19 @@ open Relude.Globals;
 type lastViewedFile = option(string);
 let makeLastViewedFile = (x: string): lastViewedFile => Some(x);
 
-type state = {lastViewedFile};
+type state = {
+  lastViewedFile,
+  bookmarks: array(string),
+};
 
 type action =
   | SaveLastViewdFile(string)
   | SaveState(state)
+  | ToggleBookmark(string)
   /* | LoadState */
   | ResetState;
 
-let initialState = {lastViewedFile: None};
+let initialState = {lastViewedFile: None, bookmarks: [||]};
 
 module Encode = {
   let encodeJson =
@@ -24,12 +28,16 @@ module Encode = {
 module Decode = {
   module Decode = Decode.AsResult.OfParseError;
 
-  let make = lastViewedFile => {lastViewedFile: lastViewedFile};
+  let make = (lastViewedFile, bookmarks) => {
+    lastViewedFile,
+    bookmarks: bookmarks |> Option.getOrElse([||]),
+  };
 
   let decodeJson = json =>
     Decode.Pipeline.(
       succeed(make)
       |> field("lastViewedFile", optional(string))
+      |> optionalField("bookmarks", array(string))
       |> run(json)
     );
 };
@@ -48,6 +56,16 @@ let reducer = (state, action) => {
 
     state;
   | SaveState(state) => state
+  | ToggleBookmark((x: string)) => {
+      ...state,
+      bookmarks:
+        state.bookmarks
+        |> Array.indexOfBy(String.eq, x)
+        |> Option.foldLazy(
+             _ => Array.append(x, state.bookmarks),
+             i => Array.removeAt(i, state.bookmarks),
+           ),
+    }
   | ResetState => initialState
   };
 };
