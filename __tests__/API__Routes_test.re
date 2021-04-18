@@ -40,7 +40,7 @@ describe("API__Routes.Routes", () => {
     |> toEqual(true)
   );
 
-  test("isFileUrl: failure", () =>
+  test("isFileUrl: Failure", () =>
     expect(Routes.isFileRoute("https://localhost:3000/0/0/filename"))
     |> toEqual(false)
   );
