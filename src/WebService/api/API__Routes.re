@@ -33,6 +33,6 @@ module Routes = {
     |> ReludeParse.Parser.runParser(url)
     |> Result.toOption
     |> Option.map(URI.pathSegments)
-    |> Option.filter(validateList(fileUrlValidations))
+    |> Option.filter(fileUrlValidations |> validateList)
     |> Option.isSome;
 };
