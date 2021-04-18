@@ -1,6 +1,7 @@
 module Routes = {
+  let fileUrl = (~workspaceIndex: int, ~id: string) => {j|/file/$workspaceIndex/$id|j};
+
   let openFile = (~workspaceIndex: int, ~id: string) =>
-    ReasonReactRouter.replace(
-      State__OrgDocuments.File.encodeUrlId(~workspaceIndex, ~id),
-    );
+    ReasonReactRouter.replace(fileUrl(~workspaceIndex, ~id));
+
 };

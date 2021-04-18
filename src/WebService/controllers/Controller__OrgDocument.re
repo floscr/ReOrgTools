@@ -18,7 +18,7 @@ let make = (~id, ~queryParams, ~workspaceIndex) => {
 
       API__OrgDocument.Request.make(~workspaceIndex, ~file=id)
       |> IO.tap(data => {
-           let id = Stores.OrgDocument.File.encodeUrlId(~id, ~workspaceIndex);
+           let id = API__Routes.Routes.fileUrl(~id, ~workspaceIndex);
            // Cache File
            Localforage.Localforage_IO.set(id, data)
            |> IO.unsafeRunAsync(ignore);

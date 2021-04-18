@@ -17,8 +17,6 @@ module File = {
     | Empty
     | NotFound
     | Forbidden;
-
-  let encodeUrlId = (~workspaceIndex: int, ~id: string) => {j|/file/$workspaceIndex/$id|j};
 };
 
 module Store = {
@@ -45,7 +43,7 @@ module Store = {
         });
 
       Localforage.Localforage_IO.set(
-        File.encodeUrlId(~workspaceIndex, ~id),
+        API__Routes.Routes.fileUrl(~workspaceIndex, ~id),
         text,
       )
       |> IO.unsafeRunAsync(ignore);
