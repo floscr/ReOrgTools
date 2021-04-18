@@ -24,7 +24,16 @@ type commandItems = array(commandItem);
 
 [@react.component]
 let make = (~close) => {
-  let items = [|{command: ToggleFavorite, label: "Toggle Favorite"}|];
+  let url = ReasonReactRouter.useUrl();
+  let isFileUrl = url.path |> API__Routes.Routes.isFilePath;
+
+  let items =
+    [||]
+    |> (
+      isFileUrl
+        ? Array.append({command: ToggleFavorite, label: "Toggle Favorite"})
+        : identity
+    );
 
   let onSubmit = (~index=None, results) => {
     results

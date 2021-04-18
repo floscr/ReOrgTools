@@ -21,22 +21,23 @@ let validateUrl = (~url: string, ~validations: list('x => bool)) =>
   |> ReludeParse.Parser.runParser(url)
   |> Result.toOption
   |> Option.map(URI.pathSegments)
+  |> Option.map(List.map(PathSegment.show))
   |> Option.filter(validations |> validateList)
   |> Option.isSome;
 
 module Routes = {
   let fileUrl = (~workspaceIndex: int, ~id: string) => {j|/file/$workspaceIndex/$id|j};
 
+  let fileValidations = [
+    String.eq("file"),
+    String.toInt >> Option.isSome,
+    _ => true,
+  ];
+
   let openFile = (~workspaceIndex: int, ~id: string) =>
     ReasonReactRouter.replace(fileUrl(~workspaceIndex, ~id));
 
-  let isFileRoute = url =>
-    validateUrl(
-      ~url,
-      ~validations=[
-        PathSegment.show >> String.eq("file"),
-        PathSegment.show >> String.toInt >> Option.isSome,
-        _ => true,
-      ],
-    );
+  let isFilePath = fileValidations |> validateList;
+
+  let isFileRoute = url => validateUrl(~url, ~validations=fileValidations);
 };
