@@ -126,8 +126,6 @@ let make = () => {
            lastViewedFile
          )
       |> Option.tap(ReasonReactRouter.replace)
-      /* |> Option.filter() */
-      /* |> Option.tap(ReasonReactRouter.url) */
       |> ignore,
     error => Js_console.error(error),
   );
