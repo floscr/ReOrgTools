@@ -1,5 +1,10 @@
 let identity: 'a => 'a = x => x;
 
+let tap = (fn: 'a => unit, x: 'a) => {
+  fn(x);
+  x;
+};
+
 let omit = (f, _) => f();
 
 module ClassName = {
