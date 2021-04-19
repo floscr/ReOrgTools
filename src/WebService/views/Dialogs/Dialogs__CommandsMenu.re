@@ -28,6 +28,7 @@ let make = (~close) => {
   let url = ReasonReactRouter.useUrl();
   let dispatch = Store.useDispatch();
   let isFileUrl = url.path |> API__Routes.Routes.isFilePath;
+
   let items =
     [||]
     |> (
@@ -36,13 +37,20 @@ let make = (~close) => {
         Array.append({
           command: ToggleFavorite,
           label: "Toggle Favorite",
-          action: _ =>
+          action: _ => {
             SettingsAction(
               State__Settings.ToggleBookmark(
-                Webapi.Dom.(window->Window.location->Location.href),
+                State__Settings.Bookmark.make(
+                  switch (url.path) {
+                  | [workspaceIndex, _, file] => {j|$workspaceIndex: $file|j}
+                  | _ => ""
+                  },
+                  Webapi.Dom.(window->Window.location->Location.href),
+                ),
               ),
             )
-            |> dispatch,
+            |> dispatch;
+          },
         })
       | _ => identity
       }
@@ -52,7 +60,8 @@ let make = (~close) => {
     results
     |> Array.at(index |> Option.getOrElse(0))
     |> Option.orElse(~fallback=results |> Array.head)
-    |> Option.tap(({command, action}: commandItem) => action());
+    |> Option.tap(({command, action}: commandItem) => action())
+    |> Option.tap(_ => close());
   };
 
   let bindings = [|

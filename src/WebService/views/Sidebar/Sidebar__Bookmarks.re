@@ -12,9 +12,13 @@ let make = () => {
   };
 
   bookmarks
-  |> Array.map(x =>
-       <li className=Styles.li key={j|bookmark-$x|j}>
-         <button className=Styles.button> {x |> s} </button>
+  |> Array.map(({title, value}: State__Settings.Bookmark.t) =>
+       <li className=Styles.li key={j|bookmark-$title|j}>
+         <button
+           className=Styles.button
+           onClick={_ => ReasonReactRouter.replace(value)}>
+           {title |> s}
+         </button>
        </li>
      )
   |> Option.some
