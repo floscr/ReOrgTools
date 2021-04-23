@@ -92,7 +92,7 @@ let storeSettings = state => {
 let reducer = (state, action) => {
   switch (action) {
   | SaveState(state) => state
-  | ToggleSidebar(_) =>
+  | ToggleSidebar =>
     {...state, isSidebarOpen: !state.isSidebarOpen} |> tap(storeSettings)
   | SaveLastViewdFile((lastViewedFile: string)) =>
     let lastViewedFile = lastViewedFile |> makeLastViewedFile;
