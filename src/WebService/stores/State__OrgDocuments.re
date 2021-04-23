@@ -27,8 +27,7 @@ module Store = {
   type action =
     | FetchProgress(string)
     | FetchSuccess(string, int, Shared__API__File.File.t)
-    | FetchFailure(string, ReludeFetch.Error.t(string))
-    | Cache(string);
+    | FetchFailure(string, ReludeFetch.Error.t(string));
 
   let reducer = (state, action) => {
     switch (action) {
@@ -55,12 +54,15 @@ module Store = {
             Option.foldLazy(
               _ => Some(file),
               fun
-              | File.Fetched(x) => Some(file)
+              | File.Fetched(_x) => Some(file)
               | _ => Some(file),
             ),
             state.filesCache,
           ),
       };
+    | FetchFailure(error, _) =>
+      Js_console.error(error);
+      state;
     | FetchProgress(id) => {
         filesCache:
           StringMap.update(

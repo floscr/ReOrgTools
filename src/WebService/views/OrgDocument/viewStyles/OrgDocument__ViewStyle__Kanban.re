@@ -85,7 +85,7 @@ let make = (~xs: array(ReOrga.sectionAst)) => {
 
   let todos = groupByTodo(acc, xs);
 
-  let tags = () =>
+  let _tags = () =>
     todos
     |> StringMap.valueArray
     |> Array.flatten

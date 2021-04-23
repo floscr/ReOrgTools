@@ -20,10 +20,10 @@ external bindGlobalArray: (array(string), Dom.keyboardEvent => bool) => unit =
 [@bs.send.pipe: t] external unpause: unit => unit = "unpause";
 
 [@bs.send.pipe: t]
-external bind: (string, Dom.keyboardEvent => bool) => unit = "";
+external bind: (string, Dom.keyboardEvent => bool) => unit = "bind";
 
 [@bs.send.pipe: t]
 external bindArray: (array(string), Dom.keyboardEvent => bool) => unit =
   "bind";
 
-[@bs.send.pipe: t] external detach: unit => unit = "";
+[@bs.send.pipe: t] external detach: unit => unit = "detach";

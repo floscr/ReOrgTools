@@ -12,13 +12,9 @@ module Styles = {
 
 module Wrapper = {
   [@react.component]
-  let make = (~bindings, ~className, ~children) =>
+  let make = (~bindings, ~className=Styles.roundedDialog, ~children) =>
     <ComboKeysWrapper bindings>
-      <div
-        onClick=ReactEvent.Mouse.stopPropagation
-        className=Styles.roundedDialog>
-        children
-      </div>
+      <div onClick=ReactEvent.Mouse.stopPropagation className> children </div>
     </ComboKeysWrapper>;
 };
 
