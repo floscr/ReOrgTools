@@ -12,7 +12,10 @@ module Store = {
 
   let reducer = (state, action) => {
     switch (action) {
-    | FetchWorkspacesSuccess(workspaces) => {...state, workspaces}
+    | FetchWorkspacesSuccess(workspaces) => {workspaces: workspaces}
+    | FetchWorkspacesFailure(error) =>
+      Js_console.error(error);
+      state;
     };
   };
 };
