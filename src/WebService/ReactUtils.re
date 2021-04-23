@@ -54,13 +54,13 @@ module IconButton = {
   let buttonClassName = Styles.iconButton;
 
   [@react.component]
-  let make = (~id, ~style=?) => {
+  let make = (~id, ~style=?, ~onClick=?) => {
     let className =
       switch (style) {
       | Some(x) => buttonClassName ++ " " ++ x
       | _ => buttonClassName
       };
-    <button className> <Icon id /> </button>;
+    <button className ?onClick> <Icon id /> </button>;
   };
 };
 

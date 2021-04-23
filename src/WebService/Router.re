@@ -1,11 +1,12 @@
 open ReactUtils;
 open Relude.Globals;
+open State;
 
 module Styles = {
   open Css;
   let innerSpacing = FixedTheme.Spacing.xlarge;
 
-  let root =
+  let root = isSidebarOpen =>
     style([
       position(fixed),
       top(zero),
@@ -13,7 +14,7 @@ module Styles = {
       right(zero),
       bottom(zero),
       display(grid),
-      gridTemplateColumns([vw(20.), auto]),
+      gridTemplateColumns(isSidebarOpen ? [vw(20.), auto] : []),
     ]);
 
   let sidebar =
@@ -25,9 +26,9 @@ module Styles = {
       flexDirection(column),
     ]);
 
-  let main =
+  let main = isSidebarOpen =>
     style([
-      gridColumnStart(2),
+      gridColumnStart(isSidebarOpen ? 2 : 1),
       display(`flex),
       flexDirection(column),
       overflow(auto),
@@ -72,10 +73,14 @@ let reducer =
   | NoOp => NoUpdate
   };
 
-let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ()) => {
+let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
   <>
-    <aside className=Styles.sidebar> <Sidebar workspaceIndex id /> </aside>
-    <article className=Styles.main>
+    {switch (isSidebarOpen) {
+     | true =>
+       <aside className=Styles.sidebar> <Sidebar workspaceIndex id /> </aside>
+     | _ => React.null
+     }}
+    <article className={Styles.main(isSidebarOpen)}>
       {switch (id) {
        | Some(id) => <Controller__OrgDocument id queryParams workspaceIndex />
        | _ => React.null
@@ -87,6 +92,7 @@ let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ()) => {
 [@react.component]
 let make = () => {
   let dispatch = State.Store.useDispatch();
+  let isSidebarOpen = Store.useSelector(Selector.Settings.isSidebarOpen);
 
   let rootRef: React.ref(Js.Nullable.t(Dom.element)) =
     React.useRef(Js.Nullable.null);
@@ -96,15 +102,11 @@ let make = () => {
 
   let openFilePicker = _ =>
     dispatch(
-      State.DialogsAction(
-        State__Dialogs.OpenDialog(State__Dialogs.FilePicker),
-      ),
+      DialogsAction(State__Dialogs.OpenDialog(State__Dialogs.FilePicker)),
     );
   let openCommandsMenu = _ =>
     dispatch(
-      State.DialogsAction(
-        State__Dialogs.OpenDialog(State__Dialogs.CommandsMenu),
-      ),
+      DialogsAction(State__Dialogs.OpenDialog(State__Dialogs.CommandsMenu)),
     );
 
   let url = ReasonReactRouter.useUrl();
@@ -119,7 +121,7 @@ let make = () => {
       |> Js.Nullable.toOption
       |> Option.flatMap(State__Settings.Decode.decodeJson >> Result.toOption)
       |> Option.tap(x =>
-           State.SettingsAction(State__Settings.SaveState(x)) |> dispatch
+           SettingsAction(State__Settings.SaveState(x)) |> dispatch
          )
       |> Option.filter(_ => isHomePage)
       |> Option.flatMap(({lastViewedFile}: State__Settings.state) =>
@@ -130,15 +132,14 @@ let make = () => {
     error => Js_console.error(error),
   );
 
-  State__Workspaces.(
-    ReludeReact.Effect.useIOOnMount(
-      Request.make(),
-      data =>
-        State.WorkspaceAction(Store.FetchWorkspacesSuccess(data)) |> dispatch,
-      error =>
-        State.WorkspaceAction(Store.FetchWorkspacesFailure(error))
-        |> dispatch,
-    )
+  ReludeReact.Effect.useIOOnMount(
+    State__Workspaces.Request.make(),
+    data =>
+      WorkspaceAction(State__Workspaces.Store.FetchWorkspacesSuccess(data))
+      |> dispatch,
+    error =>
+      WorkspaceAction(State__Workspaces.Store.FetchWorkspacesFailure(error))
+      |> dispatch,
   );
 
   let bindShortcuts = () => {
@@ -169,13 +170,15 @@ let make = () => {
     Some(() => detachShortcuts());
   });
 
-  <main className=Styles.root ref={ReactDOMRe.Ref.domRef(rootRef)}>
+  <main
+    className={Styles.root(isSidebarOpen)}
+    ref={ReactDOMRe.Ref.domRef(rootRef)}>
     {switch (url.path) {
      | ["file", workspaceIndex, id] =>
        let workspaceIndex =
          workspaceIndex |> String.toInt |> Option.getOrElse(0);
-       showMain(~id, ~queryParams, ~workspaceIndex, ());
-     | _ => showMain(~queryParams, ())
+       showMain(~id, ~queryParams, ~workspaceIndex, ~isSidebarOpen, ());
+     | _ => showMain(~queryParams, ~isSidebarOpen, ())
      }}
     <Dialogs />
   </main>;

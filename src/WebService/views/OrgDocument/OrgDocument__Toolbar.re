@@ -2,10 +2,12 @@ open Relude.Globals;
 open ReOrga;
 open ReactUtils;
 open OrgDocument__Utils;
+open State;
 
 module Styles = {
   open Css;
   open FixedTheme;
+
   let root =
     style([
       position(sticky),
@@ -19,6 +21,10 @@ module Styles = {
       alignItems(center),
     ]);
 
+  let menuIcon = style([marginRight(Spacing.medium)]);
+
+  let leftRoot = style([display(flexBox), alignItems(center)]);
+
   let selectWrapper = style([flex(`num(1.)), maxWidth(px(250))]);
 };
 
@@ -26,6 +32,8 @@ module Styles = {
 let make =
     (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t, ~layoutType) => {
   open Types__URLSearchParams.Layouts;
+  let isSidebarOpen = Store.useSelector(Selector.Settings.isSidebarOpen);
+  let dispatch = State.Store.useDispatch();
 
   let onChange = (x: Js.Nullable.t(ReactSelect.t)) =>
     x
@@ -54,7 +62,14 @@ let make =
     |> ignore;
 
   <header className=Styles.root>
-    <div>
+    <div className=Styles.leftRoot>
+      <IconButton
+        id={isSidebarOpen ? "menu_open" : "menu"}
+        style=Styles.menuIcon
+        onClick={_ =>
+          SettingsAction(State__Settings.ToggleSidebar) |> dispatch
+        }
+      />
       {ast.properties->Js.Dict.get("title")
        |> Option.getOrElse(String.empty)
        |> s}
