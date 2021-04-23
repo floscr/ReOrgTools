@@ -29,8 +29,7 @@ module Styles = {
 };
 
 [@react.component]
-let make =
-    (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t, ~layoutType) => {
+let make = (~ast: ReOrga.orgAst, ~layoutType) => {
   open Types__URLSearchParams.Layouts;
   let isSidebarOpen = Store.useSelector(Selector.Settings.isSidebarOpen);
   let dispatch = State.Store.useDispatch();

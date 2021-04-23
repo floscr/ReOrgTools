@@ -97,7 +97,7 @@ let make = (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t) => {
   |> (
     xs =>
       <div className=Styles.root>
-        <OrgDocument__Toolbar ast queryParams layoutType />
+        <OrgDocument__Toolbar ast layoutType />
         xs
       </div>
   );
