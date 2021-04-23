@@ -50,12 +50,16 @@ module Styles = {
     ]);
 };
 
-type state = {isDocumentScrolled: bool};
+type state = {
+  isDocumentScrolled: bool,
+  areSettingsLoaded: bool,
+};
 
-let initialState = {isDocumentScrolled: false};
+let initialState = {isDocumentScrolled: false, areSettingsLoaded: false};
 
 type action =
   | SetScrollState(int)
+  | SettingsLoaded
   | NoOp;
 
 let reducer =
@@ -70,6 +74,7 @@ let reducer =
         |> Option.reject(Int.eq(Int.zero))
         |> Option.foldLazy(_ => false, _ => true),
     })
+  | SettingsLoaded => Update({...state, areSettingsLoaded: true})
   | NoOp => NoUpdate
   };
 
@@ -97,8 +102,7 @@ let make = () => {
   let rootRef: React.ref(Js.Nullable.t(Dom.element)) =
     React.useRef(Js.Nullable.null);
 
-  let (_state, _send) =
-    ReludeReact.Reducer.useReducer(reducer, initialState);
+  let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
   let openFilePicker = _ =>
     dispatch(
@@ -119,6 +123,7 @@ let make = () => {
     data =>
       data
       |> Js.Nullable.toOption
+      |> Option.tap(_ => SettingsLoaded |> send)
       |> Option.flatMap(State__Settings.Decode.decodeJson >> Result.toOption)
       |> Option.tap(x =>
            SettingsAction(State__Settings.SaveState(x)) |> dispatch
@@ -173,11 +178,12 @@ let make = () => {
   <main
     className={Styles.root(isSidebarOpen)}
     ref={ReactDOMRe.Ref.domRef(rootRef)}>
-    {switch (url.path) {
-     | ["file", workspaceIndex, id] =>
+    {switch (state.areSettingsLoaded, url.path) {
+     | (true, ["file", workspaceIndex, id]) =>
        let workspaceIndex =
          workspaceIndex |> String.toInt |> Option.getOrElse(0);
        showMain(~id, ~queryParams, ~workspaceIndex, ~isSidebarOpen, ());
+     | (false, _) => React.null
      | _ => showMain(~queryParams, ~isSidebarOpen, ())
      }}
     <Dialogs />
