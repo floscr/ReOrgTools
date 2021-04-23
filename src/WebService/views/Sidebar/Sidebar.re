@@ -45,7 +45,6 @@ let reducer =
 
 [@react.component]
 let make = (~id, ~workspaceIndex) => {
-  let dispatch = State.Store.useDispatch();
   let files = Store.useSelector(Selector.OrgDocuments.files);
   let file = id |> Option.flatMap(x => StringMap.get(x, files));
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);

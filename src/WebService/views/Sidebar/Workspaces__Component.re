@@ -1,7 +1,8 @@
 open ReactUtils;
 open Relude.Globals;
 open State;
-open Sidebar__Utils;
+
+module Styles = Sidebar__Utils.Styles;
 
 let fileCompare =
   Ord.by(
