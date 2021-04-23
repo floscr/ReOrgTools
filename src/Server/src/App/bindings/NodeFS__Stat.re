@@ -35,7 +35,7 @@ type t = {
 
 [@bs.send] external isSymbolicLink: t => bool = "isSymbolicLink";
 
-[@bs.module "fs"] external statSync: string => t = "";
+[@bs.module "fs"] external statSync: string => t = "statSync";
 
 [@bs.module "fs"]
 external _stat: (string, (Js.Null.t(Js.Exn.t), t) => unit) => unit = "stat";
