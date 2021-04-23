@@ -133,7 +133,10 @@ let make = () => {
          )
       |> Option.tap(ReasonReactRouter.replace)
       |> ignore,
-    error => Js_console.error(error),
+    error => {
+      Js_console.error(error);
+      SettingsLoaded |> send;
+    },
   );
 
   ReludeReact.Effect.useIOOnMount(
