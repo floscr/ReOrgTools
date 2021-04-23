@@ -13,7 +13,7 @@ module Styles = {
     ]);
 };
 
-let renderHeadline = (~position, ~level, ~index, xs) => {
+let renderHeadline = (~position, ~level, xs) => {
   let key = OrgDocument__Component__Headline.makeHeadlineKey(position);
 
   let onClick = _ =>
@@ -39,28 +39,26 @@ let renderHeadline = (~position, ~level, ~index, xs) => {
       (0, ""),
       xs,
     )
-    |> (((a, b)) => b);
+    |> (((_, b)) => b);
 
   <p key className={Styles.headline(level)} onClick> {text |> s} </p>;
 };
 
-let rec renderItems = (~level=0, xs) => {
-  Belt.Array.mapWithIndex(xs, (i, x) => {
-    switch (getItem(x)) {
-    | Headline({children, level, position}) =>
-      renderHeadline(~position, ~level, ~index=i, children)
-    | Section({children, level}) =>
-      renderItems(~level, children)
-      |> OrgDocument__Utils.wrapWithKey(level, i)
-    | _ => React.null
-    }
-  })
+let rec renderItems = xs =>
+  xs
+  |> Array.mapWithIndex((x, i) => {
+       switch (x |> getItem) {
+       | Headline({children, level, position}) =>
+         renderHeadline(~position, ~level, children)
+       | Section({children, level}) =>
+         renderItems(children) |> OrgDocument__Utils.wrapWithKey(level, i)
+       | _ => React.null
+       }
+     })
   |> React.array;
-};
 
 [@react.component]
 let make = (~ast: ReOrga.orgAst) => {
-  let items = ast.children;
-
-  <> {ast |> (x => x.children |> (xs => renderItems(xs)))} </>;
+  let {children}: ReOrga.orgAst = ast;
+  <> {children |> renderItems} </>;
 };
