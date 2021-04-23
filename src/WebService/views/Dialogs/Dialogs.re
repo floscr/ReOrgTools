@@ -91,10 +91,10 @@ let make = () => {
                        Dialogs__CommandsMenu.id,
                        <Dialogs__CommandsMenu close />,
                      ))
-                   | Lightbox({index, items}) =>
+                   | Lightbox({items}) =>
                      Some((
                        Dialogs__Lightbox.id,
-                       <Dialogs__Lightbox index images=items close />,
+                       <Dialogs__Lightbox images=items />,
                      ))
                    }
                  )

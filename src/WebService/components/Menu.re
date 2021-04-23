@@ -152,7 +152,6 @@ let make =
       ~renderItems: state => React.element,
     ) => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
-  let query = state.query |> String.toLowerCase;
 
   let results = items(state);
 

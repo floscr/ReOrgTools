@@ -66,7 +66,7 @@ let make = (~close) => {
       }
       onEscape=close
       placeholder="Pick File"
-      items={({selection, query}) => results |> filter(~query)}
+      items={({query}) => results |> filter(~query)}
       renderItems={({selection, query}) =>
         results
         |> filter(~query)
