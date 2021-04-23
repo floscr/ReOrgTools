@@ -47,7 +47,10 @@ watch_frontend: $(SOURCE_DIRS_JSON)
 		entr -nd $(BSB) $(BSB_ARGS); \
 	done
 
-build_frontend: copy_bsconfig build
+build_frontend_reorga:
+	cd ./src/ReOrga; bsb -make-world
+
+build_frontend: copy_bsconfig build_frontend_reorga build
 	yarn build:webpack
 
 build:
