@@ -1,3 +1,9 @@
+open Relude.Globals;
+
+[@bs.send] external blur: Js.t({..}) => unit = "blur";
+
+let blurOnClick = e => e |> ReactEvent.Mouse.currentTarget |> blur;
+
 let identity: 'a => 'a = x => x;
 
 let tap = (fn: 'a => unit, x: 'a) => {
@@ -60,7 +66,7 @@ module IconButton = {
       | Some(x) => buttonClassName ++ " " ++ x
       | _ => buttonClassName
       };
-    <button className ?onClick> <Icon id /> </button>;
+    <button className onMouseUp=blurOnClick ?onClick> <Icon id /> </button>;
   };
 };
 
