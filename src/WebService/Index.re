@@ -5,6 +5,6 @@ external hotAccept: unit => unit = "accept";
 
 ReactDOMRe.renderToElementWithId(<App />, "root");
 
-if (isHotEnabled) {
+if (isHotEnabled && !Shared__Config.Env.isProduction) {
   hotAccept();
 };
