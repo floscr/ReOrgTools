@@ -9,6 +9,8 @@ let grey15 = (ThemeKeys.grey15, "#f4f4f8");
 let grey20 = (ThemeKeys.grey20, "#9a9a9a");
 let grey40 = (ThemeKeys.grey40, "#333333");
 
-let accentMain = (ThemeKeys.accentMain, "#ff7d77");
+let accentMain = (ThemeKeys.accentMain, "#3d97dd");
+
+let focus = (ThemeKeys.focus, "#127bf6");
 
 let blue = (ThemeKeys.blue, "#3d97dd");

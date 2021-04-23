@@ -46,12 +46,34 @@ module Icon = {
 
 module Styles = {
   open Css;
+  open FixedTheme;
+
   let iconButton =
     style([
+      userSelect(`none),
       lineHeight(`abs(1.)),
+      position(relative),
+      selector(
+        ":hover::after, :focus::after, :focus::before",
+        [
+          unsafe("content", ""),
+          position(absolute),
+          top(Spacing.negativeSmall),
+          left(Spacing.negativeSmall),
+          right(Spacing.negativeSmall),
+          bottom(Spacing.negativeSmall),
+          borderRadius(BorderRadius.small),
+          border(px(1), `solid, var(ThemeKeys.grey10)),
+        ],
+      ),
+      selector(":focus::before", [opacity(0.15), borderWidth(px(3))]),
+      selector(
+        ":focus::after, :focus::before",
+        [borderColor(var(ThemeKeys.focus))],
+      ),
       selector(
         ":focus",
-        [outlineStyle(none), color(var(ThemeKeys.blue))],
+        [outlineStyle(none), color(var(ThemeKeys.focus))],
       ),
     ]);
 };

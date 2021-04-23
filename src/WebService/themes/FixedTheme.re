@@ -9,11 +9,18 @@ module Fonts = {
 module Spacing = {
   open Css;
 
+  let mediumValue = 0.7;
+  let negativeMediumValue = (-0.7);
+  let smallValue = 0.55;
+  let negativeSmallValue = (-0.55);
+
   let xxlarge = rem(1.75);
   let xlarge = rem(1.5);
   let large = rem(1.);
-  let medium = rem(0.7);
-  let small = rem(0.55);
+  let negativeMedium = rem(negativeMediumValue);
+  let medium = rem(mediumValue);
+  let small = rem(smallValue);
+  let negativeSmall = rem(negativeSmallValue);
   let xsmall = rem(0.45);
 
   let scrollbarWidth = px(14);

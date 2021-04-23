@@ -10,3 +10,4 @@ let grey40 = "--palette-grey-30";
 let blue = "--accent-blue";
 
 let accentMain = "--accent-main";
+let focus = "--focus";
