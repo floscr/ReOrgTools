@@ -126,7 +126,7 @@ let detectLinkType = (link: ReOrga.link) =>
   | _ => Link(link)
   };
 
-let renderLink = (~attachmentId=None, {description, value} as link) => {
+let renderLink = (~attachmentId=None, link) => {
   link
   |> detectLinkType
   |> (

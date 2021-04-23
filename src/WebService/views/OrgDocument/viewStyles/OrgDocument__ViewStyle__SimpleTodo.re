@@ -57,8 +57,7 @@ let rec renderItems = (~properties=?, xs) => {
   xs
   |> Array.mapWithIndex((x, i) => {
        switch (x |> getItem) {
-       | Headline({children, level, position, keyword})
-           when keyword |> Option.isSome =>
+       | Headline({children, position, keyword}) when keyword |> Option.isSome =>
          renderHeadline(~position, ~properties, children)
 
        | Section({children, level, properties}) =>

@@ -60,7 +60,7 @@ let make = (~close) => {
     results
     |> Array.at(index |> Option.getOrElse(0))
     |> Option.orElse(~fallback=results |> Array.head)
-    |> Option.tap(({command, action}: commandItem) => action())
+    |> Option.tap(({action}: commandItem) => action())
     |> Option.tap(_ => close());
   };
 
@@ -86,7 +86,7 @@ let make = (~close) => {
       }
       onEscape=close
       placeholder="Execute Command"
-      items={({selection, query}) => items |> filter(~query)}
+      items={({query}) => items |> filter(~query)}
       renderItems={({selection, query}) =>
         items
         |> filter(~query)
