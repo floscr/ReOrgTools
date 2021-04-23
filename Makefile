@@ -47,6 +47,9 @@ watch_frontend: $(SOURCE_DIRS_JSON)
 		entr -nd $(BSB) $(BSB_ARGS); \
 	done
 
+build_frontend: copy_bsconfig build
+	yarn build:webpack
+
 build:
 	$(BSB) $(BSB_ARGS)
 
