@@ -81,8 +81,7 @@ let reducer =
 let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
   <>
     {switch (isSidebarOpen) {
-     | true =>
-       <aside className=Styles.sidebar> <Sidebar workspaceIndex id /> </aside>
+     | true => <aside className=Styles.sidebar> <Sidebar id /> </aside>
      | _ => React.null
      }}
     <article className={Styles.main(isSidebarOpen)}>

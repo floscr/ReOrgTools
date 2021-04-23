@@ -26,7 +26,7 @@ let renderFiles = (~onClick, ~index, xs) =>
   |> React.array;
 
 [@react.component]
-let make = (~workspaceIndex, ~onFileClick) => {
+let make = (~onFileClick) => {
   let workspaces = Store.useSelector(Selector.Workspaces.workspaces);
 
   let onClick = (id, workspaceIndex) => {

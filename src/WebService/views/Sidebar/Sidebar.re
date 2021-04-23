@@ -44,7 +44,7 @@ let reducer =
   };
 
 [@react.component]
-let make = (~id, ~workspaceIndex) => {
+let make = (~id) => {
   let files = Store.useSelector(Selector.OrgDocuments.files);
   let file = id |> Option.flatMap(x => StringMap.get(x, files));
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
@@ -60,7 +60,7 @@ let make = (~id, ~workspaceIndex) => {
          <button onClick=onBackClick> {"<- Go back" |> s} </button>
          <Outline ast />
        </>
-     | _ => <Workspaces__Component workspaceIndex onFileClick />
+     | _ => <Workspaces__Component onFileClick />
      }}
   </div>;
 };
