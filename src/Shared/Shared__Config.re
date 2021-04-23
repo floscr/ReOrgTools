@@ -24,6 +24,14 @@ module Env = {
     >> Option.getOrElse(PRODUCTION);
 
   let nodeEnv = get("NODE_ENV") |> parseNodeEnv;
+
+  let isProduction =
+    nodeEnv
+    |> (
+      fun
+      | PRODUCTION => true
+      | _ => false
+    );
 };
 
 module Defaults = {
