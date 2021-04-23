@@ -31,7 +31,7 @@ module Request: Request = {
             Path.make([
               PathSegment.make("file"),
               PathSegment.make(workspaceIndex |> Int.toString),
-              PathSegment.make(file ++ ".org"),
+              PathSegment.make(file ++ ".org" ++ ".json"),
             ]),
           (),
         )
