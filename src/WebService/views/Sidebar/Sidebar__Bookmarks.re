@@ -1,13 +1,14 @@
 open ReactUtils;
 open Relude.Globals;
 open State;
-open Sidebar__Utils;
 
 [@react.component]
 let make = () => {
+  module Styles = Sidebar__Utils.Styles;
+
   let bookmarks = Store.useSelector(Selector.Settings.bookmarks);
 
-  let onClick = x => {
+  let _onClick = x => {
     ReasonReactRouter.replace(x);
   };
 
