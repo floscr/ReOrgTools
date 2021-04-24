@@ -73,13 +73,16 @@ let make = (~ast: ReOrga.orgAst, ~layoutType) => {
        |> Option.getOrElse(String.empty)
        |> s}
     </div>
-    <div className=Styles.selectWrapper>
-      <ReactSelect
-        options=reactSelectOptions
-        value={layoutType |> toReactSelect}
-        isSearchable=false
-        onChange
-      />
-    </div>
+    <div
+      className=Styles.selectWrapper
+      /* React Select Breaks Styling, as it uses emotion v11  */
+      /* Look for https://github.com/reasonml-labs/bs-css/pull/229 */
+      /* <ReactSelect */
+      /*   options=reactSelectOptions */
+      /*   value={layoutType |> toReactSelect} */
+      /*   isSearchable=false */
+      /*   onChange */
+      /* /> */
+    />
   </header>;
 };
