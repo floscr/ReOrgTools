@@ -37,7 +37,6 @@
     "relude-parse": "^0.8.0",
     "relude-reason-react": "^0.10.0",
     "relude-url": "^0.4.0",
-    "reorga": "link:./src/ReOrga",
     "scroll-into-view-if-needed": "^2.2.28",
     "webpack": "^4.43.0",
     "webpack-dev-server": "^3.11.0"
