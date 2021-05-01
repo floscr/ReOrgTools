@@ -35,6 +35,7 @@
     "relude",
     "relude-url",
     "relude-parse",
+    "@beem812/bs-jsonwebtoken",
     "reorga",
     "shared",
   ],

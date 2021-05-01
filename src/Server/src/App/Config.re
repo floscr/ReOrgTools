@@ -13,3 +13,10 @@ let workspaces =
   Env.get("WORKSPACES")
   |> Option.map(String.splitList(~delimiter=","))
   |> Option.getOrElse(List.empty);
+
+let secretToken =
+  Env.get("SECRET_TOKEN")
+  |> Option.tapNone(_ =>
+       Logger.err(x => x("SECRET_TOKEN must be defined in .env"))
+     )
+  |> Option.getOrThrow;
