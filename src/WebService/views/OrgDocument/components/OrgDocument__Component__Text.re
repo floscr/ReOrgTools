@@ -37,7 +37,11 @@ let renderAttachment = (~attachmentId=None, {value}) => {
            Shared__Config.backendUrl(
              ~path=
                Path.make(
-                 [PathSegment.make("attachments"), ...xs]
+                 [
+                   PathSegment.make("api"),
+                   PathSegment.make("attachments"),
+                   ...xs,
+                 ]
                  |> List.append(PathSegment.make(value)),
                ),
              (),
@@ -49,6 +53,7 @@ let renderAttachment = (~attachmentId=None, {value}) => {
            Shared__Config.backendUrl(
              ~path=
                Path.make([
+                 PathSegment.make("api"),
                  PathSegment.make("attachments"),
                  PathSegment.make(value),
                ]),

@@ -29,6 +29,7 @@ module Request: Request = {
         Shared__Config.backendUrl(
           ~path=
             Path.make([
+              PathSegment.make("api"),
               PathSegment.make("file"),
               PathSegment.make(workspaceIndex |> Int.toString),
               PathSegment.make(file ++ ".org" ++ ".json"),

@@ -36,12 +36,12 @@ describe("API__Routes", () => {
 
 describe("API__Routes.Routes", () => {
   test("isFileUrl: Success", () =>
-    expect(Routes.isFileRoute("https://localhost:3000/file/0/filename"))
+    expect(Routes.isFileRoute("https://localhost:3000/api/file/0/filename"))
     |> toEqual(true)
   );
 
   test("isFileUrl: Failure", () =>
-    expect(Routes.isFileRoute("https://localhost:3000/0/0/filename"))
+    expect(Routes.isFileRoute("https://localhost:3000/api/0/0/filename"))
     |> toEqual(false)
   );
 });

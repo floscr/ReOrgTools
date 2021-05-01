@@ -40,7 +40,11 @@ module Request: Request = {
   let url =
     ReludeURL.(
       Shared__Config.backendUrl(
-        ~path=Path.make([PathSegment.make("workspaces")]),
+        ~path=
+          Path.make([
+            PathSegment.make("api"),
+            PathSegment.make("workspaces"),
+          ]),
         (),
       )
     )
