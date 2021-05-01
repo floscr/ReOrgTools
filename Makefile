@@ -56,6 +56,9 @@ build_frontend: copy_bsconfig build_frontend_reorga build
 build_esbuild: build
 	yarn build:esbuild
 
+test_backend:
+	cd ./src/Server; yarn run test
+
 build:
 	$(BSB) $(BSB_ARGS)
 

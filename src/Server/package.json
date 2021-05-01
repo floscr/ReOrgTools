@@ -6,7 +6,8 @@
     "build": "bsb -make-world",
     "start": "node ./src/App/Server.js",
     "start:dev": "nodemon -r esm ./src/App/Server.js",
-    "postinstall": "mkdir node_modules/.bin; ln -sfn $BSB_PATH/../ node_modules/bs-platform && ln -sfn $BSB_PATH/*.exe ./node_modules/.bin"
+    "postinstall": "mkdir node_modules/.bin; ln -sfn $BSB_PATH/../ node_modules/bs-platform && ln -sfn $BSB_PATH/*.exe ./node_modules/.bin",
+    "test": "jest"
   },
   "type": "module",
   "license": "MIT",
