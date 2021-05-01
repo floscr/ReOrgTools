@@ -2,14 +2,24 @@ open Express;
 
 let app = express();
 
+[@bs.module] external cors: unit => Express.Middleware.t = "cors";
+
 App.use(app, Middleware.json());
 App.use(app, Middleware.urlencoded(~extended=false, ()));
 
-App.use(app, Cors.t);
+App.use(app, cors());
 
 // Api Routes
-App.get(app, ~path="/api/file/:workspaceIndex/:id.json", Route__File.t);
-App.get(app, ~path="/api/workspaces", Route__Workspaces.t);
+App.getWithMany(
+  app,
+  ~path="/api/file/:workspaceIndex/:id.json",
+  [|Route__File.t|],
+);
+App.getWithMany(
+  app,
+  ~path="/api/workspaces",
+  [|Auth.authenticate, Route__Workspaces.t|],
+);
 App.get(app, ~path="/api/file/*/*", Route__Home.make);
 App.useOnPath(
   app,
