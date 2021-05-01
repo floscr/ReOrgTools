@@ -5,7 +5,7 @@
     "scripts": {
         "serve": "webpack-dev-server",
         "build:webpack": "NODE_ENV=production webpack",
-        "build:esbuild": "esbuild ./src/WebService/Index.bs.js --bundle --minify --sourcemap --outfile=./src/Server/public/dist/index.js --define:process.env.NODE_ENV=\\\"production\\\"",
+        "build:esbuild": "node esbuild.js",
         "postinstall": "ln -sfn $BSB_PATH/../ node_modules/bs-platform && ln -sfn $BSB_PATH/*.exe ./node_modules/.bin; bsb -clean",
         "test": "jest",
         "jest": "jest --watch"
