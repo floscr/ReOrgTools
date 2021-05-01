@@ -1,11 +1,16 @@
 type t;
 
-[@bs.new] [@bs.module] external init: Dom.element => t = "combokeys";
+[@bs.module "./Combokeys.Wrapper.js"] external init: Dom.element => t = "init";
 
-[@bs.module] external initPlayPausePlugin: t => t = "combokeys/plugins/pause";
+module PausePlugin = {
+  [@bs.module "./Combokeys.Pause.Wrapper.js"]
+  external initPlayPausePlugin: t => t = "init";
+};
 
-[@bs.module]
-external initGlobalBindPlugin: t => t = "combokeys/plugins/global-bind";
+module GlobalBindPlugin = {
+  [@bs.module "./Combokeys.GlobalBind.Wrapper.js"]
+  external initGlobalBindPlugin: t => t = "init";
+};
 
 [@bs.send.pipe: t]
 external bindGlobal: (string, Dom.keyboardEvent => bool) => unit =

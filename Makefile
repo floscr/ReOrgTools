@@ -53,6 +53,9 @@ build_frontend_reorga:
 build_frontend: copy_bsconfig build_frontend_reorga build
 	yarn build:webpack
 
+build_esbuild: build
+	yarn build:esbuild
+
 build:
 	$(BSB) $(BSB_ARGS)
 

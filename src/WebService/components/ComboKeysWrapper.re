@@ -11,7 +11,7 @@ let make = (~bindings=[||], ~children) => {
         Combokeys.init(
           Webapi.Dom.document |> Webapi.Dom.Document.documentElement,
         )
-        |> Combokeys.initGlobalBindPlugin;
+        |> Combokeys.GlobalBindPlugin.initGlobalBindPlugin;
       combokeys := Some(keys);
       keys;
     | Some(x) => x

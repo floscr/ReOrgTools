@@ -7,7 +7,7 @@ let getCombokeys = keys =>
       Combokeys.init(
         Webapi.Dom.document |> Webapi.Dom.Document.documentElement,
       )
-      |> Combokeys.initPlayPausePlugin;
+      |> Combokeys.PausePlugin.initPlayPausePlugin;
     combokeys := Some(keys);
     keys;
   | Some(x) => x
