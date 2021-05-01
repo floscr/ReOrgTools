@@ -31,14 +31,17 @@ const makeHtml = () => {
 // Main
 
 const build = async () => {
-    await esbuild.build({
+    const result = await esbuild.build({
         entryPoints,
         logLevel: 'info',
         bundle: true,
         minify: true,
+        // metafile: true,
         sourcemap: 'external',
         outfile: outFile,
     })
+
+    // fs.writeFileSync('meta.json', JSON.stringify(result.metafile))
 
     makeHtml();
 }
