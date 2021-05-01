@@ -9,6 +9,10 @@
       "subdirs": true
     },
     {
+      "dir": "src/ReOrga",
+      "subdirs": false
+    },
+    {
       "dir": "src/Shared",
       "subdirs": false
     },
@@ -44,7 +48,6 @@
     "relude-url",
     "relude-parse",
     "relude-reason-react",
-    "reorga",
   ],
   "bs-dev-dependencies": [
     "@glennsl/bs-jest"
