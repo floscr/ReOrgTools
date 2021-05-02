@@ -20,7 +20,6 @@ App.getWithMany(
   ~path="/api/workspaces",
   [|Auth.authenticate, Route__Workspaces.t|],
 );
-App.get(app, ~path="/api/file/*/*", Route__Home.make);
 App.useOnPath(
   app,
   ~path="/api/attachments",
