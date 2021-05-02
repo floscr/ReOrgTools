@@ -11,6 +11,23 @@ module User = {
 
   let make = (jwt, username) => {jwt, username};
 
+  let encode =
+    Json.Encode.(
+      ({jwt, username}) =>
+        object_([
+          ("username", string(username)),
+          ("jwt", Shared__API__User.Token.encode(jwt)),
+        ])
+    );
+
+  let decode = json =>
+    Decode.Pipeline.(
+      succeed(make)
+      |> field("jwt", Shared__API__User.Token.decode)
+      |> field("username", string)
+      |> run(json)
+    );
+
   let decodeLoginJson = (json, username) =>
     Shared__API__User.Token.decode(json)
     |> Result.map(jwt => {jwt, username});

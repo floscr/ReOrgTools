@@ -56,8 +56,14 @@ let make = () => {
     |> State__User.LoginRequest.make
     |> IO.unsafeRunAsync(
          fun
-         | Ok(user) =>
-           State.UserAction(State__User.Login(user |> Utils.log)) |> dispatch
+         | Ok(user) => {
+             Localforage.Localforage_IO.set(
+               Types__LocalStorage.user,
+               user |> State__User.User.encode,
+             )
+             |> ignore;
+             State.UserAction(State__User.Login(user)) |> dispatch;
+           }
          | Error(data) => Js.log2("Error logging in", data),
        )
     |> ignore;

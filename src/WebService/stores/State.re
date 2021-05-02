@@ -70,6 +70,14 @@ module Implementation = {
     };
     module User = {
       let user = state => state.userState.user;
+
+      let loggedInUser = state =>
+        state.userState.user
+        |> (
+          fun
+          | State__User.LoggedInUser(x) => Some(x)
+          | _ => None
+        );
     };
   };
 };

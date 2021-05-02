@@ -97,13 +97,7 @@ let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
 let make = () => {
   let dispatch = State.Store.useDispatch();
   let isSidebarOpen = Store.useSelector(Selector.Settings.isSidebarOpen);
-  let user =
-    Store.useSelector(Selector.User.user)
-    |> (
-      fun
-      | State__User.LoggedInUser(x) => Some(x)
-      | _ => None
-    );
+  let user = Store.useSelector(Selector.User.loggedInUser);
 
   let rootRef: React.ref(Js.Nullable.t(Dom.element)) =
     React.useRef(Js.Nullable.null);
