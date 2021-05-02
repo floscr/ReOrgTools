@@ -26,6 +26,8 @@ let t =
          })
       // User has been authenticated -> create JWT token
       |> IO.flatMap(user => {
+           module Token = Shared__API__User.Token;
+
            JsonWebToken.sign(
              ~secret=`string(Config.secretToken),
              ~options=
@@ -34,11 +36,11 @@ let t =
                  algorithm: HS256,
                  expiresIn: "3 days",
                }),
-             `json(user |> Shared__API__User.Token.encodeUser),
+             `json(user |> Token.encodeUser),
            )
-           |> Shared__API__User.Token.make
-           |> Shared__API__User.Token.encode
-           |> IO.pure
+           |> Token.make
+           |> Token.encode
+           |> IO.pure;
          })
       |> resolve(
            res,
