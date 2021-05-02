@@ -24,25 +24,22 @@ let t =
            )
            |> IO.fromResult;
          })
-      // User has been authenticated, create JWT token to send in response
+      // User has been authenticated -> create JWT token
       |> IO.flatMap(user => {
-           let options =
-             Some({
-               ...JsonWebToken.emptyOptions,
-               algorithm: HS256,
-               expiresIn: "3 days",
-             });
-           let user = user |> Shared__API__User.User.encodeLoginJWTJson;
-           let jwt =
-             JsonWebToken.sign(
-               ~secret=`string(Config.secretToken),
-               ~options,
-               `json(user),
-             );
-           Json_encode.object_([("token", Json_encode.string(jwt))])
-           |> IO.pure;
+           JsonWebToken.sign(
+             ~secret=`string(Config.secretToken),
+             ~options=
+               Some({
+                 ...JsonWebToken.emptyOptions,
+                 algorithm: HS256,
+                 expiresIn: "3 days",
+               }),
+             `json(user |> Shared__API__User.Token.encodeUser),
+           )
+           |> Shared__API__User.Token.make
+           |> Shared__API__User.Token.encode
+           |> IO.pure
          })
-      |> Utils.log
       |> resolve(
            res,
            fun

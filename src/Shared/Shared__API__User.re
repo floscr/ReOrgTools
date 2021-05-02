@@ -38,3 +38,20 @@ module User = {
       |> run(json)
     );
 };
+
+module Token = {
+  type t = {token: string};
+
+  let make = token => {token: token};
+
+  let encodeUser =
+    Json.Encode.(
+      ({username}: User.t) => object_([("username", string(username))])
+    );
+
+  let encode =
+    Json.Encode.(({token}) => object_([("token", string(token))]));
+
+  let decode = json =>
+    Decode.Pipeline.(succeed(make) |> field("token", string) |> run(json));
+};
