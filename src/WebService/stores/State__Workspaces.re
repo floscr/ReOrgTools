@@ -31,11 +31,14 @@ module Response = {
 };
 
 module type Request = {
-  let make: unit => Relude.IO.t(Workspaces.t, ReludeFetch.Error.t(string));
+  let make:
+    State__User.User.t =>
+    Relude.IO.t(Workspaces.t, ReludeFetch.Error.t(string));
 };
 
 module Request: Request = {
   open Relude.IO;
+  module Headers = ReludeFetch.Headers;
 
   let url =
     ReludeURL.(
@@ -50,8 +53,14 @@ module Request: Request = {
     )
     |> ReludeURL.URI.show;
 
-  let make = () => {
-    ReludeFetch.get(url)
+  let make = ({jwt}: State__User.User.t) => {
+    ReludeFetch.get(
+      ~headers=
+        Headers.authorizationBearer(jwt.token)
+        |> Headers.combine(Headers.contentTypeJson)
+        |> Headers.combine(Headers.acceptJson),
+      url,
+    )
     >>= ReludeFetch.Response.StatusCode.ensure2xx
     >>= ReludeFetch.Response.json
     >>= Response.decode(url);

@@ -97,6 +97,13 @@ let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
 let make = () => {
   let dispatch = State.Store.useDispatch();
   let isSidebarOpen = Store.useSelector(Selector.Settings.isSidebarOpen);
+  let user =
+    Store.useSelector(Selector.User.user)
+    |> (
+      fun
+      | State__User.LoggedInUser(x) => Some(x)
+      | _ => None
+    );
 
   let rootRef: React.ref(Js.Nullable.t(Dom.element)) =
     React.useRef(Js.Nullable.null);
@@ -139,14 +146,30 @@ let make = () => {
     },
   );
 
-  ReludeReact.Effect.useIOOnMount(
-    State__Workspaces.Request.make(),
-    data =>
-      WorkspaceAction(State__Workspaces.Store.FetchWorkspacesSuccess(data))
-      |> dispatch,
-    error =>
-      WorkspaceAction(State__Workspaces.Store.FetchWorkspacesFailure(error))
-      |> dispatch,
+  React.useEffect1(
+    () => {
+      user
+      |> Option.tap(user =>
+           State__Workspaces.Request.make(user)
+           |> Relude.IO.unsafeRunAsync(
+                fun
+                | Ok(a) =>
+                  WorkspaceAction(
+                    State__Workspaces.Store.FetchWorkspacesSuccess(a),
+                  )
+                  |> dispatch
+
+                | Error(e) =>
+                  WorkspaceAction(
+                    State__Workspaces.Store.FetchWorkspacesFailure(e),
+                  )
+                  |> dispatch,
+              )
+         )
+      |> ignore;
+      None;
+    },
+    [|user |> Option.isSome|],
   );
 
   let bindShortcuts = () => {
