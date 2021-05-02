@@ -30,6 +30,7 @@ App.useOnPath(
     |> Static.asMiddleware;
   },
 );
+App.post(app, ~path="/api/login", Route__Login.t);
 
 // Static Routes
 App.get(app, ~path="/", Route__Home.make);
