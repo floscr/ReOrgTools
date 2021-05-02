@@ -71,6 +71,7 @@ module LoginRequest: LoginRequest = {
 
   let make = (user: Shared__API__User.User.t) => {
     ReludeFetch.post(
+      ~headers=Headers.contentTypeJson |> Headers.combine(Headers.acceptJson),
       ~body=
         Shared__API__User.User.encodeLoginJson(user)
         |> (x => ReludeFetch.Body.Content.Json(x)),

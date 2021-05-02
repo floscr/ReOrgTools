@@ -25,6 +25,11 @@ module User = {
         ])
     );
 
+  let encodeLoginJWTJson =
+    Json.Encode.(
+      ({username}) => object_([("username", string(username))])
+    );
+
   let decodeLoginJson = json =>
     Decode.Pipeline.(
       succeed(make)
