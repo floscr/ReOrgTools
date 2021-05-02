@@ -7,44 +7,50 @@ open State;
 [@react.component]
 let make = (~id, ~queryParams, ~workspaceIndex) => {
   let dispatch = Store.useDispatch();
+  let user = Store.useSelector(Selector.User.loggedInUser);
 
   let files = Store.useSelector(Selector.OrgDocuments.files);
   let file = StringMap.get(id, files);
 
   ReludeReact.Effect.useEffect1WithEq(
     () => {
-      OrgDocumentsAction(State__OrgDocuments.Store.FetchProgress(id))
-      |> dispatch;
+      user
+      |> Option.tap(user => {
+           OrgDocumentsAction(State__OrgDocuments.Store.FetchProgress(id))
+           |> dispatch;
 
-      API__OrgDocument.Request.make(~workspaceIndex, ~file=id)
-      |> IO.tap(data => {
-           let id = API__Routes.Routes.fileUrl(~id, ~workspaceIndex);
-           // Cache File
-           Localforage.Localforage_IO.set(id, data)
-           |> IO.unsafeRunAsync(ignore);
+           API__OrgDocument.Request.make(~workspaceIndex, ~file=id, ~user)
+           |> IO.tap(data => {
+                let id = API__Routes.Routes.fileUrl(~id, ~workspaceIndex);
+                // Cache File
+                Localforage.Localforage_IO.set(id, data)
+                |> IO.unsafeRunAsync(ignore);
 
-           // Save last seen file in settings
-           SettingsAction(State__Settings.SaveLastViewdFile(id)) |> dispatch;
+                // Save last seen file in settings
+                SettingsAction(State__Settings.SaveLastViewdFile(id))
+                |> dispatch;
+              })
+           |> IO.unsafeRunAsync(
+                fun
+                | Ok(data) =>
+                  OrgDocumentsAction(
+                    State__OrgDocuments.Store.FetchSuccess(
+                      id,
+                      workspaceIndex,
+                      data,
+                    ),
+                  )
+                  |> dispatch
+
+                | Error(data) =>
+                  OrgDocumentsAction(
+                    State__OrgDocuments.Store.FetchFailure(id, data),
+                  )
+                  |> dispatch,
+              )
+           |> ignore;
          })
-      |> IO.unsafeRunAsync(
-           fun
-           | Ok(data) =>
-             OrgDocumentsAction(
-               State__OrgDocuments.Store.FetchSuccess(
-                 id,
-                 workspaceIndex,
-                 data,
-               ),
-             )
-             |> dispatch
-
-           | Error(data) =>
-             OrgDocumentsAction(
-               State__OrgDocuments.Store.FetchFailure(id, data),
-             )
-             |> dispatch,
-         )
-      |> ignore;
+      |> ignore
     },
     String.eq,
     id,

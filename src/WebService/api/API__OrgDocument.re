@@ -16,14 +16,16 @@ module Response = {
 
 module type Request = {
   let make:
-    (~workspaceIndex: int, ~file: string) =>
+    (~workspaceIndex: int, ~file: string, ~user: State__User.User.t) =>
     Relude.IO.t(Shared__API__File.File.t, ReludeFetch.Error.t(string));
 };
 
 module Request: Request = {
   open Relude.IO;
+  module Headers = ReludeFetch.Headers;
 
-  let make = (~workspaceIndex: int, ~file: string) => {
+  let make = (~workspaceIndex: int, ~file: string, ~user: State__User.User.t) => {
+    let {jwt}: State__User.User.t = user;
     let url =
       ReludeURL.(
         Shared__Config.backendUrl(
@@ -39,7 +41,13 @@ module Request: Request = {
       )
       |> ReludeURL.URI.show;
 
-    ReludeFetch.get(url)
+    ReludeFetch.get(
+      ~headers=
+        Headers.authorizationBearer(jwt.token)
+        |> Headers.combine(Headers.contentTypeJson)
+        |> Headers.combine(Headers.acceptJson),
+      url,
+    )
     >>= ReludeFetch.Response.StatusCode.ensure2xx
     >>= ReludeFetch.Response.json
     >>= Response.decode(url);

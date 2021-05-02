@@ -13,7 +13,7 @@ App.use(app, cors());
 App.getWithMany(
   app,
   ~path="/api/file/:workspaceIndex/:id.json",
-  [|Route__File.t|],
+  [|Auth.authenticate, Route__File.t|],
 );
 App.getWithMany(
   app,
