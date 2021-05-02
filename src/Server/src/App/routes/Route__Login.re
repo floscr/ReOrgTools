@@ -34,7 +34,7 @@ let t =
                Some({
                  ...JsonWebToken.emptyOptions,
                  algorithm: HS256,
-                 expiresIn: "3 days",
+                 expiresIn: "24 days",
                }),
              `json(user |> Token.encodeUser),
            )
