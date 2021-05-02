@@ -56,8 +56,9 @@ let make = () => {
     |> State__User.LoginRequest.make
     |> IO.unsafeRunAsync(
          fun
-         | Ok(data) => Js.log2("Success", data)
-         | Error(data) => Js.log2("Error", data),
+         | Ok(user) =>
+           State.UserAction(State__User.Login(user |> Utils.log)) |> dispatch
+         | Error(data) => Js.log2("Error logging in", data),
        )
     |> ignore;
   };

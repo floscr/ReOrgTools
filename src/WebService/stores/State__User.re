@@ -5,19 +5,15 @@ module Decode = Decode.AsResult.OfParseError;
 
 module User = {
   type t = {
-    jwt: string,
+    jwt: Shared__API__User.Token.t,
     username: string,
   };
 
   let make = (jwt, username) => {jwt, username};
 
-  let decodeLoginJson = json =>
-    Decode.Pipeline.(
-      succeed(make)
-      |> field("jwt", string)
-      |> field("username", string)
-      |> run(json)
-    );
+  let decodeLoginJson = (json, username) =>
+    Shared__API__User.Token.decode(json)
+    |> Result.map(jwt => {jwt, username});
 };
 
 type user =
@@ -40,8 +36,8 @@ let reducer = (state, action) => {
 };
 
 module LoginResponse = {
-  let decode = (url, json) =>
-    User.decodeLoginJson(json)
+  let decode = (~url, ~user, json) =>
+    User.decodeLoginJson(json, user)
     |> Relude.IO.fromResult
     |> Relude.IO.mapRight(e => {
          let readableError = Decode.ParseError.failureToDebugString(e);
@@ -79,6 +75,6 @@ module LoginRequest: LoginRequest = {
     )
     >>= ReludeFetch.Response.StatusCode.ensure2xx
     >>= ReludeFetch.Response.json
-    >>= LoginResponse.decode(url);
+    >>= LoginResponse.decode(~url, ~user=user.username);
   };
 };
