@@ -18,7 +18,7 @@
         "@nireno/reasonably-typed": "^0.18.1",
         "bs-axios": "^0.0.43",
         "bs-bastet": "git+https://github.com/floscr/bastet.git",
-        "bs-css-emotion": "^2.4.0",
+        "bs-css-emotion": "^3.0.0",
         "bs-decode": "^0.11.2",
         "bs-fetch": "^0.6.2",
         "bs-webapi": "^0.19.1",
