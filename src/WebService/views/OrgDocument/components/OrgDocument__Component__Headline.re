@@ -10,6 +10,19 @@ module Styles = {
     style([
       display(block),
       margin3(~h=zero, ~top=rem(1.38), ~bottom=rem(1.38)),
+      selector(
+        "a",
+        [
+          textDecoration(none),
+          after([
+            unsafe("content", {j|" link"|j}),
+            fontFamily(`custom("'Material Icons'")),
+            color(var(ThemeKeys.grey20)),
+          ]),
+          hover([textDecoration(underline)]),
+        ],
+      ),
+      /* selector("a:hover, a:focus", [textDecoration(underline)]), */
     ]);
 
   let headlineTodo = (x: string) =>
