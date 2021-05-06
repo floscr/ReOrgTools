@@ -4,36 +4,38 @@ open ReactUtils;
 
 module Styles = {
   open Css;
+  open FixedTheme;
 
   let tagsWrapper =
     style([
       listStyleType(none),
       margin(zero),
       padding(zero),
-      marginTop(rem(0.75)),
       display(`inlineFlex),
-      border(px(2), `solid, hex("e3ddd3")),
-      borderRadius(px(5)),
     ]);
   let tagsItem =
     style([
-      padding2(~v=px(2), ~h=px(5)),
       fontWeight(medium),
       fontSize(rem(0.9)),
-      selector("& + &", [borderLeft(px(2), `solid, hex("e3ddd3"))]),
-      selector(":hover", [backgroundColor(hex("e3ddd3"))]),
-      cursor(`default),
+      textTransform(lowercase),
+      /* selector("& + &", [borderLeft(px(2), `solid, hex("e3ddd3"))]), */
+      selector(
+        "&:after",
+        [
+          unsafe("content", {j|", "|j}),
+          display(inlineBlock),
+          width(em(0.5)),
+        ],
+      ),
+      selector(":last-child:after", [unsafe("content", {j|""|j})]),
+      hover([color(var(ThemeKeys.accentMain)), cursor(`pointer)]),
     ]);
 };
 
 let renderTags = xs =>
   <ul className=Styles.tagsWrapper>
-    {Belt.Array.mapWithIndex(
-       xs,
-       (i, x) => {
-         let key = string_of_int(i);
-         <li key className=Styles.tagsItem> {s(x)} </li>;
-       },
+    {Belt.Array.mapWithIndex(xs, (i, x) =>
+       <li key={Int.toString(i)} className=Styles.tagsItem> {s(x)} </li>
      )
      |> React.array}
   </ul>;

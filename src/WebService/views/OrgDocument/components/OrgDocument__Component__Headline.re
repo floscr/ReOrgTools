@@ -89,28 +89,33 @@ let renderHeadline = (~position, ~level, ~properties, xs) => {
   let atid = properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "id"));
   let id = makeHeadlineKey(position);
 
-  <header className=Styles.headline key=id id>
-    {content
-     |> Array.mapWithIndex((x, i) => {
-          (
-            switch (getItem(x)) {
-            | Todo({keyword}) =>
-              <span className={Styles.headlineTodo(keyword)}>
-                {keyword |> s}
-              </span>
-            | PlainText(_) => OrgDocument__Component__Text.renderPlainText(x)
-            | Link(x) =>
-              OrgDocument__Component__Text.renderLink(~attachmentId=atid, x)
-            | _ => React.null
-            }
-          )
-          |> wrapWithKey(x.level, i)
-        })
-     |> React.array
-     |> (xs => <Heading level> xs </Heading>)}
-    {switch (tags) {
-     | Some({tags}) => OrgDocument__Component__Tags.renderTags(tags)
-     | _ => React.null
-     }}
-  </header>;
+  <section>
+    <header className=Styles.headline key=id id>
+      {content
+       |> Array.mapWithIndex((x, i) => {
+            (
+              switch (x |> getItem) {
+              | Todo({keyword}) =>
+                <span className={Styles.headlineTodo(keyword)}>
+                  {keyword |> s}
+                </span>
+              | PlainText(_) =>
+                OrgDocument__Component__Text.renderPlainText(x)
+              | Link(x) =>
+                OrgDocument__Component__Text.renderLink(~attachmentId=atid, x)
+              | _ => React.null
+              }
+            )
+            |> wrapWithKey(x.level, i)
+          })
+       |> React.array
+       |> (xs => <Heading level> xs </Heading>)}
+    </header>
+    <footer>
+      {switch (tags) {
+       | Some({tags}) => OrgDocument__Component__Tags.renderTags(tags)
+       | _ => React.null
+       }}
+    </footer>
+  </section>;
 };
