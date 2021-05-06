@@ -84,19 +84,12 @@ let makeHeadlineProps =
   );
 
 let renderHeadline = (~position, ~level, ~properties, xs) => {
-  let {stars, content, tags} = xs |> makeHeadlineProps;
+  let {content, tags} = xs |> makeHeadlineProps;
 
   let atid = properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "id"));
   let id = makeHeadlineKey(position);
 
   <header className=Styles.headline key=id id>
-    {switch (stars) {
-     | Some({level}) =>
-       <span>
-         {Belt.Array.makeBy(level, _ => "*") |> Js.Array.joinWith("") |> s}
-       </span>
-     | _ => React.null
-     }}
     {content
      |> Array.mapWithIndex((x, i) => {
           (
