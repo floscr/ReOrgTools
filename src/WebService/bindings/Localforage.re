@@ -59,6 +59,8 @@ module Localforage_IO = {
   let keys = () =>
     keys() |> Relude.Js.Promise.toIO |> IO.mapError(_ => "Keys PromiseError");
 
+  let removeItem = key => removeItem(key) |> Relude.Js.Promise.toIO;
+
   let get = key =>
     getItem(key)
     |> Relude.Js.Promise.toIO
