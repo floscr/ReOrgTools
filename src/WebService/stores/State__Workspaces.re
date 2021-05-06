@@ -14,7 +14,16 @@ module Store = {
     switch (action) {
     | FetchWorkspacesSuccess(workspaces) => {workspaces: workspaces}
     | FetchWorkspacesFailure(error) =>
-      Js_console.error(error);
+      switch (error) {
+      | StatusError({url, actual, min, max}) when actual == 401 =>
+        Localforage.Localforage_IO.removeItem(Types__LocalStorage.user);
+        Js.Console.error("Not authorized");
+      | _ =>
+        error
+        |> ReludeFetch.Error.show(x => x)
+        |> Js.Console.error2("Workspaces Error: \n")
+      };
+
       state;
     };
   };
