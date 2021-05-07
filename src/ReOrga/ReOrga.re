@@ -100,6 +100,16 @@ type link = {
 
 type tags = {tags: array(string)};
 
+type headline = {
+  children: array(sectionAst),
+  content: string,
+  level: int,
+  position: positionAst,
+  tags: array(string),
+  actionable: bool,
+  keyword: option(string),
+};
+
 type orgItem =
   | Unmatched
   | Section({
@@ -108,15 +118,7 @@ type orgItem =
       position: positionAst,
       properties: Js.Dict.t(string),
     })
-  | Headline({
-      children: array(sectionAst),
-      content: string,
-      level: int,
-      position: positionAst,
-      tags: array(string),
-      actionable: bool,
-      keyword: option(string),
-    })
+  | Headline(headline)
   | Paragraph({children: array(sectionAst)})
   | PlainText(plainText)
   | Planning({
