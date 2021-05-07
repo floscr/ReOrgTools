@@ -6,6 +6,8 @@ TARGET := $(or $(TARGET),web)
 BACKEND_DIR := ./src/Server
 
 serve: copy_bsconfig
+    # Kill any leftover processes before starting the server
+	ps -xa | grep $(pwd) | grep node | grep -v grep | awk {'print $1'} | xargs --no-run-if-empty kill -9
 	@make -j 10 serve_frontend serve_backend
 
 copy_bsconfig:
