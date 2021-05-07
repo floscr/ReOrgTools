@@ -31,12 +31,10 @@ let rec renderItems = (~level=0, ~properties=?, xs) => {
   xs
   |> Array.mapWithIndex((x, i) => {
        switch (x |> getItem) {
-       | Headline({children, level, position}) =>
+       | Headline(headline) =>
          OrgDocument__Component__Headline.renderHeadline(
-           ~position,
-           ~level,
            ~properties,
-           children,
+           headline,
          )
 
        | Section({children, level, properties}) =>

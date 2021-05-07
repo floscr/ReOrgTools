@@ -5,11 +5,26 @@ open ReactUtils;
 
 module Styles = {
   open Css;
+  open FixedTheme;
 
-  let headline =
+  let section =
     style([
-      display(block),
-      margin3(~h=zero, ~top=rem(1.38), ~bottom=rem(1.38)),
+      selector(
+        "& + &",
+        [
+          borderBottom(px(1), solid, var(ThemeKeys.grey10)),
+          paddingBottom(Spacing.xlarge),
+          paddingTop(Spacing.xlarge),
+        ],
+      ),
+    ]);
+
+  let header =
+    style([
+      display(`flex),
+      justifyContent(spaceBetween),
+      alignItems(flexStart),
+      /* margin3(~h=zero, ~top=rem(1.38), ~bottom=rem(1.38)), */
       selector(
         "a",
         [
@@ -24,6 +39,10 @@ module Styles = {
       ),
       /* selector("a:hover, a:focus", [textDecoration(underline)]), */
     ]);
+
+  let footer = style([display(`flex), flexGrow(1.)]);
+
+  let tags = style([alignSelf(flexEnd), marginLeft(auto)]);
 
   let headlineTodo = (x: string) =>
     style([
@@ -83,22 +102,19 @@ let makeHeadlineProps =
     {stars: None, tags: None, content: [||]},
   );
 
-let renderHeadline = (~position, ~level, ~properties, xs) => {
-  let {content, tags} = xs |> makeHeadlineProps;
+let renderHeadline = (~properties, headline: ReOrga.headline) => {
+  let {children, content, level, position, keyword, actionable} = headline;
+  let {content, tags} = children |> makeHeadlineProps;
 
   let atid = properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "id"));
   let id = makeHeadlineKey(position);
 
-  <section>
-    <header className=Styles.headline key=id id>
+  <section className=Styles.section>
+    <header className=Styles.header key=id id>
       {content
        |> Array.mapWithIndex((x, i) => {
             (
               switch (x |> getItem) {
-              | Todo({keyword}) =>
-                <span className={Styles.headlineTodo(keyword)}>
-                  {keyword |> s}
-                </span>
               | PlainText(_) =>
                 OrgDocument__Component__Text.renderPlainText(x)
               | Link(x) =>
@@ -110,10 +126,20 @@ let renderHeadline = (~position, ~level, ~properties, xs) => {
           })
        |> React.array
        |> (xs => <Heading level> xs </Heading>)}
+      {switch (actionable, keyword) {
+       | (true, Some(keyword)) =>
+         <span className={Styles.headlineTodo(keyword)}>
+           {keyword |> s}
+         </span>
+       | _ => React.null
+       }}
     </header>
-    <footer>
+    <footer className=Styles.footer>
       {switch (tags) {
-       | Some({tags}) => OrgDocument__Component__Tags.renderTags(tags)
+       | Some({tags}) =>
+         <div className=Styles.tags>
+           {OrgDocument__Component__Tags.renderTags(tags)}
+         </div>
        | _ => React.null
        }}
     </footer>

@@ -49,7 +49,7 @@ CssJs.(
   global(. "h1, h2, h3, h4, h5, h6", [|margin(zero)|]),
   /* global(. "html, body", [|height(vh(100.))|]), */
   /* global(. "p", [|marginBottom(rem(1.))|]), */
-  global(. "h1", [|fontSize(rem(2.3)), marginBottom(rem(3.))|]),
+  /* global(. "h1", [|fontSize(rem(2.3)), marginBottom(rem(3.))|]), */
   global(. "header > h1 + header > h1", [|color(hex("b91919"))|]),
   /* global(. "h2", [|fontSize(rem(2.441))|]), */
   /* global(. "h3", [|fontSize(rem(1.953))|]), */
