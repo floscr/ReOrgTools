@@ -1,0 +1,27 @@
+#+TITLE: Todo
+
+* TODO Just A Todo File
+SCHEDULED: <2021-07-05 Mon>
+:PROPERTIES:
+:CREATED:  [2021-02-05 Fri 10:26]
+:END:
+
+* TODO With a few items and maybe even tags :WORK:HOME:PERSONAL:
+:PROPERTIES:
+:CREATED:  [2021-02-05 Fri 10:26]
+:END:
+
+SCHEDULED: <2021-07-05 Mon>
+
+* WAITING It could be Structured Like this
+
+And have some content
+
+* TODO It could be Structured Like this
+
+** Tasks
+*** TODO Subtask 1
+*** TODO Subtask 2
+*** TODO Subtask 3
+*** TODO Subtask 4
+*** TODO Subtask 5
