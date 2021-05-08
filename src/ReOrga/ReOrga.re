@@ -287,7 +287,6 @@ module Org = {
   let todoKeywords = [|
     "TODO",
     "ACTIVE",
-    "PROJECT",
     "NEXT",
     "SOMEDAY",
     "WAITING",
