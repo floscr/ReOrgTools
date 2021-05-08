@@ -20,7 +20,7 @@ module Styles = {
       padding2(~h=Spacing.xxlarge, ~v=Spacing.xlarge),
       flexGrow(1.),
       flexShrink(1.),
-      maxWidth(px(750)),
+      maxWidth(px(860)),
       wordWrap(breakWord),
       width(pct(100.)),
       margin2(~v=zero, ~h=auto),
