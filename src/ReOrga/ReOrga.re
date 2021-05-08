@@ -34,7 +34,7 @@ type sectionAst = {
   // Section
   properties: Js.nullable(Js.Dict.t(string)),
   // Headline
-  actionable: bool,
+  actionable: bool, // Only works if you don't assign todo items your self
   content: Js.nullable(string),
   level: int,
   tags: Js.nullable(array(string)),
