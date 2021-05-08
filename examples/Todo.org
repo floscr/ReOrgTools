@@ -17,10 +17,13 @@ SCHEDULED: <2021-07-05 Mon>
 
 And have some content
 
-* TODO It could be Structured Like this
+* TODO With some subtasks
 
 ** Tasks
 *** TODO Subtask 1
+
+With content
+
 *** TODO Subtask 2
 *** TODO Subtask 3
 *** TODO Subtask 4
