@@ -36,7 +36,7 @@ module Store = {
         File.Fetched({
           id,
           text,
-          ast: Org.parseOrga(text, {todo: Some([|"TODO"|])}),
+          ast: Org.parseOrga(text, ReOrga.Org.defaultOptions),
           workspace: workspaceIndex,
           mtimeMs,
         });

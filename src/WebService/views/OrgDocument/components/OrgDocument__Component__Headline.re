@@ -126,8 +126,8 @@ let renderHeadline = (~properties, headline: ReOrga.headline) => {
           })
        |> React.array
        |> (xs => <Heading level> xs </Heading>)}
-      {switch (actionable, keyword) {
-       | (true, Some(keyword)) =>
+      {switch (keyword) {
+       | Some(keyword) =>
          <span className={Styles.headlineTodo(keyword)}>
            {keyword |> s}
          </span>

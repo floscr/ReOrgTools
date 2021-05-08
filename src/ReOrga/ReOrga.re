@@ -258,7 +258,7 @@ let getMainItem = item =>
   | _ => [||]
   };
 
-type options = {todo: option(array(string))};
+type options = {todos: array(string)};
 
 module Org = {
   let documentChildren = org =>
@@ -284,7 +284,19 @@ module Org = {
          None,
        );
 
-  let defaultOptions = {todo: Some([|"TODO"|])};
+  let todoKeywords = [|
+    "TODO",
+    "ACTIVE",
+    "PROJECT",
+    "NEXT",
+    "SOMEDAY",
+    "WAITING",
+    "NOTE",
+  |];
+  let doneKeywords = [|"DONE", "CANCELLED"|];
+
+  let defaultOptions = {todos: Array.concat(todoKeywords, doneKeywords)};
+
   [@bs.module "orga"]
   external parseOrga: (string, options) => orgAst = "parse";
 };
