@@ -46,7 +46,10 @@ CssJs.(
     [|width(zero), height(zero), display(none)|],
   ),
   global(. "img", [|maxWidth(`percent(100.))|]),
-  global(. "h1, h2, h3, h4, h5, h6", [|margin(zero)|]),
+  global(.
+    "h1, h2, h3, h4, h5, h6",
+    [|margin(zero), fontSize(rem(1.2))|],
+  ),
   /* global(. "html, body", [|height(vh(100.))|]), */
   /* global(. "p", [|marginBottom(rem(1.))|]), */
   /* global(. "h1", [|fontSize(rem(2.3)), marginBottom(rem(3.))|]), */
