@@ -8,22 +8,22 @@ module Styles = {
   open FixedTheme;
 
   let section =
-    style([
-      selector(
-        "& + &",
-        [
-          borderBottom(px(1), solid, var(ThemeKeys.grey10)),
-          paddingBottom(Spacing.xlarge),
-          paddingTop(Spacing.xlarge),
-        ],
-      ),
-    ]);
+    style(
+      [] /* selector( */
+      /*   "& + &", */
+      /*   [ */
+      /*     borderBottom(px(1), solid, var(ThemeKeys.grey10)), */
+      /*     paddingBottom(Spacing.xlarge), */
+      /*     paddingTop(Spacing.xlarge), */
+      /*   ], */
+      /* ), */
+    );
 
   let header =
     style([
       display(`flex),
       justifyContent(spaceBetween),
-      alignItems(flexStart),
+      alignItems(center),
       /* margin3(~h=zero, ~top=rem(1.38), ~bottom=rem(1.38)), */
       selector(
         "a",
@@ -40,7 +40,13 @@ module Styles = {
       /* selector("a:hover, a:focus", [textDecoration(underline)]), */
     ]);
 
-  let footer = style([display(`flex), flexGrow(1.)]);
+  let footer =
+    style([
+      display(`flex),
+      flexDirection(column),
+      alignItems(flexEnd),
+      justifyContent(spaceBetween),
+    ]);
 
   let tags = style([alignSelf(flexEnd), marginLeft(auto)]);
 
@@ -56,7 +62,6 @@ module Styles = {
       |> backgroundColor,
       borderRadius(px(5)),
       padding2(~v=px(2), ~h=px(5)),
-      marginRight(rem(0.5)),
     ]);
 };
 
@@ -126,22 +131,22 @@ let renderHeadline = (~properties, headline: ReOrga.headline) => {
           })
        |> React.array
        |> (xs => <Heading level> xs </Heading>)}
-      {switch (keyword) {
-       | Some(keyword) =>
-         <span className={Styles.headlineTodo(keyword)}>
-           {keyword |> s}
-         </span>
-       | _ => React.null
-       }}
+      <footer className=Styles.footer>
+        {switch (keyword) {
+         | Some(keyword) =>
+           <span className={Styles.headlineTodo(keyword)}>
+             {keyword |> s}
+           </span>
+         | _ => React.null
+         }}
+        {switch (tags) {
+         | Some({tags}) =>
+           <div className=Styles.tags>
+             {OrgDocument__Component__Tags.renderTags(tags)}
+           </div>
+         | _ => React.null
+         }}
+      </footer>
     </header>
-    <footer className=Styles.footer>
-      {switch (tags) {
-       | Some({tags}) =>
-         <div className=Styles.tags>
-           {OrgDocument__Component__Tags.renderTags(tags)}
-         </div>
-       | _ => React.null
-       }}
-    </footer>
   </section>;
 };

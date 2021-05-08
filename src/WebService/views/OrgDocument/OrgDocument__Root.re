@@ -1,6 +1,7 @@
 open Relude.Globals;
 open ReOrga;
 open OrgDocument__Utils;
+open ReactUtils;
 
 module Styles = {
   open Css;
@@ -15,6 +16,49 @@ module Styles = {
       flexShrink(1.),
     ]);
 
+  let section =
+    style([
+      selector(
+        "& + &",
+        [
+          borderTop(px(1), solid, var(ThemeKeys.grey10)),
+          marginTop(Spacing.xlarge),
+          paddingTop(Spacing.xlarge),
+        ],
+      ),
+    ]);
+
+  let todoSection =
+    style([
+      border(px(1), `solid, var(ThemeKeys.grey10)),
+      firstOfType([borderColor(red)]),
+      padding(Spacing.medium),
+      selector(
+        "&",
+        [
+          borderTopLeftRadius(BorderRadius.small),
+          borderTopRightRadius(BorderRadius.small),
+          borderBottomWidth(zero),
+        ],
+      ),
+      selector(
+        "& + &",
+        [
+          borderTopWidth(zero),
+          borderBottomWidth(zero),
+          boxShadow(Shadow.box(~y=px(-1), var(ThemeKeys.grey00))),
+        ],
+      ),
+      selector(
+        "& + &:last-of-type",
+        [
+          borderBottomLeftRadius(BorderRadius.small),
+          borderBottomRightRadius(BorderRadius.small),
+          borderBottomWidth(px(1)),
+        ],
+      ),
+    ]);
+
   let mainWrapper =
     style([
       padding2(~h=Spacing.xxlarge, ~v=Spacing.xlarge),
@@ -27,7 +71,7 @@ module Styles = {
     ]);
 };
 
-let rec renderItems = (~level=0, ~properties=?, xs) => {
+let rec renderItems = (~level=0, ~properties=?, ~hasTodoParent=false, xs) => {
   xs
   |> Array.mapWithIndex((x, i) => {
        switch (x |> getItem) {
@@ -38,7 +82,47 @@ let rec renderItems = (~level=0, ~properties=?, xs) => {
          )
 
        | Section({children, level, properties}) =>
-         renderItems(~level, ~properties, children) |> wrapWithKey(level, i)
+         let isTodo =
+           children
+           |> Array.head
+           |> Option.flatMap(x =>
+                x
+                |> getItem
+                |> (
+                  fun
+                  | Headline({children}) => Some(children)
+                  | _ => None
+                )
+              )
+           |> Option.flatMap(
+                Array.find(
+                  getItem
+                  >> (
+                    fun
+                    | Todo(_) => true
+                    | _ => false
+                  ),
+                ),
+              )
+           |> Option.isSome;
+
+         let className =
+           ClassName.pure("")
+           |> ClassName.condAppend(isTodo && !hasTodoParent, Styles.section)
+           |> ClassName.condAppend(
+                hasTodoParent && isTodo,
+                Styles.todoSection,
+              )
+           |> ClassName.unwrap;
+
+         <section className key={makeKey(level, i)}>
+           {renderItems(
+              ~level,
+              ~properties,
+              ~hasTodoParent=hasTodoParent || isTodo,
+              children,
+            )}
+         </section>;
 
        | Paragraph({children}) =>
          OrgDocument__Component__Text.renderParagraphs(~properties, children)
