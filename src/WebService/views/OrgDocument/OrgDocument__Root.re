@@ -30,6 +30,14 @@ module Styles = {
     style([
       selector("h1", [paddingBottom(zero)]),
       selector(
+        "* + &:first-of-type",
+        [
+          borderTop(px(1), solid, var(ThemeKeys.grey10)),
+          marginTop(Spacing.xlarge),
+          paddingTop(Spacing.xlarge),
+        ],
+      ),
+      selector(
         "& + &",
         [
           borderTop(px(1), solid, var(ThemeKeys.grey10)),
