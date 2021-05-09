@@ -27,7 +27,7 @@ module Styles = {
           width(em(0.5)),
         ],
       ),
-      selector(":last-child:after", [unsafe("content", {j|""|j})]),
+      selector(":last-child:after", [display(none)]),
       hover([color(var(ThemeKeys.accentMain)), cursor(`pointer)]),
     ]);
 };
