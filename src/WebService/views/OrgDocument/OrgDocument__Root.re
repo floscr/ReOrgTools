@@ -14,10 +14,21 @@ module Styles = {
       position(relative),
       flexGrow(1.),
       flexShrink(1.),
+      selector("h1", [fontSize(rem(1.4)), paddingBottom(Spacing.large)]),
+      selector("h2", [fontSize(rem(1.3))]),
     ]);
 
   let section =
     style([
+      selector(
+        "& + &",
+        [marginTop(Spacing.large), paddingTop(Spacing.large)],
+      ),
+    ]);
+
+  let rootTodoSection =
+    style([
+      selector("h1", [paddingBottom(zero)]),
       selector(
         "& + &",
         [
@@ -30,8 +41,7 @@ module Styles = {
 
   let todoSection =
     style([
-      border(px(1), `solid, var(ThemeKeys.grey10)),
-      firstOfType([borderColor(red)]),
+      border(px(1), `solid, var(ThemeKeys.grey15)),
       padding(Spacing.medium),
       selector(
         "&",
@@ -46,6 +56,9 @@ module Styles = {
         [
           borderTopWidth(zero),
           borderBottomWidth(zero),
+          borderRadius(zero),
+          marginTop(zero),
+          paddingTop(Spacing.medium),
           boxShadow(Shadow.box(~y=px(-1), var(ThemeKeys.grey00))),
         ],
       ),
@@ -107,8 +120,11 @@ let rec renderItems = (~level=0, ~properties=?, ~hasTodoParent=false, xs) => {
            |> Option.isSome;
 
          let className =
-           ClassName.pure("")
-           |> ClassName.condAppend(isTodo && !hasTodoParent, Styles.section)
+           ClassName.pure(Styles.section)
+           |> ClassName.condAppend(
+                isTodo && !hasTodoParent,
+                Styles.rootTodoSection,
+              )
            |> ClassName.condAppend(
                 hasTodoParent && isTodo,
                 Styles.todoSection,
