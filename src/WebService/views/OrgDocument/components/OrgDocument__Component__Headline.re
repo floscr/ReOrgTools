@@ -7,18 +7,6 @@ module Styles = {
   open Css;
   open FixedTheme;
 
-  let section =
-    style(
-      [] /* selector( */
-      /*   "& + &", */
-      /*   [ */
-      /*     borderBottom(px(1), solid, var(ThemeKeys.grey10)), */
-      /*     paddingBottom(Spacing.xlarge), */
-      /*     paddingTop(Spacing.xlarge), */
-      /*   ], */
-      /* ), */
-    );
-
   let header =
     style([
       display(`flex),
@@ -114,39 +102,42 @@ let renderHeadline = (~properties, headline: ReOrga.headline) => {
   let atid = properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "id"));
   let id = makeHeadlineKey(position);
 
-  <section className=Styles.section>
-    <header className=Styles.header key=id id>
-      {content
-       |> Array.mapWithIndex((x, i) => {
-            (
-              switch (x |> getItem) {
-              | PlainText(_) =>
-                OrgDocument__Component__Text.renderPlainText(x)
-              | Link(x) =>
-                OrgDocument__Component__Text.renderLink(~attachmentId=atid, x)
-              | _ => React.null
-              }
-            )
-            |> wrapWithKey(x.level, i)
-          })
-       |> React.array
-       |> (xs => <Heading level> xs </Heading>)}
-      <footer className=Styles.footer>
-        {switch (keyword) {
-         | Some(keyword) =>
-           <span className={Styles.headlineTodo(keyword)}>
-             {keyword |> s}
-           </span>
-         | _ => React.null
-         }}
-        {switch (tags) {
-         | Some({tags}) =>
-           <div className=Styles.tags>
-             {OrgDocument__Component__Tags.renderTags(tags)}
-           </div>
-         | _ => React.null
-         }}
-      </footer>
-    </header>
-  </section>;
+  let hasFooter = keyword |> Option.isSome || tags |> Option.isSome;
+
+  <header className=Styles.header key=id id>
+    {content
+     |> Array.mapWithIndex((x, i) => {
+          (
+            switch (x |> getItem) {
+            | PlainText(_) => OrgDocument__Component__Text.renderPlainText(x)
+            | Link(x) =>
+              OrgDocument__Component__Text.renderLink(~attachmentId=atid, x)
+            | _ => React.null
+            }
+          )
+          |> wrapWithKey(x.level, i)
+        })
+     |> React.array
+     |> (xs => <Heading level> xs </Heading>)}
+    {hasFooter
+       ? {
+         <footer className=Styles.footer>
+           {switch (keyword) {
+            | Some(keyword) =>
+              <span className={Styles.headlineTodo(keyword)}>
+                {keyword |> s}
+              </span>
+            | _ => React.null
+            }}
+           {switch (tags) {
+            | Some({tags}) =>
+              <div className=Styles.tags>
+                {OrgDocument__Component__Tags.renderTags(tags)}
+              </div>
+            | _ => React.null
+            }}
+         </footer>;
+       }
+       : React.null}
+  </header>;
 };
