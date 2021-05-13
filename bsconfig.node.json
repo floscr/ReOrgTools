@@ -1,12 +1,29 @@
 {
   "name": "orga-renderer",
-  "sources": {
-    "dir": "src",
-    "subdirs": [
-      "OrgClock"
-    ]
+  "reason": {
+    "react-jsx": 3
   },
+  "sources": [
+    {
+      "dir": "src/WebService",
+      "subdirs": true
+    },
+    {
+      "dir": "src/ReOrga",
+      "subdirs": false
+    },
+    {
+      "dir": "src/Shared",
+      "subdirs": false
+    },
+    {
+      "dir": "__tests__",
+      "subdirs": true,
+      "type": "dev"
+    }
+  ],
   "bsc-flags": [
+    "-w -23",
     "-bs-super-errors"
   ],
   "package-specs": [
@@ -17,10 +34,27 @@
   ],
   "suffix": ".bs.js",
   "bs-dependencies": [
-    "@mobily/re-date",
-    "reorga",
+    "@glennsl/bs-json",
+    "reductive",
+    "bs-bastet",
+    "bs-css",
+    "bs-css-emotion",
+    "bs-decode",
+    "bs-fetch",
+    "bs-webapi",
+    "reason-react",
     "relude",
-    "bs-bastet"
+    "relude-fetch",
+    "relude-url",
+    "relude-parse",
+    "relude-reason-react",
   ],
+  "bs-dev-dependencies": [
+    "@glennsl/bs-jest"
+  ],
+  "warnings": {
+    "number": "-33",
+    "error": "+101"
+  },
   "refmt": 3
 }
