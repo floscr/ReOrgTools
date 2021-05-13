@@ -1,45 +1,33 @@
-SHELL:=$(or $(CONFIG_SHELL),bash)
 BSB := ./node_modules/.bin/bsb.exe
 BSB_ARGS:= -make-world
 SOURCE_DIRS_JSON := lib/bs/.sourcedirs.json
 TARGET := $(or $(TARGET),web)
 BACKEND_DIR := ./src/Server
 
-serve: copy_bsconfig
+#############
+# Development
+#############
+
+dev: copy_bsconfig
     # Kill any leftover processes before starting the server
 	ps -xa | grep $(pwd) | grep node | grep -v grep | awk {'print $1'} | xargs --no-run-if-empty kill -9
 	@make -j 10 serve_frontend serve_backend
 
-copy_bsconfig:
-	rm -rf bsconfig.json
-	cp "bsconfig.$(TARGET).json" bsconfig.json
-
 serve_frontend: copy_bsconfig
 	trap 'kill %1' INT TERM
-	yarn serve & $(MAKE) watch_frontend
+	$(MAKE) start_frontend & $(MAKE) watch_bsb_frontend
 
 serve_backend:
 	trap 'kill %1' INT TERM
-	@make -j 2 start_server_backend watch_backend
+	@make -j 2 start_backend watch_bsb_backend
 
-start_server_backend:
+start_frontend:
+	yarn serve
+
+start_backend:
 	cd $(BACKEND_DIR); yarn start:dev
 
-watch_backend:
-	while true; do \
-		trap 'break' INT; \
-		cd $(BACKEND_DIR); find -L $$(jq -r 'include "./dirs"; dirs' $(SOURCE_DIRS_JSON)) -maxdepth 1 \
-			-type f -iregex ".*\.\(re\|ml\)i?" | \
-		entr -nd $(BSB) $(BSB_ARGS); \
-	done
-
-$(SOURCE_DIRS_JSON): bsconfig.json
-	$(BSB) -install
-
-bs:
-	$(BSB) $(BSB_ARGS)
-
-watch_frontend: $(SOURCE_DIRS_JSON)
+watch_bsb_frontend: $(SOURCE_DIRS_JSON)
     # `entr` exits when the directory contents change, so we restart it to pick
     # up updated files
 	while true; do \
@@ -48,6 +36,22 @@ watch_frontend: $(SOURCE_DIRS_JSON)
 			-type f -iregex ".*\.\(re\|ml\)i?" | \
 		entr -nd $(BSB) $(BSB_ARGS); \
 	done
+
+watch_bsb_backend:
+	while true; do \
+		trap 'break' INT; \
+		cd $(BACKEND_DIR); find -L $$(jq -r 'include "./dirs"; dirs' $(SOURCE_DIRS_JSON)) -maxdepth 1 \
+			-type f -iregex ".*\.\(re\|ml\)i?" | \
+		entr -nd $(BSB) $(BSB_ARGS); \
+	done
+
+# Testing
+test_backend:
+	cd ./src/Server; yarn run test
+
+##########
+# Building
+##########
 
 build_frontend_reorga:
 	cd ./src/ReOrga; bsb -make-world
@@ -58,10 +62,29 @@ build_frontend: copy_bsconfig build_frontend_reorga build
 build_esbuild: build
 	yarn build:esbuild
 
-test_backend:
-	cd ./src/Server; yarn run test
-
 build:
+	$(BSB) $(BSB_ARGS)
+
+#####
+# CLI
+#####
+
+generate_theme: bs
+	./node_modules/.bin/esbuild ./src/WebService/themes/GenerateTheme.bs.js --bundle --minify --sourcemap --outfile=./bundleOutput/generateTheme.js --define:process.env.NODE_ENV="production"
+	node ./bundleOutput/generateTheme.js
+
+#######
+# Tools
+#######
+
+copy_bsconfig:
+	rm -rf bsconfig.json
+	cp "bsconfig.$(TARGET).json" bsconfig.json
+
+$(SOURCE_DIRS_JSON): bsconfig.json
+	$(BSB) -install
+
+bs:
 	$(BSB) $(BSB_ARGS)
 
 print-%: ; @echo $*=$($*)
