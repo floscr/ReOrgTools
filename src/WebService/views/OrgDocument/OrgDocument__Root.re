@@ -16,6 +16,7 @@ module Styles = {
       flexShrink(1.),
       selector("h1", [fontSize(rem(1.4)), paddingBottom(Spacing.large)]),
       selector("h2", [fontSize(rem(1.3))]),
+      selector("p, li", [lineHeight(`abs(1.55))]),
     ]);
 
   let section =
@@ -24,6 +25,7 @@ module Styles = {
         "& + &",
         [marginTop(Spacing.large), paddingTop(Spacing.large)],
       ),
+      /* selector("> * + *", [marginTop(Spacing.large)]), */
     ]);
 
   let rootTodoSection =
@@ -57,6 +59,7 @@ module Styles = {
           borderTopLeftRadius(BorderRadius.small),
           borderTopRightRadius(BorderRadius.small),
           borderBottomWidth(zero),
+          marginTop(zero),
         ],
       ),
       selector(

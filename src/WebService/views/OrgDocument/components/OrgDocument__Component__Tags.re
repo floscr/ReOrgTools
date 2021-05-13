@@ -8,6 +8,7 @@ module Styles = {
 
   let tagsWrapper =
     style([
+      textAlign(`right),
       listStyleType(none),
       margin(zero),
       padding(zero),
