@@ -31,6 +31,18 @@ module Palette = {
     )
     |> (((_, xs)) => xs);
 
+  let makeModuleType = xs =>
+    Array.foldLeft(
+      (acc, {varName}) => {
+        let (i, acc) = acc;
+        let i = Int.add(1, i);
+        (i, String.concat(acc, {j|let $varName$i: cssVar;\n|j}));
+      },
+      (0, ""),
+      xs,
+    )
+    |> (((_, xs)) => xs);
+
   let makeThemeKeys = xs =>
     Array.foldLeft(
       (acc, {varName, cssVarName}) => {

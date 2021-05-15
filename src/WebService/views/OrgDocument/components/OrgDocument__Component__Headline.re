@@ -20,7 +20,7 @@ module Styles = {
           after([
             unsafe("content", {j|" link"|j}),
             fontFamily(`custom("'Material Icons'")),
-            color(var(ThemeKeys.baseGray5)),
+            color(var(ThemeKeys.baseGray6)),
           ]),
           hover([textDecoration(underline)]),
         ],
@@ -42,14 +42,17 @@ module Styles = {
     style([
       (
         switch (x) {
-        | "DONE" => "fe9898"
-        | _ => "bbfe98"
+        | "DONE" => hex("bbfe98")
+        | _ => var(ThemeKeys.green1)
         }
       )
-      |> hex
       |> backgroundColor,
-      borderRadius(px(5)),
-      padding2(~v=px(2), ~h=px(5)),
+      color(var(ThemeKeys.green3)),
+      fontWeight(medium),
+      fontSize(rem(0.8)),
+      borderRadius(FixedTheme.BorderRadius.small),
+      lineHeight(`abs(1.)),
+      padding2(~v=px(4), ~h=px(5)),
     ]);
 };
 
