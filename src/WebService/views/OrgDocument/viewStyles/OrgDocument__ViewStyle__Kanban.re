@@ -19,7 +19,7 @@ module Styles = {
       display(`flex),
       flexGrow(1.),
       flexShrink(1.),
-      backgroundColor(var(ThemeKeys.grey20)),
+      backgroundColor(var(ThemeKeys.baseGray2)),
     ]);
 
   let column =
@@ -30,10 +30,10 @@ module Styles = {
       maxWidth(px(300)),
       display(`flex),
       flexDirection(column),
-      backgroundColor(var(ThemeKeys.grey00)),
+      backgroundColor(var(ThemeKeys.baseGray1)),
       selector(
         "> * + *",
-        [borderRight(px(1), `solid, var(ThemeKeys.grey20))],
+        [borderRight(px(1), `solid, var(ThemeKeys.baseGray2))],
       ),
     ]);
 
@@ -42,14 +42,14 @@ module Styles = {
       padding(Spacing.medium),
       flexGrow(1.),
       overflowY(auto),
-      backgroundColor(var(ThemeKeys.grey00)),
+      backgroundColor(var(ThemeKeys.baseGray1)),
     ]);
 
   let columnHeader =
     style([
       padding2(~h=Spacing.medium, ~v=Spacing.large),
-      borderBottom(px(1), `solid, var(ThemeKeys.grey10)),
-      borderRight(px(1), `solid, var(ThemeKeys.grey10)),
+      borderBottom(px(1), `solid, var(ThemeKeys.baseGray1)),
+      borderRight(px(1), `solid, var(ThemeKeys.baseGray1)),
       backgroundColor(var(ThemeKeys.bgColor)),
     ]);
 };

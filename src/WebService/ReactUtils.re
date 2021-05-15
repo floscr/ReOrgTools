@@ -63,7 +63,7 @@ module Styles = {
           right(Spacing.negativeSmall),
           bottom(Spacing.negativeSmall),
           borderRadius(BorderRadius.small),
-          border(px(1), `solid, var(ThemeKeys.grey10)),
+          border(px(1), `solid, var(ThemeKeys.baseGray1)),
         ],
       ),
       selector(":focus::before", [opacity(0.15), borderWidth(px(3))]),

@@ -13,7 +13,7 @@ module Styles = {
       position(sticky),
       top(zero),
       padding(FixedTheme.Spacing.medium),
-      borderBottom(px(1), solid, var(ThemeKeys.grey10)),
+      borderBottom(px(1), solid, var(ThemeKeys.baseGray1)),
       flexShrink(1.),
       display(`flex),
       backgroundColor(var(ThemeKeys.bgColor)),

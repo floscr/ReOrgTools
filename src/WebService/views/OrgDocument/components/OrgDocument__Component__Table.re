@@ -8,22 +8,22 @@ module Styles = {
 
   let table =
     style([
-      border(px(1), `solid, var(ThemeKeys.grey10)),
+      border(px(1), `solid, var(ThemeKeys.baseGray1)),
       borderCollapse(`collapse),
       margin(zero),
       padding(zero),
       tableLayout(`fixed),
-      selector("tr", [border(px(1), `solid, var(ThemeKeys.grey10))]),
+      selector("tr", [border(px(1), `solid, var(ThemeKeys.baseGray1))]),
       selector(
         "th",
         [
           padding(Spacing.small),
           textAlign(`left),
           fontWeight(`normal),
-          border(px(1), `solid, var(ThemeKeys.grey10)),
+          border(px(1), `solid, var(ThemeKeys.baseGray1)),
         ],
       ),
-      selector("thead", [backgroundColor(var(ThemeKeys.grey00))]),
+      selector("thead", [backgroundColor(var(ThemeKeys.baseGray1))]),
     ]);
 };
 

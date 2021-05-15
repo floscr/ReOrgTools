@@ -13,7 +13,7 @@ module Styles = {
       paddingRight(
         `calc((`sub, innerSpacing, FixedTheme.Spacing.scrollbarWidth)),
       ),
-      backgroundColor(var(ThemeKeys.grey00)),
+      backgroundColor(var(ThemeKeys.baseGray1)),
       overflowY(scroll),
       flexGrow(1.),
       flexShrink(1.),

@@ -94,6 +94,8 @@ let textColor = (ThemeKeys.textColor, "#333");
 $lightThemeFile
 let focus = (ThemeKeys.focus, "#127bf6");
 
+let accentMain = (ThemeKeys.accentMain, "#3d97dd");
+
 let blue = (ThemeKeys.blue, "#3d97dd");
 |j};
 

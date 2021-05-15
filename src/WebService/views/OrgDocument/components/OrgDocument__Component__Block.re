@@ -12,7 +12,7 @@ module Styles = {
     style([
       overflowX(scroll),
       padding(Spacing.medium),
-      backgroundColor(var(ThemeKeys.grey00)),
+      backgroundColor(var(ThemeKeys.baseGray1)),
     ]);
 };
 

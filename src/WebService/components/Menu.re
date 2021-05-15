@@ -21,7 +21,7 @@ module Styles = {
   let input =
     style([
       border(zero, none, currentColor),
-      borderBottom(px(1), solid, var(ThemeKeys.grey10)),
+      borderBottom(px(1), solid, var(ThemeKeys.baseGray1)),
       padding(paddingSize),
       fontSize(Fonts.regular),
       selector(":focus", [outlineStyle(none)]),
@@ -33,7 +33,7 @@ module Styles = {
       flexGrow(1.),
       display(`flex),
       flexDirection(column),
-      backgroundColor(var(ThemeKeys.grey00)),
+      backgroundColor(var(ThemeKeys.baseGray1)),
     ]);
 
   let resultsList =
@@ -42,26 +42,26 @@ module Styles = {
       flexGrow(1.),
       margin(zero),
       padding(zero),
-      borderRight(px(1), solid, var(ThemeKeys.grey10)),
+      borderRight(px(1), solid, var(ThemeKeys.baseGray1)),
     ]);
 
   let resultsItem =
     style([
       fontSize(Fonts.small),
       fontWeight(medium),
-      color(var(ThemeKeys.grey40)),
+      color(var(ThemeKeys.baseGray4)),
       padding2(~h=paddingSize, ~v=Spacing.xsmall),
-      borderBottom(px(1), solid, var(ThemeKeys.grey10)),
+      borderBottom(px(1), solid, var(ThemeKeys.baseGray1)),
       backgroundColor(var(ThemeKeys.bgColor)),
       selector(
         ":hover",
-        [cursor(pointer), backgroundColor(var(ThemeKeys.grey15))],
+        [cursor(pointer), backgroundColor(var(ThemeKeys.baseGray2))],
       ),
     ]);
 
   let resultsItemFocused =
     style([
-      backgroundColor(var(ThemeKeys.grey15)),
+      backgroundColor(var(ThemeKeys.baseGray2)),
       boxShadow(
         Shadow.box(~x=px(2), ~inset=true, var(ThemeKeys.accentMain)),
       ),

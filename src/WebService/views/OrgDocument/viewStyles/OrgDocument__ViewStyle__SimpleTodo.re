@@ -10,7 +10,7 @@ module Styles = {
       width(pct(100.)),
       marginBottom(FixedTheme.Spacing.medium),
       padding(FixedTheme.Spacing.medium),
-      border(px(1), `solid, var(ThemeKeys.grey10)),
+      border(px(1), `solid, var(ThemeKeys.baseGray1)),
       borderRadius(FixedTheme.BorderRadius.small),
       display(`flex),
       alignItems(center),
