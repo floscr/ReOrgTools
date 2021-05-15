@@ -59,6 +59,7 @@ let makeColorPalette =
 
 let gray =
   theme.colors.baseGray
+  |> Array.reverse
   |> makeColorPalette(
        ~varName="baseGray",
        ~cssVarName=String.concat("--theme-"),
