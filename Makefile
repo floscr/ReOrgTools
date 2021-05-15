@@ -69,9 +69,9 @@ build:
 # CLI
 #####
 
-generate_theme: bs
-	./node_modules/.bin/esbuild ./src/WebService/themes/GenerateTheme.bs.js --bundle --minify --sourcemap --outfile=./bundleOutput/generateTheme.js --define:process.env.NODE_ENV="production"
-	node ./bundleOutput/generateTheme.js
+generate_theme:
+	cd ./src/ThemeGeneration; bsb -make-world
+	node ./src/ThemeGeneration/GenerateTheme.bs.js
 
 #######
 # Tools

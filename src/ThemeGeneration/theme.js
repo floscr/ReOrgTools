@@ -1,5 +1,5 @@
 // https://components.ai/theme/1wVNXfB1th776n3jQgSe
-export const theme = {
+module.exports.theme = {
   breakpoints: ["32em", "64em"],
   description:
     "Color system based on shadows and tints. The 6th step in each color scale is accessible with both white and black.",
