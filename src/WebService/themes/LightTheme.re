@@ -21,6 +21,10 @@ let baseGray13 = (ThemeKeys.baseGray13, "rgb(79, 75, 75)");
 let baseGray14 = (ThemeKeys.baseGray14, "rgb(54, 51, 51)");
 let baseGray15 = (ThemeKeys.baseGray15, "rgb(29, 27, 27)");
 
+let green1 = (ThemeKeys.green1, "#aee3c3");
+let green2 = (ThemeKeys.green2, "#61c991");
+let green3 = (ThemeKeys.green3, "#36845b");
+
 let focus = (ThemeKeys.focus, "#127bf6");
 
 let accentMain = (ThemeKeys.accentMain, "#3d97dd");

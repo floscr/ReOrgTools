@@ -21,5 +21,42 @@ let baseGray13 = "--theme-baseGray-13";
 let baseGray14 = "--theme-baseGray-14";
 let baseGray15 = "--theme-baseGray-15";
 
+let green1 = "--theme-green-1";
+let green2 = "--theme-green-2";
+let green3 = "--theme-green-3";
+
 let accentMain = "--accent-main";
 let focus = "--focus";
+
+type cssVar = (string, string);
+
+module type Colors = {
+  let key: string;
+
+  let bgColor: cssVar;
+  let textColor: cssVar;
+
+  let baseGray1: cssVar;
+  let baseGray2: cssVar;
+  let baseGray3: cssVar;
+  let baseGray4: cssVar;
+  let baseGray5: cssVar;
+  let baseGray6: cssVar;
+  let baseGray7: cssVar;
+  let baseGray8: cssVar;
+  let baseGray9: cssVar;
+  let baseGray10: cssVar;
+  let baseGray11: cssVar;
+  let baseGray12: cssVar;
+  let baseGray13: cssVar;
+  let baseGray14: cssVar;
+  let baseGray15: cssVar;
+
+  let green1: cssVar;
+  let green2: cssVar;
+  let green3: cssVar;
+
+  let accentMain: cssVar;
+  let focus: cssVar;
+  let blue: cssVar;
+};

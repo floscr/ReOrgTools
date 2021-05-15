@@ -1,34 +1,5 @@
 open Relude.Globals;
 
-type cssVar = (string, string);
-
-module type Colors = {
-  let key: string;
-
-  let bgColor: cssVar;
-  let textColor: cssVar;
-
-  let baseGray1: cssVar;
-  let baseGray2: cssVar;
-  let baseGray3: cssVar;
-  let baseGray4: cssVar;
-  let baseGray5: cssVar;
-  let baseGray6: cssVar;
-  let baseGray7: cssVar;
-  let baseGray8: cssVar;
-  let baseGray9: cssVar;
-  let baseGray10: cssVar;
-  let baseGray11: cssVar;
-  let baseGray12: cssVar;
-  let baseGray13: cssVar;
-  let baseGray14: cssVar;
-  let baseGray15: cssVar;
-
-  let accentMain: cssVar;
-  let focus: cssVar;
-  let blue: cssVar;
-};
-
 module Theme = {
   type t =
     | Light
@@ -48,7 +19,7 @@ module Theme = {
     | "dark" => Some(Dark)
     | _ => None;
 
-  let getModule = (theme): (module Colors) =>
+  let getModule = (theme): (module ThemeKeys.Colors) =>
     switch (theme) {
     | Light => (module LightTheme)
     | Dark => (module DarkTheme)
@@ -132,7 +103,7 @@ module Dom = {
 
 type ctx = {
   current: Theme.t,
-  colors: (module Colors),
+  colors: (module ThemeKeys.Colors),
   set: Theme.t => unit,
 };
 
