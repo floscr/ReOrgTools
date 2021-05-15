@@ -1,0 +1,3 @@
+#+TITLE: Readme
+
+This generates a color palette defined from [[https://components.ai/theme/WDLuNjMUeZyRopNzMeER?tab=editor][Components AI — A new way to explore generative design systems]]
