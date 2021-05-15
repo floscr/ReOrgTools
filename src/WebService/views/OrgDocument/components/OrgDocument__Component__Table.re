@@ -6,24 +6,26 @@ module Styles = {
   open Css;
   open FixedTheme;
 
+  let borderColorValue = ThemeKeys.baseGray3;
+
   let table =
     style([
-      border(px(1), `solid, var(ThemeKeys.baseGray1)),
+      border(px(1), `solid, var(borderColorValue)),
       borderCollapse(`collapse),
       margin(zero),
       padding(zero),
       tableLayout(`fixed),
-      selector("tr", [border(px(1), `solid, var(ThemeKeys.baseGray1))]),
+      selector("tr", [border(px(1), `solid, var(borderColorValue))]),
       selector(
         "th",
         [
           padding(Spacing.small),
           textAlign(`left),
           fontWeight(`normal),
-          border(px(1), `solid, var(ThemeKeys.baseGray1)),
+          border(px(1), `solid, var(borderColorValue)),
         ],
       ),
-      selector("thead", [backgroundColor(var(ThemeKeys.baseGray1))]),
+      selector("thead", [backgroundColor(var(borderColorValue))]),
     ]);
 };
 

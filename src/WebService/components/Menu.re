@@ -21,10 +21,11 @@ module Styles = {
   let input =
     style([
       border(zero, none, currentColor),
-      borderBottom(px(1), solid, var(ThemeKeys.baseGray1)),
+      borderBottom(px(1), solid, var(ThemeKeys.baseGray3)),
       padding(paddingSize),
       fontSize(Fonts.regular),
-      selector(":focus", [outlineStyle(none)]),
+      focus([outlineStyle(none)]),
+      placeholder([color(var(ThemeKeys.baseGray6))]),
     ]);
 
   let resultsRoot =
@@ -49,13 +50,13 @@ module Styles = {
     style([
       fontSize(Fonts.small),
       fontWeight(medium),
-      color(var(ThemeKeys.baseGray4)),
+      color(var(ThemeKeys.baseGray13)),
       padding2(~h=paddingSize, ~v=Spacing.xsmall),
-      borderBottom(px(1), solid, var(ThemeKeys.baseGray1)),
+      borderBottom(px(1), solid, var(ThemeKeys.baseGray3)),
       backgroundColor(var(ThemeKeys.bgColor)),
       selector(
         ":hover",
-        [cursor(pointer), backgroundColor(var(ThemeKeys.baseGray2))],
+        [cursor(pointer), backgroundColor(var(ThemeKeys.baseGray1))],
       ),
     ]);
 

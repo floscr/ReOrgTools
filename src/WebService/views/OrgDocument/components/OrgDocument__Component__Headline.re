@@ -20,7 +20,7 @@ module Styles = {
           after([
             unsafe("content", {j|" link"|j}),
             fontFamily(`custom("'Material Icons'")),
-            color(var(ThemeKeys.baseGray2)),
+            color(var(ThemeKeys.baseGray5)),
           ]),
           hover([textDecoration(underline)]),
         ],

@@ -28,13 +28,15 @@ module Styles = {
       /* selector("> * + *", [marginTop(Spacing.large)]), */
     ]);
 
+  let borderColorValue = ThemeKeys.baseGray2;
+
   let rootTodoSection =
     style([
       selector("h1", [paddingBottom(zero)]),
       selector(
         "* + &:first-of-type",
         [
-          borderTop(px(1), solid, var(ThemeKeys.baseGray1)),
+          borderTop(px(1), solid, var(borderColorValue)),
           marginTop(Spacing.xlarge),
           paddingTop(Spacing.xlarge),
         ],
@@ -42,7 +44,7 @@ module Styles = {
       selector(
         "& + &",
         [
-          borderTop(px(1), solid, var(ThemeKeys.baseGray1)),
+          borderTop(px(1), solid, var(borderColorValue)),
           marginTop(Spacing.xlarge),
           paddingTop(Spacing.xlarge),
         ],
@@ -51,7 +53,7 @@ module Styles = {
 
   let todoSection =
     style([
-      border(px(1), `solid, var(ThemeKeys.baseGray2)),
+      border(px(1), `solid, var(ThemeKeys.baseGray3)),
       padding(Spacing.medium),
       selector(
         "&",
@@ -70,7 +72,7 @@ module Styles = {
           borderRadius(zero),
           marginTop(zero),
           paddingTop(Spacing.medium),
-          boxShadow(Shadow.box(~y=px(-1), var(ThemeKeys.baseGray1))),
+          boxShadow(Shadow.box(~y=px(-1), var(borderColorValue))),
         ],
       ),
       selector(

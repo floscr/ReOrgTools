@@ -1,8 +1,15 @@
 // https://components.ai/theme/1wVNXfB1th776n3jQgSe
 module.exports.theme = {
-  breakpoints: ["32em", "64em"],
-  description:
-    "Color system based on shadows and tints. The 6th step in each color scale is accessible with both white and black.",
+  gradients: {
+    0: "radial-gradient(circle at -159% 117%, hsl(17.14,100%,72.55%) 24%, hsl(33,66.67%,23.53%) 95%)",
+    1: "radial-gradient(circle at 157% 147%, hsl(33,66.67%,23.53%) 75%, hsl(228,60%,95.1%) 82%)",
+    2: "radial-gradient(circle at 140% -120%, hsl(245.25,64.52%,75.69%) 21%, hsl(196,50.24%,59.02%) 94%)",
+    3: "radial-gradient(circle at 167% -188%, hsl(33.85,77.69%,50.78%) 31%, hsl(337.99,57.2%,52.35%) 34%)",
+    4: "linear-gradient(359deg, hsl(220,1.28%,46.08%) 19%, hsl(237.98,62.3%,62.55%) 3%)",
+    5: "radial-gradient(circle at 181% -150%, hsl(169.79,50%,63.14%) 25%, hsl(240,0.78%,74.71%) 45%)",
+  },
+  name: "Test",
+  letterSpacings: { tracked: "0.1em" },
   space: [
     "0px",
     "2px",
@@ -15,21 +22,9 @@ module.exports.theme = {
     "256px",
     "512px",
   ],
-  fonts: { heading: '"IBM Plex Sans", sans-serif' },
-  textShadows: {
-    0: "35px -2px 34px hsla(145.85,29.15%,43.73%,0.139)",
-    1: "38px 43px 91px hsla(353.06,68.37%,57.84%,0.271)",
-  },
-  letterSpacings: { tracked: "0.1em" },
-  text: {
-    heading: {
-      "font-family": "heading",
-      "font-weight": 200,
-      "line-height": "1",
-      "letter-spacing": "0.1em",
-      "font-size": "0.875rem",
-    },
-  },
+  borderStyles: ["none", "solid"],
+  lineHeights: { solid: 1, heading: 1.25, body: 1.5 },
+  breakpoints: ["32em", "64em"],
   fontSizes: [
     "0.75rem",
     "0.875rem",
@@ -40,53 +35,48 @@ module.exports.theme = {
     "3rem",
     "4rem",
   ],
-  borderStyles: ["none", "solid"],
-  borderRadius: ["0px", "5px", "9px", "9999px"],
-  name: "Test",
-  gradients: {
-    0:
-      "radial-gradient(circle at -159% 117%, hsl(17.14,100%,72.55%) 24%, hsl(33,66.67%,23.53%) 95%)",
-    1:
-      "radial-gradient(circle at 157% 147%, hsl(33,66.67%,23.53%) 75%, hsl(228,60%,95.1%) 82%)",
-    2:
-      "radial-gradient(circle at 140% -120%, hsl(245.25,64.52%,75.69%) 21%, hsl(196,50.24%,59.02%) 94%)",
-    3:
-      "radial-gradient(circle at 167% -188%, hsl(33.85,77.69%,50.78%) 31%, hsl(337.99,57.2%,52.35%) 34%)",
-    4:
-      "linear-gradient(359deg, hsl(220,1.28%,46.08%) 19%, hsl(237.98,62.3%,62.55%) 3%)",
-    5:
-      "radial-gradient(circle at 181% -150%, hsl(169.79,50%,63.14%) 25%, hsl(240,0.78%,74.71%) 45%)",
+  text: {
+    heading: {
+      "font-family": "heading",
+      "font-weight": 200,
+      "line-height": "1",
+      "letter-spacing": "0.1em",
+      "font-size": "0.875rem",
+    },
   },
-  lineHeights: { solid: 1, heading: 1.25, body: 1.5 },
+  description:
+    "Color system based on shadows and tints. The 6th step in each color scale is accessible with both white and black.",
+  borderWidths: ["0px", "1px", "2px", "4px"],
+  textShadows: {
+    0: "35px -2px 34px hsla(145.85,29.15%,43.73%,0.139)",
+    1: "38px 43px 91px hsla(353.06,68.37%,57.84%,0.271)",
+  },
+  fonts: { heading: '"IBM Plex Sans", sans-serif' },
   boxShadows: {
-    1:
-      "0 1px 2px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.07), 0 4px 8px rgba(0,0,0,0.07), 0 8px 16px rgba(0,0,0,0.07), 0 16px 32px rgba(0,0,0,0.07), 0 32px 64px rgba(0,0,0,0.07)",
-    2:
-      "0 1px 1px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.20), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.10), 0 16px 16px rgba(0,0,0,0.05)",
-    3:
-      "0 1px 1px rgba(0,0,0,0.125), 0 2px 2px rgba(0,0,0,0.125), 0 4px 4px rgba(0,0,0,0.125), 0 8px 8px rgba(0,0,0,0.125), 0 16px 16px rgba(0,0,0,0.125)",
+    1: "0 1px 2px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.07), 0 4px 8px rgba(0,0,0,0.07), 0 8px 16px rgba(0,0,0,0.07), 0 16px 32px rgba(0,0,0,0.07), 0 32px 64px rgba(0,0,0,0.07)",
+    2: "0 1px 1px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.20), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.10), 0 16px 16px rgba(0,0,0,0.05)",
+    3: "0 1px 1px rgba(0,0,0,0.125), 0 2px 2px rgba(0,0,0,0.125), 0 4px 4px rgba(0,0,0,0.125), 0 8px 8px rgba(0,0,0,0.125), 0 16px 16px rgba(0,0,0,0.125)",
     4: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)",
-    5:
-      "0 1px 1px rgba(0,0,0,0.15), 0 2px 2px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.15)",
+    5: "0 1px 1px rgba(0,0,0,0.15), 0 2px 2px rgba(0,0,0,0.15), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.15)",
     6: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)",
   },
   colors: {
-    baseGray: [
+    "baseGray": [
       "rgb(29, 27, 27)",
-      "rgb(58, 56, 56)",
-      "rgb(90, 88, 88)",
-      "rgb(122, 120, 120)",
-      "rgb(153, 151, 151)",
-      "rgb(181, 179, 179)",
-      "rgb(205, 203, 203)",
-      "rgb(221, 219, 219)",
-      "rgb(232, 231, 231)",
-      "rgb(240, 239, 239)",
-      "rgb(245, 244, 244)",
-      "rgb(248, 247, 247)",
-      "rgb(249, 248, 248)",
-      "rgb(249, 248, 248)",
-      "rgb(248, 248, 248)",
+      "rgb(54, 51, 51)",
+      "rgb(79, 75, 75)",
+      "rgb(104, 100, 100)",
+      "rgb(130, 124, 124)",
+      "rgb(155, 149, 149)",
+      "rgb(181, 173, 173)",
+      "rgb(198, 191, 191)",
+      "rgb(206, 199, 199)",
+      "rgb(213, 207, 207)",
+      "rgb(220, 216, 215)",
+      "rgb(228, 224, 223)",
+      "rgb(235, 232, 231)",
+      "rgb(243, 241, 239)",
+      "rgb(250, 249, 247)",
     ],
     base: ["rgba(0, 0, 0, 1)", "rgba(255, 255, 255, 1)"],
     blue: [
@@ -128,5 +118,5 @@ module.exports.theme = {
       },
     },
   },
-  borderWidths: ["0px", "1px", "2px", "4px"],
+  borderRadius: ["0px", "5px", "9px", "9999px"],
 }
