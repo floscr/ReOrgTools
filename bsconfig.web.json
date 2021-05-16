@@ -35,7 +35,6 @@
   "suffix": ".bs.js",
   "bs-dependencies": [
     "@glennsl/bs-json",
-    "reductive",
     "bs-bastet",
     "bs-css",
     "bs-css-emotion",
@@ -43,11 +42,12 @@
     "bs-fetch",
     "bs-webapi",
     "reason-react",
+    "reductive",
     "relude",
     "relude-fetch",
-    "relude-url",
     "relude-parse",
     "relude-reason-react",
+    "relude-url"
   ],
   "bs-dev-dependencies": [
     "@glennsl/bs-jest"
