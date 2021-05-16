@@ -179,19 +179,20 @@ let renderHeadline = (~properties, headline: ReOrga.headline) => {
 
   let atid = properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "id"));
   let id = makeHeadlineKey(position);
-
+  let urlProperty =
+    properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "url"));
   let hasFooter = keyword |> Option.isSome || tags |> Option.isSome;
 
   <header className=Styles.header key=id id>
     <div>
       {content
        |> Array.mapWithIndex((x, i) => {
-            (
-              switch (x |> getItem) {
-              | PlainText(_) =>
-                OrgDocument__Component__Text.renderPlainText(x)
-              | Link(x) =>
-                OrgDocument__Component__Text.renderLink(~attachmentId=atid, x)
+            OrgDocument__Component__Text.(
+              switch (x |> getItem, urlProperty) {
+              | (PlainText({value}), Some(urlProperty)) =>
+                renderUrlLinkSimple(~description=value, urlProperty)
+              | (PlainText(_), _) => renderPlainText(x)
+              | (Link(x), _) => renderLink(~attachmentId=atid, x)
               | _ => React.null
               }
             )

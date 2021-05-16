@@ -73,6 +73,9 @@ let renderAttachment = (~attachmentId=None, {value}) => {
   <img src onClick={_ => onClick() |> dispatch} />;
 };
 
+let renderUrlLinkSimple = (~description=?, value) =>
+  <a href=value> {description |> Option.getOrElse(value) |> s} </a>;
+
 let renderUrlLink = ({value, description}: ReOrga.link) =>
   <a href=value> {description |> Option.getOrElse(value) |> s} </a>;
 
