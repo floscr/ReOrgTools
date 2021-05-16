@@ -100,6 +100,22 @@ type link = {
 
 type tags = {tags: array(string)};
 
+module PlanningType = {
+  type t =
+    | Scheduled
+    | Deadline;
+
+  let makeFromString =
+    fun
+    | "DEADLINE" => Deadline
+    | _ => Scheduled;
+
+  let makePrettyString =
+    fun
+    | Deadline => "Deadline"
+    | Scheduled => "Scheduled";
+};
+
 type headline = {
   children: array(sectionAst),
   content: string,
@@ -108,6 +124,7 @@ type headline = {
   tags: array(string),
   actionable: bool,
   keyword: option(string),
+  parent: sectionAst,
 };
 
 type orgItem =
@@ -122,7 +139,7 @@ type orgItem =
   | Paragraph({children: array(sectionAst)})
   | PlainText(plainText)
   | Planning({
-      type_: string,
+      type_: PlanningType.t,
       start: option(Js.Date.t),
       end_: option(Js.Date.t),
       parent: sectionAst,
@@ -180,6 +197,7 @@ let getItem = item => {
       position: item.position,
       tags: nullableOrEmptyArray(item.tags),
       actionable: item.actionable,
+      parent: item.parent,
       keyword: item.keyword |> Js.Nullable.toOption,
     })
   | ["todo"] =>
@@ -192,14 +210,14 @@ let getItem = item => {
     switch (item.timestamp |> Js.Nullable.toOption) {
     | Some(x) =>
       Planning({
-        type_: item.type_,
+        type_: item.type_ |> PlanningType.makeFromString,
         start: x.date |> Js.Nullable.toOption,
         end_: x.end_ |> Js.Nullable.toOption,
         parent: item.parent,
       })
     | _ =>
       Planning({
-        type_: item.type_,
+        type_: item.type_ |> PlanningType.makeFromString,
         start: None,
         end_: None,
         parent: item.parent,

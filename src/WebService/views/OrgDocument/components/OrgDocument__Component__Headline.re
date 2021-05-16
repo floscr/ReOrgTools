@@ -28,6 +28,26 @@ module Styles = {
       /* selector("a:hover, a:focus", [textDecoration(underline)]), */
     ]);
 
+  let timeStamp =
+    style([
+      display(`flex),
+      fontWeight(medium),
+      color(var(ThemeKeys.baseGray11)),
+      fontSize(rem(0.8)),
+      marginTop(Spacing.xxsmall),
+    ]);
+  let timeStampIcon =
+    style([
+      selector(
+        ".material-icons",
+        [
+          lineHeight(`abs(1.1)),
+          fontSize(px(14)),
+          marginRight(em(0.25)),
+        ],
+      ),
+    ]);
+
   let footer =
     style([
       display(`flex),
@@ -99,8 +119,63 @@ let makeHeadlineProps =
   );
 
 let renderHeadline = (~properties, headline: ReOrga.headline) => {
-  let {children, content, level, position, keyword, actionable} = headline;
+  let {children, level, position, keyword, parent} = headline;
   let {content, tags} = children |> makeHeadlineProps;
+
+  let planning =
+    parent.children
+    |> Array.find(
+         getItem
+         >> (
+           fun
+           | Planning(_) => true
+           | _ => false
+         ),
+       )
+    |> Option.flatMap(
+         getItem
+         >> (
+           fun
+           | Planning({type_, start}) =>
+             Some(
+               <span className=Styles.timeStamp>
+                 {type_
+                  |> (
+                    fun
+                    | ReOrga.PlanningType.Scheduled => "schedule"
+                    | ReOrga.PlanningType.Deadline => "warning_amber"
+                  )
+                  |> (id => <IconButton id style=Styles.timeStampIcon />)}
+                 {start
+                  |> Option.map(DateTime.fromJSDate)
+                  |> Option.map(x => {
+                       let date = x |> DateTime.toFormat("ccc, dd.MM.yyyy");
+                       // TODO: This is actually wrong as the scheduled time could be 00:00:00
+                       // But right now we don't have access to check if there is a timestamp supplied or not
+                       let hasTime =
+                         x##hour
+                         +
+                         x##minute
+                         +
+                         x##second
+                         +
+                         x##millisecond
+                         |> Int.notEq(0);
+
+                       let hour =
+                         switch (hasTime) {
+                         | true => x |> DateTime.toFormat(" HH:mm")
+                         | _ => ""
+                         };
+
+                       date ++ hour;
+                     })
+                  |> Option.fold(React.null, s)}
+               </span>,
+             )
+           | _ => None
+         ),
+       );
 
   let atid = properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "id"));
   let id = makeHeadlineKey(position);
@@ -108,20 +183,24 @@ let renderHeadline = (~properties, headline: ReOrga.headline) => {
   let hasFooter = keyword |> Option.isSome || tags |> Option.isSome;
 
   <header className=Styles.header key=id id>
-    {content
-     |> Array.mapWithIndex((x, i) => {
-          (
-            switch (x |> getItem) {
-            | PlainText(_) => OrgDocument__Component__Text.renderPlainText(x)
-            | Link(x) =>
-              OrgDocument__Component__Text.renderLink(~attachmentId=atid, x)
-            | _ => React.null
-            }
-          )
-          |> wrapWithKey(x.level, i)
-        })
-     |> React.array
-     |> (xs => <Heading level> xs </Heading>)}
+    <div>
+      {content
+       |> Array.mapWithIndex((x, i) => {
+            (
+              switch (x |> getItem) {
+              | PlainText(_) =>
+                OrgDocument__Component__Text.renderPlainText(x)
+              | Link(x) =>
+                OrgDocument__Component__Text.renderLink(~attachmentId=atid, x)
+              | _ => React.null
+              }
+            )
+            |> wrapWithKey(x.level, i)
+          })
+       |> React.array
+       |> (xs => <Heading level> xs </Heading>)}
+      {planning |> Option.fold(React.null, x => x)}
+    </div>
     {hasFooter
        ? {
          <footer className=Styles.footer>

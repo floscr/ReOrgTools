@@ -22,6 +22,7 @@ module Spacing = {
   let small = rem(smallValue);
   let negativeSmall = rem(negativeSmallValue);
   let xsmall = rem(0.45);
+  let xxsmall = rem(0.35);
 
   let scrollbarWidth = px(14);
 };
