@@ -105,7 +105,7 @@ let rec renderItems = (~level=0, ~properties=?, ~hasTodoParent=false, xs) => {
          OrgDocument__Component__Headline.renderHeadline(
            ~properties,
            headline,
-         )
+         );
 
        | Section({children, level, properties}) =>
          let isTodo =
@@ -188,7 +188,7 @@ let make = (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t) => {
   let xs =
     narrowToHeader
     |> Option.flatMap(text => Org.narrowToHeadlineWithText(~text, children))
-    |> Option.map(x => [|x.parent|])
+    |> Option.map((x: ReOrga.sectionAst) => [|x.parent|])
     |> Option.getOrElse(children);
 
   Js.Dict.get(properties, "reorg_view")
