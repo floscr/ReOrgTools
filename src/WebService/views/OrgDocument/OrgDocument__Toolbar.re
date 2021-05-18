@@ -30,35 +30,38 @@ module Styles = {
 
 [@react.component]
 let make = (~ast: ReOrga.orgAst, ~layoutType) => {
-  open Types__URLSearchParams.Layouts;
+  /* open Types__URLSearchParams.Layouts; */
+
+  open Radix__DropDownMenu;
+
   let isSidebarOpen = Store.useSelector(Selector.Settings.isSidebarOpen);
   let dispatch = State.Store.useDispatch();
 
-  let onChange = (x: Js.Nullable.t(ReactSelect.t)) =>
-    x
-    |> Js.Nullable.toOption
-    |> Option.tap(({value}: ReactSelect.t) =>
-         ReludeURL.(
-           Webapi.Dom.(
-             window
-             |> Window.location
-             |> Location.href
-             |> (x => URI.parser |> ReludeParse.Parser.runParser(x))
-             |> Result.map(
-                  URI.setQueryParam(
-                    QueryParam.make1(
-                      QueryKey.make("layoutType"),
-                      QueryValue.make(value),
-                    ),
-                  ),
-                )
-             |> Result.map(URI.show)
-             |> Result.tap(ReasonReactRouter.replace)
-           )
-         )
-         |> ignore
-       )
-    |> ignore;
+  /* let onChange = (x: Js.Nullable.t(ReactSelect.t)) => */
+  /*   x */
+  /*   |> Js.Nullable.toOption */
+  /*   |> Option.tap(({value}: ReactSelect.t) => */
+  /*        ReludeURL.( */
+  /*          Webapi.Dom.( */
+  /*            window */
+  /*            |> Window.location */
+  /*            |> Location.href */
+  /*            |> (x => URI.parser |> ReludeParse.Parser.runParser(x)) */
+  /*            |> Result.map( */
+  /*                 URI.setQueryParam( */
+  /*                   QueryParam.make1( */
+  /*                     QueryKey.make("layoutType"), */
+  /*                     QueryValue.make(value), */
+  /*                   ), */
+  /*                 ), */
+  /*               ) */
+  /*            |> Result.map(URI.show) */
+  /*            |> Result.tap(ReasonReactRouter.replace) */
+  /*          ) */
+  /*        ) */
+  /*        |> ignore */
+  /*      ) */
+  /*   |> ignore; */
 
   <header className=Styles.root>
     <div className=Styles.leftRoot>
@@ -73,16 +76,13 @@ let make = (~ast: ReOrga.orgAst, ~layoutType) => {
        |> Option.getOrElse(String.empty)
        |> s}
     </div>
-    <div
-      className=Styles.selectWrapper
-      /* React Select Breaks Styling, as it uses emotion v11  */
-      /* Look for https://github.com/reasonml-labs/bs-css/pull/229 */
-      /* <ReactSelect */
-      /*   options=reactSelectOptions */
-      /*   value={layoutType |> toReactSelect} */
-      /*   isSearchable=false */
-      /*   onChange */
-      /* /> */
-    />
+    <div className=Styles.selectWrapper>
+      <DropDownMenu.Root>
+        <DropDownMenu.Trigger> {"Trigger" |> s} </DropDownMenu.Trigger>
+        <DropDownMenu.Content>
+          <DropDownMenu.Item> {"Hello" |> s} </DropDownMenu.Item>
+        </DropDownMenu.Content>
+      </DropDownMenu.Root>
+    </div>
   </header>;
 };
