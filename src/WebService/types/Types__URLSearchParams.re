@@ -10,26 +10,20 @@ module Layouts = {
   let default = Document;
   let options = [|Document, SimpleTodo, Kanban|];
 
-  // String Encoding (properties)
-
   let fromString =
     fun
-    | "DOCUMENT" => Document
-    | "SIMPLE_TODO" => SimpleTodo
-    | "KANBAN" => Kanban
+    | "Document" => Document
+    | "Simple Todo" => SimpleTodo
+    | "Kanban" => Kanban
     | _ => default;
 
   let toString =
     fun
-    | Document => "DOCUMENT"
-    | SimpleTodo => "SIMPLE_TODO"
-    | Kanban => "KANBAN";
-  /* let toReactSelect = */
-  /*   fun */
-  /*   | Document => ReactSelect.{label: "Document", value: "DOCUMENT"} */
-  /*   | SimpleTodo => ReactSelect.{label: "Todo", value: "SIMPLE_TODO"} */
-  /*   | Kanban => ReactSelect.{label: "Kanban", value: "KANBAN"}; */
-  /* let reactSelectOptions = options |> Array.map(toReactSelect); */
+    | Document => "Document"
+    | SimpleTodo => "Simple Todo"
+    | Kanban => "Kanban";
+
+  let reactSelectOptions = options |> Array.map(toString);
 };
 
 type t = {

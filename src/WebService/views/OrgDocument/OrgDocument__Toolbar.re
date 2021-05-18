@@ -30,8 +30,6 @@ module Styles = {
 
 [@react.component]
 let make = (~ast: ReOrga.orgAst, ~layoutType) => {
-  /* open Types__URLSearchParams.Layouts; */
-
   open Radix__DropDownMenu;
 
   let isSidebarOpen = Store.useSelector(Selector.Settings.isSidebarOpen);
@@ -80,7 +78,17 @@ let make = (~ast: ReOrga.orgAst, ~layoutType) => {
       <DropDownMenu.Root>
         <DropDownMenu.Trigger> {"Trigger" |> s} </DropDownMenu.Trigger>
         <DropDownMenu.Content>
-          <DropDownMenu.Item> {"Hello" |> s} </DropDownMenu.Item>
+          {Types__URLSearchParams.(
+             Layouts.options
+             |> Array.map(x =>
+                  <React.Fragment key=x>
+                    <DropDownMenu.Item>
+                      {x |> Layouts.toString |> s}
+                    </DropDownMenu.Item>
+                  </React.Fragment>
+                )
+           )
+           |> React.array}
         </DropDownMenu.Content>
       </DropDownMenu.Root>
     </div>
