@@ -19,7 +19,7 @@ module Styles = {
       display(`flex),
       flexGrow(1.),
       flexShrink(1.),
-      backgroundColor(var(ThemeKeys.baseGray2)),
+      backgroundColor(var(ThemeKeys.baseGray3)),
     ]);
 
   let column =
@@ -33,7 +33,7 @@ module Styles = {
       backgroundColor(var(ThemeKeys.baseGray1)),
       selector(
         "> * + *",
-        [borderRight(px(1), `solid, var(ThemeKeys.baseGray2))],
+        [borderRight(px(1), `solid, var(ThemeKeys.baseGray3))],
       ),
     ]);
 
@@ -42,7 +42,7 @@ module Styles = {
       padding(Spacing.medium),
       flexGrow(1.),
       overflowY(auto),
-      backgroundColor(var(ThemeKeys.baseGray1)),
+      backgroundColor(var(ThemeKeys.baseGray2)),
     ]);
 
   let columnHeader =
