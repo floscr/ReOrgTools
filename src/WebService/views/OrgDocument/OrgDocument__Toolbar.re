@@ -35,31 +35,29 @@ let make = (~ast: ReOrga.orgAst, ~layoutType) => {
   let isSidebarOpen = Store.useSelector(Selector.Settings.isSidebarOpen);
   let dispatch = State.Store.useDispatch();
 
-  /* let onChange = (x: Js.Nullable.t(ReactSelect.t)) => */
-  /*   x */
-  /*   |> Js.Nullable.toOption */
-  /*   |> Option.tap(({value}: ReactSelect.t) => */
-  /*        ReludeURL.( */
-  /*          Webapi.Dom.( */
-  /*            window */
-  /*            |> Window.location */
-  /*            |> Location.href */
-  /*            |> (x => URI.parser |> ReludeParse.Parser.runParser(x)) */
-  /*            |> Result.map( */
-  /*                 URI.setQueryParam( */
-  /*                   QueryParam.make1( */
-  /*                     QueryKey.make("layoutType"), */
-  /*                     QueryValue.make(value), */
-  /*                   ), */
-  /*                 ), */
-  /*               ) */
-  /*            |> Result.map(URI.show) */
-  /*            |> Result.tap(ReasonReactRouter.replace) */
-  /*          ) */
-  /*        ) */
-  /*        |> ignore */
-  /*      ) */
-  /*   |> ignore; */
+  let onChange = x => {
+    ReludeURL.(
+      Webapi.Dom.(
+        window
+        |> Window.location
+        |> Location.href
+        |> (x => URI.parser |> ReludeParse.Parser.runParser(x))
+        |> Result.map(
+             URI.setQueryParam(
+               QueryParam.make1(
+                 QueryKey.make("layoutType"),
+                 QueryValue.make(
+                   x |> Types__URLSearchParams.Layouts.toString,
+                 ),
+               ),
+             ),
+           )
+        |> Result.map(URI.show)
+        |> Result.tap(ReasonReactRouter.replace)
+      )
+    )
+    |> ignore;
+  };
 
   <header className=Styles.root>
     <div className=Styles.leftRoot>
@@ -82,7 +80,7 @@ let make = (~ast: ReOrga.orgAst, ~layoutType) => {
              Layouts.options
              |> Array.map(x =>
                   <React.Fragment key=x>
-                    <DropDownMenu.Item>
+                    <DropDownMenu.Item onSelect={_ => onChange(x)}>
                       {x |> Layouts.toString |> s}
                     </DropDownMenu.Item>
                   </React.Fragment>

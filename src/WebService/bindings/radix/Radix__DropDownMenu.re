@@ -16,6 +16,12 @@ module DropDownMenu = {
 
   module Item = {
     [@bs.module "@radix-ui/react-dropdown-menu"] [@react.component]
-    external make: (~children: React.element) => React.element = "Item";
+    external make:
+      (
+        ~children: React.element,
+        ~onSelect: option(ReactEvent.Mouse.t => unit)=?
+      ) =>
+      React.element =
+      "Item";
   };
 };
