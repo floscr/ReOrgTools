@@ -4,8 +4,10 @@ module Decode = Decode.AsResult.OfParseError;
 
 module UserError = {
   type t =
+    | InvalidPath
     | InvalidJson
-    | InvalidCredentials;
+    | InvalidCredentials
+    | OutdatedFile;
 };
 
 module User = {

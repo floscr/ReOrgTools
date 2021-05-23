@@ -10,7 +10,7 @@ type getDirEntriesError =
     })
   | ReadWordkspaceError;
 
-let getFile = path =>
+let getFile = (path: string) =>
   IO.Suspend(() => Config.log({j|Reading from file "$path"|j}))
   |> IO.flatMap(() => ReadFile.readText(path))
   |> IO.mapError(error => ReadEntryError({name: path, error}))
