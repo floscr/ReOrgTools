@@ -13,24 +13,27 @@ let filterResult = (fn, ~err, x) =>
   };
 
 module Org = {
-  let extractArchiveItem = (~text: string, ~bounds: (int, int)) => {
-    let (start, end_) = bounds;
+  module Archive = {
+    type e =
+      | CouldNotSplitTextAtIndex((int, string));
 
-    let contents = text |> String.splitAsArray(~delimiter="\n");
+    let extractArchiveItem = (~text: string, ~bounds: (int, int)) => {
+      let (start, end_) = bounds;
 
-    contents
-    |> Array.splitAt(start)
-    |> Result.fromOption({j| Could not split text at $start.
+      let contents = text |> String.splitAsArray(~delimiter="\n");
 
-$text|j})
-    |> Result.flatMap(((head, bodyWithTail)) => {
-         let index = end_ - start;
-         bodyWithTail
-         |> Array.splitAt(index)
-         |> Option.map(((body, tail)) => {
-              (body, Array.concat(head, tail))
-            })
-         |> Result.fromOption({j| Could  |j});
-       });
+      contents
+      |> Array.splitAt(start)
+      |> Result.fromOption(CouldNotSplitTextAtIndex((start, text)))
+      |> Result.flatMap(((head, bodyWithTail)) => {
+           let index = end_ - start;
+           bodyWithTail
+           |> Array.splitAt(index)
+           |> Option.map(((body, tail)) => {
+                (body, Array.concat(head, tail))
+              })
+           |> Result.fromOption(CouldNotSplitTextAtIndex((index, text)));
+         });
+    };
   };
 };
