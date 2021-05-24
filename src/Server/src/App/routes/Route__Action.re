@@ -27,8 +27,8 @@ let t =
            |> IO.fromResult;
          })
       // Find the file and make sure it was not written to previously
-      |> IO.flatMap(x => {
-           let {filename, workspace, mtimeMs}: Shared__API__File.Actions.Archive.t = x;
+      |> IO.flatMap(payload => {
+           let {filename, workspace, mtimeMs}: Shared__API__File.Actions.Archive.t = payload;
 
            List.at(workspace, Config.workspaces)
            |> Option.map(workspacePath =>
@@ -42,11 +42,17 @@ let t =
                 (
                   switch (file.mtimeMs > mtimeMs) {
                   | true => Error(UserError.OutdatedFile)
-                  | _ => Ok(file)
+                  | _ => Ok((file, payload))
                   }
                 )
                 |> IO.fromResult
               });
+         })
+      |> IO.flatMap(((file, payload)) => {
+           let {text}: Shared__API__File.File.t = file;
+           let {filename, workspace, mtimeMs, position}: Shared__API__File.Actions.Archive.t = payload;
+
+           Ok((file, payload)) |> IO.fromResult;
          })
       |> resolve(
            res,
