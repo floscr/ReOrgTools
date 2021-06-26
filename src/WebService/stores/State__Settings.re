@@ -11,10 +11,37 @@ module Agenda = {
     let make = (id, workspace) => {id, workspace};
   };
 
-  type t = {files: array(File.t)};
+  type viewType =
+    | Calendar;
 
-  let make = files => {
-    files;
+  type field =
+    | ViewType(viewType);
+
+  let fieldToString =
+    fun
+    | ViewType(Calendar) => ("ViewType", "Calendar");
+
+  type t = {
+    files: array(File.t),
+    fields: array(field),
+  };
+
+  let make = (files, fields: array((string, string))) => {
+    files,
+    fields:
+      fields
+      |> Array.foldLeft(
+           (acc, (key, value)) => {
+             (
+               switch (key, value) {
+               | ("ViewType", "Calendar") => Some(ViewType(Calendar))
+               | _ => None
+               }
+             )
+             |> Option.foldLazy(_ => acc, x => Array.append(x, acc))
+           },
+           [||],
+         ),
   };
 };
 
@@ -63,9 +90,17 @@ module Encode = {
 
   let encodeAgendasJson =
     Json.Encode.(
-      ({files}: Agenda.t) =>
+      ({files, fields}: Agenda.t) =>
         object_([
           ("files", files |> Array.map(encodeAgendasFilesJson) |> jsonArray),
+          (
+            "fields",
+            fields
+            |> Array.map(x =>
+                 tuple2(string, string, Agenda.fieldToString(x))
+               )
+            |> jsonArray,
+          ),
         ])
     );
 
@@ -90,11 +125,19 @@ module Encode = {
 module Decode = {
   module Decode = Decode.AsResult.OfParseError;
 
+  let decodeAgendaFilesJson = json =>
+    Decode.Pipeline.(
+      succeed(Agenda.File.make)
+      |> field("id", string)
+      |> field("workspace", string)
+      |> run(json)
+    );
+
   let decodeAgendaJson = json =>
     Decode.Pipeline.(
       succeed(Agenda.make)
-      |> field("title", string)
-      |> field("value", string)
+      |> field("files", array(decodeAgendaFilesJson))
+      |> field("fields", array(tuple2(string, string)))
       |> run(json)
     );
 
