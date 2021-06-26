@@ -53,6 +53,7 @@ let make = (~id) => {
   let onBackClick = _ => send(SwitchMode(Workspaces));
 
   <div className=Styles.root>
+    <Sidebar__Agendas />
     <Sidebar__Bookmarks />
     {switch (state.mode, file) {
      | (Outline, Some(State__OrgDocuments.File.Fetched({ast}))) =>

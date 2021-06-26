@@ -4,12 +4,39 @@ module Styles = {
   let ul = style([listStyleType(none), margin(zero), padding(zero)]);
   let li = style([margin(zero)]);
 
+  let headerWrapper =
+    style([
+      display(`flex),
+      flexGrow(1.),
+      justifyContent(spaceBetween),
+      alignItems(center),
+    ]);
+
   let header =
     style([
       fontWeight(medium),
       color(var(ThemeKeys.baseGray10)),
       padding(FixedTheme.Spacing.large),
       fontSize(rem(1.)),
+    ]);
+
+  let focusStyle = [
+    backgroundColor(var(ThemeKeys.focus)),
+    color(var(ThemeKeys.bgColor)),
+    borderColor(var(ThemeKeys.focus)),
+    cursor(pointer),
+  ];
+
+  let plusButton =
+    style([
+      fontSize(rem(0.8)),
+      color(var(ThemeKeys.baseGray10)),
+      marginRight(FixedTheme.Spacing.xsmall),
+      border(px(1), `solid, var(ThemeKeys.baseGray4)),
+      lineHeight(`abs(0.)),
+      borderRadius(FixedTheme.BorderRadius.xsmall),
+      hover(focusStyle),
+      focus(focusStyle),
     ]);
 
   let button =
