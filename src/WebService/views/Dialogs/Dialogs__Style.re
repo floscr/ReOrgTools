@@ -1,18 +1,20 @@
 module Styles = {
   open Css;
+  open FixedTheme;
 
-  let roundedDialog =
+  let roundedDialog = hasPadding =>
     style([
       position(absolute),
       backgroundColor(white),
       borderRadius(FixedTheme.BorderRadius.small),
       overflow(hidden),
+      padding(hasPadding ? Spacing.large : zero),
     ]);
 };
 
 module Wrapper = {
   [@react.component]
-  let make = (~bindings, ~className=Styles.roundedDialog, ~children) =>
+  let make = (~bindings, ~className, ~children) =>
     <ComboKeysWrapper bindings>
       <div onClick=ReactEvent.Mouse.stopPropagation className> children </div>
     </ComboKeysWrapper>;
@@ -20,6 +22,8 @@ module Wrapper = {
 
 module RoundedDialogWrapper = {
   [@react.component]
-  let make = (~bindings, ~children) =>
-    <Wrapper bindings className=Styles.roundedDialog> children </Wrapper>;
+  let make = (~bindings, ~hasPadding=false, ~children) =>
+    <Wrapper bindings className={Styles.roundedDialog(hasPadding)}>
+      children
+    </Wrapper>;
 };
