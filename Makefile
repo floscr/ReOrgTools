@@ -27,6 +27,10 @@ start_frontend:
 start_backend:
 	cd $(BACKEND_DIR); yarn start:dev
 
+watch_test_backend:
+	trap 'kill %1' INT TERM
+	@make -j 2 test_backend watch_bsb_backend
+
 watch_bsb_frontend: $(SOURCE_DIRS_JSON)
     # `entr` exits when the directory contents change, so we restart it to pick
     # up updated files
@@ -47,7 +51,7 @@ watch_bsb_backend:
 
 # Testing
 test_backend:
-	cd ./src/Server; yarn run test
+	cd ./src/Server; yarn run test -- --watch
 
 ##########
 # Building
