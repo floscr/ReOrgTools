@@ -78,19 +78,26 @@ let reducer =
   | NoOp => NoUpdate
   };
 
-let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
-  <>
-    {switch (isSidebarOpen) {
-     | true => <aside className=Styles.sidebar> <Sidebar id /> </aside>
-     | _ => React.null
-     }}
-    <article className={Styles.main(isSidebarOpen)}>
-      {switch (id) {
-       | Some(id) => <Controller__OrgDocument id queryParams workspaceIndex />
+module MainWrapper = {
+  [@react.component]
+  let make = (~id, ~isSidebarOpen, ~children) => {
+    <>
+      {switch (isSidebarOpen) {
+       | true => <aside className=Styles.sidebar> <Sidebar id /> </aside>
        | _ => React.null
        }}
-    </article>
-  </>;
+      <article className={Styles.main(isSidebarOpen)}> children </article>
+    </>;
+  };
+};
+
+let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
+  <MainWrapper id isSidebarOpen>
+    {switch (id) {
+     | Some(id) => <Controller__OrgDocument id queryParams workspaceIndex />
+     | _ => React.null
+     }}
+  </MainWrapper>;
 };
 
 [@react.component]
