@@ -2,13 +2,22 @@ open Relude.Globals;
 open ReactUtils;
 
 module Agenda = {
-  type t = {
-    title: string,
-    value: string,
+  module File = {
+    type t = {
+      id: string,
+      workspace: string,
+    };
+
+    let make = (id, workspace) => {id, workspace};
   };
 
-  let make = (title, value) => {title, value};
+  type t = {files: array(File.t)};
+
+  let make = files => {
+    files;
+  };
 };
+
 module Bookmark = {
   type t = {
     title: string,
@@ -46,10 +55,18 @@ let initialState = {
 };
 
 module Encode = {
+  let encodeAgendasFilesJson =
+    Json.Encode.(
+      ({id, workspace}: Agenda.File.t) =>
+        object_([("id", string(id)), ("workspace", string(workspace))])
+    );
+
   let encodeAgendasJson =
     Json.Encode.(
-      ({title, value}: Agenda.t) =>
-        object_([("title", string(title)), ("value", string(value))])
+      ({files}: Agenda.t) =>
+        object_([
+          ("files", files |> Array.map(encodeAgendasFilesJson) |> jsonArray),
+        ])
     );
 
   let encodeBookmarksJson =
