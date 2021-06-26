@@ -1,6 +1,14 @@
 open Relude.Globals;
 open ReactUtils;
 
+module Agenda = {
+  type t = {
+    title: string,
+    value: string,
+  };
+
+  let make = (title, value) => {title, value};
+};
 module Bookmark = {
   type t = {
     title: string,
@@ -17,9 +25,10 @@ type lastViewedFile = option(string);
 let makeLastViewedFile = (x: string): lastViewedFile => Some(x);
 
 type state = {
-  lastViewedFile,
+  agendas: array(Agenda.t),
   bookmarks: array(Bookmark.t),
   isSidebarOpen: bool,
+  lastViewedFile,
 };
 
 type action =
@@ -30,12 +39,19 @@ type action =
   | ResetState;
 
 let initialState = {
-  lastViewedFile: None,
+  agendas: [||],
   bookmarks: [||],
   isSidebarOpen: true,
+  lastViewedFile: None,
 };
 
 module Encode = {
+  let encodeAgendasJson =
+    Json.Encode.(
+      ({title, value}: Agenda.t) =>
+        object_([("title", string(title)), ("value", string(value))])
+    );
+
   let encodeBookmarksJson =
     Json.Encode.(
       ({title, value}: Bookmark.t) =>
@@ -44,17 +60,26 @@ module Encode = {
 
   let encodeJson =
     Json.Encode.(
-      ({lastViewedFile, bookmarks, isSidebarOpen}) =>
+      ({agendas, bookmarks, isSidebarOpen, lastViewedFile}) =>
         object_([
+          ("agendas", array(encodeAgendasJson, agendas)),
+          ("bookmarks", array(encodeBookmarksJson, bookmarks)),
           ("isSidebarOpen", bool(isSidebarOpen)),
           ("lastViewedFile", nullable(string, lastViewedFile)),
-          ("bookmarks", array(encodeBookmarksJson, bookmarks)),
         ])
     );
 };
 
 module Decode = {
   module Decode = Decode.AsResult.OfParseError;
+
+  let decodeAgendaJson = json =>
+    Decode.Pipeline.(
+      succeed(Agenda.make)
+      |> field("title", string)
+      |> field("value", string)
+      |> run(json)
+    );
 
   let decodeBookmarksJson = json =>
     Decode.Pipeline.(
@@ -64,19 +89,21 @@ module Decode = {
       |> run(json)
     );
 
-  let make = (lastViewedFile, bookmarks, isSidebarOpen) => {
-    lastViewedFile,
-    bookmarks,
+  let make = (agendas, bookmarks, isSidebarOpen, lastViewedFile) => {
+    agendas: agendas |> Option.getOrElse([||]),
+    bookmarks: bookmarks |> Option.getOrElse([||]),
     isSidebarOpen:
       isSidebarOpen |> Option.getOrElse(initialState.isSidebarOpen),
+    lastViewedFile,
   };
 
   let decodeJson = json =>
     Decode.Pipeline.(
       succeed(make)
-      |> field("lastViewedFile", optional(string))
-      |> field("bookmarks", array(decodeBookmarksJson))
+      |> optionalField("agendas", array(decodeAgendaJson))
+      |> optionalField("bookmarks", array(decodeBookmarksJson))
       |> optionalField("isSidebarOpen", boolean)
+      |> field("lastViewedFile", optional(string))
       |> run(json)
     );
 };
