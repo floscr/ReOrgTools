@@ -91,6 +91,10 @@ module MainWrapper = {
   };
 };
 
+let showAgenda = (~isSidebarOpen, ()) => {
+  <MainWrapper id=None isSidebarOpen=false> {"New Agenda" |> s} </MainWrapper>;
+};
+
 let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
   <MainWrapper id isSidebarOpen>
     {switch (id) {
@@ -205,6 +209,7 @@ let make = () => {
     className={Styles.root(isSidebarOpen)}
     ref={ReactDOMRe.Ref.domRef(rootRef)}>
     {switch (state.areSettingsLoaded, url.path) {
+     | (true, ["agenda", "new"]) => showAgenda(~isSidebarOpen, ())
      | (true, ["file", workspaceIndex, id]) =>
        let workspaceIndex =
          workspaceIndex |> String.toInt |> Option.getOrElse(0);

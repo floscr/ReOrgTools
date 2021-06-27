@@ -8,7 +8,7 @@ let make = () => {
 
   module Styles = Sidebar__Utils.Styles;
 
-  let onPlusButtonClick = () =>
+  let _onPlusButtonClick = () =>
     State.DialogsAction(
       State__Dialogs.OpenDialog(State__Dialogs.AgendaCreate),
     )
@@ -20,7 +20,7 @@ let make = () => {
       <IconButton
         style=Styles.plusButton
         id="add"
-        onClick={_ => onPlusButtonClick()}
+        onClick={_ => ReasonReactRouter.replace("/agenda/new")}
       />
     </div>
   </>;
