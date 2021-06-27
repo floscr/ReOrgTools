@@ -67,3 +67,58 @@ module RadioGroup = {
       <RadioGroup.Item value name className> children </RadioGroup.Item>;
   };
 };
+
+module ScrollArea = {
+  open Radix__ScrollArea;
+
+  module Styles = {
+    open Css;
+    open FixedTheme;
+
+    let scrollbarSize = 8;
+
+    let root = style([width(pct(100.)), height(pct(100.))]);
+
+    let viewport = style([width(pct(100.)), height(pct(100.))]);
+    let scrollbar =
+      style([
+        display(`flex),
+        padding(px(2)),
+        backgroundColor(black),
+        selector(
+          "&[data-orientation=\"vertical\"]",
+          [width(px(scrollbarSize))],
+        ),
+        selector(
+          "&[data-orientation=\"horizontal\"]",
+          [flexDirection(column), height(px(scrollbarSize))],
+        ),
+      ]);
+    let thumb =
+      style([
+        flex(`num(1.)),
+        backgroundColor(black),
+        borderRadius(px(scrollbarSize)),
+      ]);
+    let corner = style([backgroundColor(black)]);
+  };
+
+  module Wrapper = {
+    [@react.component]
+    let make = (~children, ~scrollHideDelay=600, ~type_="hover") =>
+      <ScrollArea.Root className=Styles.root>
+        <ScrollArea.Viewport className=Styles.viewport>
+          children
+        </ScrollArea.Viewport>
+        <ScrollArea.Scrollbar
+          orientation_="horizontal" className=Styles.scrollbar>
+          <ScrollArea.Thumb className=Styles.thumb />
+        </ScrollArea.Scrollbar>
+        <ScrollArea.Scrollbar
+          orientation_="vertical" className=Styles.scrollbar>
+          <ScrollArea.Thumb className=Styles.thumb />
+        </ScrollArea.Scrollbar>
+        <ScrollArea.Corner className=Styles.corner />
+      </ScrollArea.Root>;
+  };
+};

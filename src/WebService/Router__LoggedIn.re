@@ -86,19 +86,25 @@ module MainWrapper = {
        | true => <aside className=Styles.sidebar> <Sidebar id /> </aside>
        | _ => React.null
        }}
-      <article className={Styles.main(isSidebarOpen)}> children </article>
+      children
     </>;
   };
 };
 
 let showAgenda = (~isSidebarOpen, ()) => {
-  <MainWrapper id=None isSidebarOpen=false> {"New Agenda" |> s} </MainWrapper>;
+  <MainWrapper id=None isSidebarOpen=false>
+    <AgendaBuilder__Root />
+  </MainWrapper>;
 };
 
 let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
   <MainWrapper id isSidebarOpen>
     {switch (id) {
-     | Some(id) => <Controller__OrgDocument id queryParams workspaceIndex />
+     | Some(id) =>
+       <article className={Styles.main(isSidebarOpen)}>
+         <Controller__OrgDocument id queryParams workspaceIndex />
+       </article>
+
      | _ => React.null
      }}
   </MainWrapper>;
@@ -205,15 +211,17 @@ let make = () => {
     Some(() => detachShortcuts());
   });
 
-  <main
-    className={Styles.root(isSidebarOpen)}
-    ref={ReactDOMRe.Ref.domRef(rootRef)}>
+  <main ref={ReactDOMRe.Ref.domRef(rootRef)}>
     {switch (state.areSettingsLoaded, url.path) {
      | (true, ["agenda", "new"]) => showAgenda(~isSidebarOpen, ())
      | (true, ["file", workspaceIndex, id]) =>
        let workspaceIndex =
          workspaceIndex |> String.toInt |> Option.getOrElse(0);
-       showMain(~id, ~queryParams, ~workspaceIndex, ~isSidebarOpen, ());
+
+       <div className={Styles.root(isSidebarOpen)}>
+         {showMain(~id, ~queryParams, ~workspaceIndex, ~isSidebarOpen, ())}
+       </div>;
+
      | (false, _) => React.null
      | _ => showMain(~queryParams, ~isSidebarOpen, ())
      }}

@@ -18,6 +18,7 @@
         "@radix-ui/react-dropdown-menu": "^0.0.19",
         "@radix-ui/react-label": "^0.0.14",
         "@radix-ui/react-radio-group": "^0.0.18",
+        "@radix-ui/react-scroll-area": "^0.0.15",
         "bs-axios": "^0.0.43",
         "bs-bastet": "git+https://github.com/floscr/bastet.git",
         "bs-css-emotion": "^3.0.0",
