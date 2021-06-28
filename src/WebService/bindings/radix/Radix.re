@@ -77,16 +77,27 @@ module ScrollArea = {
 
     let scrollbarSize = 14;
 
-    let root = style([width(pct(100.)), height(pct(100.))]);
+    let root =
+      style([
+        width(pct(100.)),
+        height(pct(100.)),
+        selector(
+          ":hover [data-orientation=\"vertical\"]",
+          [opacity(1.), transitionDelay(0)],
+        ),
+      ]);
 
     let viewport = style([width(pct(100.)), height(pct(100.))]);
+
     let scrollbar =
       style([
         display(`flex),
         padding(px(4)),
         transition(~duration=160, "background"),
+        transition(~duration=160, "opacity"),
         backgroundColor(rgba(0, 0, 0, `num(0.))),
-        opacity(0.8),
+        opacity(0.),
+        transitionDelay(500),
         hover([backgroundColor(rgba(0, 0, 0, `num(0.05)))]),
         selector(
           "&[data-orientation=\"vertical\"]",
@@ -109,8 +120,8 @@ module ScrollArea = {
 
   module Wrapper = {
     [@react.component]
-    let make = (~children, ~scrollHideDelay=600, ~type_="hover") =>
-      <ScrollArea.Root className=Styles.root>
+    let make = (~children, ~scrollHideDelay=1200, ~_type="always") =>
+      <ScrollArea.Root className=Styles.root _type scrollHideDelay>
         <ScrollArea.Viewport className=Styles.viewport>
           children
         </ScrollArea.Viewport>
@@ -119,7 +130,7 @@ module ScrollArea = {
           <ScrollArea.Thumb className=Styles.thumb />
         </ScrollArea.Scrollbar>
         <ScrollArea.Scrollbar
-          orientation_="vertical" className=Styles.scrollbar>
+          orientation_="vertical" className={Styles.scrollbar ++ " foo"}>
           <ScrollArea.Thumb className=Styles.thumb />
         </ScrollArea.Scrollbar>
         <ScrollArea.Corner className=Styles.corner />

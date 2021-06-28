@@ -2,7 +2,13 @@ module ScrollArea = {
   module Root = {
     [@bs.module "@radix-ui/react-scroll-area"] [@react.component]
     external make:
-      (~children: React.element, ~className: string=?) => React.element =
+      (
+        ~children: React.element,
+        ~className: string=?,
+        ~_type: string=?,
+        ~scrollHideDelay: int=?
+      ) =>
+      React.element =
       "Root";
   };
 
