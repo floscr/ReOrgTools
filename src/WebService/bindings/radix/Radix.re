@@ -75,7 +75,7 @@ module ScrollArea = {
     open Css;
     open FixedTheme;
 
-    let scrollbarSize = 8;
+    let scrollbarSize = 14;
 
     let root = style([width(pct(100.)), height(pct(100.))]);
 
@@ -83,8 +83,11 @@ module ScrollArea = {
     let scrollbar =
       style([
         display(`flex),
-        padding(px(2)),
-        backgroundColor(black),
+        padding(px(4)),
+        transition(~duration=160, "background"),
+        backgroundColor(rgba(0, 0, 0, `num(0.))),
+        opacity(0.8),
+        hover([backgroundColor(rgba(0, 0, 0, `num(0.05)))]),
         selector(
           "&[data-orientation=\"vertical\"]",
           [width(px(scrollbarSize))],
@@ -97,8 +100,9 @@ module ScrollArea = {
     let thumb =
       style([
         flex(`num(1.)),
-        backgroundColor(black),
-        borderRadius(px(scrollbarSize)),
+        borderRadius(px(50)),
+        backgroundClip(paddingBox),
+        backgroundColor(rgba(0, 0, 0, `num(0.15))),
       ]);
     let corner = style([backgroundColor(black)]);
   };
