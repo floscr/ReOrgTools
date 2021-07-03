@@ -66,11 +66,16 @@ module Validation = {
     x
     |> Result.fold(
          err =>
-           switch (err) {
-           | JsonDecodeError => "Failed to decode json"
-           | DecodeError((x: Decode_AsResult_OfParseError.ParseError.failure)) =>
-             Decode.ParseError.failureToDebugString(x)
-           },
+           (
+             switch (err) {
+             | JsonDecodeError => "Failed to decode json"
+             | DecodeError(
+                 (x: Decode_AsResult_OfParseError.ParseError.failure),
+               ) =>
+               Decode.ParseError.failureToDebugString(x)
+             }
+           )
+           |> (x => "Error: " ++ x),
          _x => "Success",
        );
 };
@@ -105,10 +110,8 @@ let make = () => {
         className=Styles.textArea
         onChange={event => {
           open ReactEvent.Form;
-          module Decode = Decode.AsResult.OfParseError;
 
           persist(event);
-
           let value = target(event)##value;
 
           setValue(value);
