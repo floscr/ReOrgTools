@@ -30,7 +30,22 @@ let reducer =
   | NoOp => NoUpdate
   };
 
-module FilePicker = {};
+module FilePicker = {
+  let makeKey = ({id, workspace}: Agenda.File.t) => {j|$workspace-$id|j};
+
+  let make = (files: Agenda.filesT) => {
+    <div>
+      <ul>
+        {files
+         |> Array.map((({id, workspace}: Agenda.File.t) as file) =>
+              <li key={file |> makeKey}> {workspace ++ id |> s} </li>
+            )
+         |> React.array}
+      </ul>
+      <button> {"Add file" |> s} </button>
+    </div>;
+  };
+};
 
 [@react.component]
 let make = () => {
