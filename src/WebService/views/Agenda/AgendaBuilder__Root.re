@@ -22,7 +22,12 @@ module Agenda = State__Settings.Agenda;
 
 type state = Agenda.t;
 
-let initialState: Agenda.t = {files: [||], fields: [||]};
+let initialState: Agenda.t =
+  Agenda.{
+    files: [|{id: "inbox.org", workspace: "0"}|],
+    fields: [|ViewType(Calendar)|],
+  };
+/* let initialState: Agenda.t = {files: [||], fields: [||]}; */
 
 type action =
   | UpdateSettings(state)
