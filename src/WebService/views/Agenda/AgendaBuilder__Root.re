@@ -60,6 +60,16 @@ let make = () => {
       |> State__Settings.Encode.encodeAgendasJson
       |> (x => Js.Json.stringifyWithSpace(x, 2))
     );
+
+  let (validation, setValidation) =
+    React.useState(() =>
+      initialState
+      |> State__Settings.Encode.encodeAgendasJson
+      |> State__Settings.Decode.decodeAgendaJson
+    );
+
+  Js.log(validation);
+
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
   <div className=Styles.root>
@@ -70,6 +80,7 @@ let make = () => {
         className=Styles.textArea
         onChange={event => {
           open ReactEvent.Form;
+          module Decode = Decode.AsResult.OfParseError;
 
           persist(event);
 
@@ -79,17 +90,21 @@ let make = () => {
 
           value
           |> Json.parse
-          |> Option.tap(x =>
-               State__Settings.Decode.decodeAgendaJson(x)
+          |> Option.map(x =>
+               x
+               |> State__Settings.Decode.decodeAgendaJson
                |> Result.tap(x => UpdateSettings(x) |> send)
                |> Result.tapError(err =>
                     Decode.ParseError.failureToDebugString(err) |> Js.log
                   )
-               |> ignore
              )
+          |> Option.tap(x => setValidation(_ => x))
           |> ignore;
         }}
       />
+      {validation
+       |> Result.fold(Decode.ParseError.failureToDebugString, _ => "Success")
+       |> s}
     </Radix.ScrollArea.Wrapper>
     <div className=Styles.wrapper>
       <Radix.ScrollArea.Wrapper>
