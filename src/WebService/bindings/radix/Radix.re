@@ -87,7 +87,12 @@ module ScrollArea = {
         ),
       ]);
 
-    let viewport = style([width(pct(100.)), height(pct(100.))]);
+    let viewport =
+      style([
+        width(pct(100.)),
+        height(pct(100.)),
+        padding(Spacing.xlarge),
+      ]);
 
     let scrollbar =
       style([
