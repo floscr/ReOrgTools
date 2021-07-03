@@ -2,7 +2,6 @@ open Relude.Globals;
 open ReOrga;
 open OrgDocument__Utils;
 open ReactUtils;
-open State__Settings;
 
 module Styles = {
   open Css;
@@ -18,6 +17,8 @@ module Styles = {
       borderLeft(px(1), `solid, var(ThemeKeys.baseGray3)),
     ]);
 };
+
+module Agenda = State__Settings.Agenda;
 
 type state = Agenda.t;
 
@@ -61,33 +62,39 @@ let make = () => {
     );
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
-  Radix.(
-    <div className=Styles.root>
-      <ScrollArea.Wrapper>
-        <textarea
-          rows=30
-          className=Styles.textArea
-          onChange={event => {
-            open ReactEvent.Form;
+  <div className=Styles.root>
+    <Radix.ScrollArea.Wrapper>
+      <textarea
+        value
+        rows=30
+        className=Styles.textArea
+        onChange={event => {
+          open ReactEvent.Form;
 
-            persist(event);
+          persist(event);
 
-            let value = target(event)##value;
+          let value = target(event)##value;
 
-            setValue(value);
+          setValue(value);
 
-            value
-            |> State__Settings.Decode.decodeAgendaJson
-            |> Result.tapError(x => Js_console.error2("Invalid Data", x))
-            |> Result.tap(x => UpdateSettings(x) |> send)
-            |> ignore;
-          }}
           value
-        />
-      </ScrollArea.Wrapper>
-      <div className=Styles.wrapper>
-        <ScrollArea.Wrapper> {"Hello world" |> s} </ScrollArea.Wrapper>
-      </div>
+          |> Json.parse
+          |> Option.tap(x =>
+               State__Settings.Decode.decodeAgendaJson(x)
+               |> Result.tap(x => UpdateSettings(x) |> send)
+               |> Result.tapError(err =>
+                    Decode.ParseError.failureToDebugString(err) |> Js.log
+                  )
+               |> ignore
+             )
+          |> ignore;
+        }}
+      />
+    </Radix.ScrollArea.Wrapper>
+    <div className=Styles.wrapper>
+      <Radix.ScrollArea.Wrapper>
+        {"Hello world" |> s}
+      </Radix.ScrollArea.Wrapper>
     </div>
-  );
+  </div>;
 };
