@@ -52,6 +52,29 @@ module FilePicker = {
   };
 };
 
+module Validation = {
+  type err =
+    | JsonDecodeError
+    | DecodeError(Decode_AsResult_OfParseError.ParseError.failure);
+
+  type succ =
+    | Ok;
+
+  type t = result(succ, err);
+
+  let toString = (x: t) =>
+    x
+    |> Result.fold(
+         err =>
+           switch (err) {
+           | JsonDecodeError => "Failed to decode json"
+           | DecodeError((x: Decode_AsResult_OfParseError.ParseError.failure)) =>
+             Decode.ParseError.failureToDebugString(x)
+           },
+         _x => "Success",
+       );
+};
+
 [@react.component]
 let make = () => {
   let (value, setValue) =
@@ -66,9 +89,11 @@ let make = () => {
       initialState
       |> State__Settings.Encode.encodeAgendasJson
       |> State__Settings.Decode.decodeAgendaJson
+      |> Result.fold(
+           err => Error(Validation.DecodeError(err)),
+           _ => Ok(Validation.Ok),
+         )
     );
-
-  Js.log(validation);
 
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
 
@@ -98,13 +123,17 @@ let make = () => {
                     Decode.ParseError.failureToDebugString(err) |> Js.log
                   )
              )
-          |> Option.tap(x => setValidation(_ => x))
-          |> ignore;
+          |> Option.fold(Error(Validation.JsonDecodeError), x =>
+               x
+               |> Result.fold(
+                    err => Error(Validation.DecodeError(err)),
+                    _ => Ok(Validation.Ok),
+                  )
+             )
+          |> (x => setValidation(_ => x));
         }}
       />
-      {validation
-       |> Result.fold(Decode.ParseError.failureToDebugString, _ => "Success")
-       |> s}
+      <pre> {validation |> Validation.toString |> s} </pre>
     </Radix.ScrollArea.Wrapper>
     <div className=Styles.wrapper>
       <Radix.ScrollArea.Wrapper>

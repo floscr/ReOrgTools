@@ -21,8 +21,10 @@ module Agenda = {
     fun
     | ViewType(Calendar) => ("ViewType", "Calendar");
 
+  type filesT = array(File.t);
+
   type t = {
-    files: array(File.t),
+    files: filesT,
     fields: array(field),
   };
 
