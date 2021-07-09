@@ -6,13 +6,17 @@ module Styles = {
   open Css;
   let innerSpacing = FixedTheme.Spacing.xlarge;
 
-  let root = isSidebarOpen =>
+  let root =
     style([
       position(fixed),
       top(zero),
       left(zero),
       right(zero),
       bottom(zero),
+    ]);
+
+  let rootWithSidebar = isSidebarOpen =>
+    style([
       display(grid),
       gridTemplateColumns(isSidebarOpen ? [vw(20.), auto] : []),
     ]);
@@ -31,22 +35,23 @@ module Styles = {
       gridColumnStart(isSidebarOpen ? 2 : 1),
       display(`flex),
       flexDirection(column),
-      overflow(auto),
-      selector(
-        "::-webkit-scrollbar",
-        [
-          backgroundColor(hex("00000008")),
-          borderLeft(px(1), solid, hex("e2e2e2")),
-          boxShadow(
-            Shadow.box(
-              ~x=px(1),
-              ~blur=px(5),
-              ~inset=true,
-              rgba(0, 0, 0, pct(8.)),
-            ),
-          ),
-        ],
-      ),
+      overflow(hidden),
+      /* overflow(auto), */
+      /* selector( */
+      /*   "::-webkit-scrollbar", */
+      /*   [ */
+      /*     backgroundColor(hex("00000008")), */
+      /*     borderLeft(px(1), solid, hex("e2e2e2")), */
+      /*     boxShadow( */
+      /*       Shadow.box( */
+      /*         ~x=px(1), */
+      /*         ~blur=px(5), */
+      /*         ~inset=true, */
+      /*         rgba(0, 0, 0, pct(8.)), */
+      /*       ), */
+      /*     ), */
+      /*   ], */
+      /* ), */
     ]);
 };
 
@@ -220,12 +225,17 @@ let make = () => {
 
   <main ref={ReactDOMRe.Ref.domRef(rootRef)}>
     {switch (state.areSettingsLoaded, url.path) {
-     | (true, ["agenda", "new"]) => showAgenda(~isSidebarOpen, ())
+     | (true, ["agenda", "new"]) =>
+       <div className=Styles.root> {showAgenda(~isSidebarOpen, ())} </div>
      | (true, ["file", workspaceIndex, id]) =>
        let workspaceIndex =
          workspaceIndex |> String.toInt |> Option.getOrElse(0);
+       let className =
+         ClassName.pure(Styles.root)
+         |> ClassName.append(Styles.rootWithSidebar(isSidebarOpen))
+         |> ClassName.unwrap;
 
-       <div className={Styles.root(isSidebarOpen)}>
+       <div className>
          {showMain(~id, ~queryParams, ~workspaceIndex, ~isSidebarOpen, ())}
        </div>;
 

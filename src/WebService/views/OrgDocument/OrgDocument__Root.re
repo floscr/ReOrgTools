@@ -212,11 +212,10 @@ let make =
      )
   |> (
     xs =>
-      showToolbar
-        ? <div className=Styles.root>
-            <OrgDocument__Toolbar ast layoutType />
-            xs
-          </div>
-        : xs
+      <Radix.ScrollArea.Wrapper>
+        <div className=Styles.root>
+          {showToolbar ? <> <OrgDocument__Toolbar ast layoutType /> xs </> : xs}
+        </div>
+      </Radix.ScrollArea.Wrapper>
   );
 };

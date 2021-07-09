@@ -7,15 +7,15 @@ module Styles = {
   open Css;
   open FixedTheme;
 
-  let root = style([display(`flex)]);
-
-  let textArea = style([width(pct(100.))]);
-
-  let wrapper =
+  let root =
     style([
       width(pct(100.)),
-      borderLeft(px(1), `solid, var(ThemeKeys.baseGray3)),
+      height(pct(100.)),
+      display(`flex),
+      children([flexGrow(1.), flex(`num(1.))]),
     ]);
+
+  let textArea = style([width(pct(100.))]);
 };
 
 module Agenda = State__Settings.Agenda;
@@ -157,22 +157,19 @@ let make = () => {
       />
       <pre> {validation |> Validation.toString |> s} </pre>
     </Radix.ScrollArea.Wrapper>
-    <div className=Styles.wrapper>
-      {files
-       |> Array.mapWithIndex(({id, workspace}: Agenda.File.t, i) =>
-            <React.Fragment key=i>
-              <Controller__OrgDocument
-                id
-                workspaceIndex=workspace
-                layoutType={
-                  layoutType
-                  |> Option.getOrElse(Types__Layouts.Layout.default)
-                }
-                showToolbar=false
-              />
-            </React.Fragment>
-          )
-       |> React.array}
-    </div>
+    {files
+     |> Array.mapWithIndex(({id, workspace}: Agenda.File.t, i) =>
+          <React.Fragment key=i>
+            <Controller__OrgDocument
+              id
+              workspaceIndex=workspace
+              layoutType={
+                layoutType |> Option.getOrElse(Types__Layouts.Layout.default)
+              }
+              showToolbar=false
+            />
+          </React.Fragment>
+        )
+     |> React.array}
   </div>;
 };
