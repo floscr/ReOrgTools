@@ -110,6 +110,17 @@ let make = () => {
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
   let {files, fields}: state = state;
 
+  let layoutType =
+    fields
+    |> Array.find(
+         fun
+         | Agenda.Layout(_) => true,
+       )
+    |> Option.map(
+         fun
+         | Agenda.Layout(x) => x,
+       );
+
   <div className=Styles.root>
     <Radix.ScrollArea.Wrapper>
       <textarea
@@ -151,7 +162,14 @@ let make = () => {
         {files
          |> Array.mapWithIndex(({id, workspace}: Agenda.File.t, i) =>
               <React.Fragment key=i>
-                <Controller__OrgDocument id workspaceIndex=workspace />
+                <Controller__OrgDocument
+                  id
+                  workspaceIndex=workspace
+                  layoutType={
+                    layoutType
+                    |> Option.getOrElse(Types__Layouts.Layout.default)
+                  }
+                />
               </React.Fragment>
             )
          |> React.array}
