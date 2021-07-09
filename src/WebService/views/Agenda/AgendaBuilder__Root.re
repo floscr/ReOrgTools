@@ -169,6 +169,7 @@ let make = () => {
                     layoutType
                     |> Option.getOrElse(Types__Layouts.Layout.default)
                   }
+                  showToolbar=false
                 />
               </React.Fragment>
             )

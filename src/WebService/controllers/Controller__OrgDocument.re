@@ -11,6 +11,7 @@ let make =
       ~narrowToHeader=None,
       ~layoutType=Types__Layouts.Layout.default,
       ~workspaceIndex,
+      ~showToolbar=true,
     ) => {
   let dispatch = Store.useDispatch();
   let user = Store.useSelector(Selector.User.loggedInUser);
@@ -67,9 +68,9 @@ let make =
        State__OrgDocuments.(
          switch ((x: File.t)) {
          | File.Fetched({ast}) =>
-           <OrgDocument__Root ast narrowToHeader layoutType />
+           <OrgDocument__Root ast narrowToHeader layoutType showToolbar />
          | File.Cached({ast}) =>
-           <OrgDocument__Root ast narrowToHeader layoutType />
+           <OrgDocument__Root ast narrowToHeader layoutType showToolbar />
          | File.InProgress => "Loading" |> s
          | _ => React.null
          }

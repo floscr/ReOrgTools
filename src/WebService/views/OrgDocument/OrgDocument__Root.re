@@ -184,6 +184,7 @@ let make =
       ~ast: ReOrga.orgAst,
       ~narrowToHeader=None,
       ~layoutType=Types__Layouts.Layout.default,
+      ~showToolbar=true,
     ) => {
   let {children, properties} = ast;
 
@@ -211,9 +212,11 @@ let make =
      )
   |> (
     xs =>
-      <div className=Styles.root>
-        <OrgDocument__Toolbar ast layoutType />
-        xs
-      </div>
+      showToolbar
+        ? <div className=Styles.root>
+            <OrgDocument__Toolbar ast layoutType />
+            xs
+          </div>
+        : xs
   );
 };
