@@ -31,6 +31,8 @@ type t = {
   layoutType: Layouts.t,
 };
 
+let empty = {narrowToHeader: None, layoutType: Layouts.default};
+
 let make = (params: Webapi__Url.URLSearchParams.t) => {
   narrowToHeader:
     params

@@ -5,7 +5,7 @@ open ReOrga;
 open State;
 
 [@react.component]
-let make = (~id, ~queryParams, ~workspaceIndex) => {
+let make = (~id, ~queryParams=Types__URLSearchParams.empty, ~workspaceIndex) => {
   let dispatch = Store.useDispatch();
   let user = Store.useSelector(Selector.User.loggedInUser);
 

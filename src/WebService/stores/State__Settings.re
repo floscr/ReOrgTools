@@ -5,7 +5,7 @@ module Agenda = {
   module File = {
     type t = {
       id: string,
-      workspace: string,
+      workspace: int,
     };
 
     let make = (id, workspace) => {id, workspace};
@@ -87,7 +87,7 @@ module Encode = {
   let encodeAgendasFilesJson =
     Json.Encode.(
       ({id, workspace}: Agenda.File.t) =>
-        object_([("id", string(id)), ("workspace", string(workspace))])
+        object_([("id", string(id)), ("workspace", int(workspace))])
     );
 
   let encodeAgendasJson =
@@ -131,7 +131,7 @@ module Decode = {
     Decode.Pipeline.(
       succeed(Agenda.File.make)
       |> field("id", string)
-      |> field("workspace", string)
+      |> field("workspace", intFromNumber)
       |> run(json)
     );
 

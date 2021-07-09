@@ -24,7 +24,7 @@ type state = Agenda.t;
 
 let initialState: Agenda.t =
   Agenda.{
-    files: [|{id: "inbox.org", workspace: "0"}|],
+    files: [|{id: "inbox", workspace: 0}|],
     fields: [|ViewType(Calendar)|],
   };
 /* let initialState: Agenda.t = {files: [||], fields: [||]}; */
@@ -48,7 +48,9 @@ module FilePicker = {
       <ul>
         {files
          |> Array.map((({id, workspace}: Agenda.File.t) as file) =>
-              <li key={file |> makeKey}> {workspace ++ id |> s} </li>
+              <li key={file |> makeKey}>
+                {workspace |> String.fromInt |> String.concat(id) |> s}
+              </li>
             )
          |> React.array}
       </ul>
@@ -106,6 +108,7 @@ let make = () => {
     );
 
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
+  let {files, fields}: state = state;
 
   <div className=Styles.root>
     <Radix.ScrollArea.Wrapper>
@@ -145,7 +148,13 @@ let make = () => {
     </Radix.ScrollArea.Wrapper>
     <div className=Styles.wrapper>
       <Radix.ScrollArea.Wrapper>
-        {"Hello world" |> s}
+        {files
+         |> Array.mapWithIndex(({id, workspace}: Agenda.File.t, i) =>
+              <React.Fragment key=i>
+                <Controller__OrgDocument id workspaceIndex=workspace />
+              </React.Fragment>
+            )
+         |> React.array}
       </Radix.ScrollArea.Wrapper>
     </div>
   </div>;
