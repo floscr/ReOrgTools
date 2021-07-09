@@ -179,9 +179,13 @@ let rec renderItems = (~level=0, ~properties=?, ~hasTodoParent=false, xs) => {
 };
 
 [@react.component]
-let make = (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t) => {
+let make =
+    (
+      ~ast: ReOrga.orgAst,
+      ~narrowToHeader=None,
+      ~layoutType=Types__Layouts.Layout.default,
+    ) => {
   let {children, properties} = ast;
-  let {narrowToHeader, layoutType}: Types__URLSearchParams.t = queryParams;
 
   Js.log(ast);
 

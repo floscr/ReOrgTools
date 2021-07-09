@@ -98,11 +98,18 @@ let showAgenda = (~isSidebarOpen, ()) => {
 };
 
 let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
+  let {narrowToHeader, layoutType}: Types__URLSearchParams.t = queryParams;
+
   <MainWrapper id isSidebarOpen>
     {switch (id) {
      | Some(id) =>
        <article className={Styles.main(isSidebarOpen)}>
-         <Controller__OrgDocument id queryParams workspaceIndex />
+         <Controller__OrgDocument
+           id
+           narrowToHeader
+           layoutType
+           workspaceIndex
+         />
        </article>
 
      | _ => React.null

@@ -5,7 +5,13 @@ open ReOrga;
 open State;
 
 [@react.component]
-let make = (~id, ~queryParams=Types__URLSearchParams.empty, ~workspaceIndex) => {
+let make =
+    (
+      ~id,
+      ~narrowToHeader=None,
+      ~layoutType=Types__Layouts.Layout.default,
+      ~workspaceIndex,
+    ) => {
   let dispatch = Store.useDispatch();
   let user = Store.useSelector(Selector.User.loggedInUser);
 
@@ -60,8 +66,10 @@ let make = (~id, ~queryParams=Types__URLSearchParams.empty, ~workspaceIndex) => 
   |> Option.map(x =>
        State__OrgDocuments.(
          switch ((x: File.t)) {
-         | File.Fetched({ast}) => <OrgDocument__Root ast queryParams />
-         | File.Cached({ast}) => <OrgDocument__Root ast queryParams />
+         | File.Fetched({ast}) =>
+           <OrgDocument__Root ast narrowToHeader layoutType />
+         | File.Cached({ast}) =>
+           <OrgDocument__Root ast narrowToHeader layoutType />
          | File.InProgress => "Loading" |> s
          | _ => React.null
          }

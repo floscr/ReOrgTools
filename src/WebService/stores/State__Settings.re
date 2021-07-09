@@ -35,7 +35,6 @@ module Agenda = {
                switch (key, value) {
                | ("Layout", x) =>
                  Some(Layout(x |> Types__Layouts.Layout.fromString))
-
                | _ => None
                }
              )
