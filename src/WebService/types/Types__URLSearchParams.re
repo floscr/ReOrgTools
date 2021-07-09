@@ -1,37 +1,13 @@
 open Webapi.Url;
 open Relude.Globals;
-
-module Layouts = {
-  type t =
-    | Document
-    | SimpleTodo
-    | Kanban;
-
-  let default = Document;
-  let options = [|Document, SimpleTodo, Kanban|];
-
-  let fromString =
-    fun
-    | "Document" => Document
-    | "Simple Todo" => SimpleTodo
-    | "Kanban" => Kanban
-    | _ => default;
-
-  let toString =
-    fun
-    | Document => "Document"
-    | SimpleTodo => "Simple Todo"
-    | Kanban => "Kanban";
-
-  let reactSelectOptions = options |> Array.map(toString);
-};
+open Types__Layouts;
 
 type t = {
   narrowToHeader: option(string),
-  layoutType: Layouts.t,
+  layoutType: Layout.t,
 };
 
-let empty = {narrowToHeader: None, layoutType: Layouts.default};
+let empty = {narrowToHeader: None, layoutType: Layout.default};
 
 let make = (params: Webapi__Url.URLSearchParams.t) => {
   narrowToHeader:
@@ -41,6 +17,6 @@ let make = (params: Webapi__Url.URLSearchParams.t) => {
   layoutType:
     params
     |> URLSearchParams.get("layoutType")
-    |> Option.map(Layouts.fromString)
-    |> Option.getOrElse(Layouts.default),
+    |> Option.map(Layout.fromString)
+    |> Option.getOrElse(Layout.default),
 };

@@ -46,9 +46,7 @@ let make = (~ast: ReOrga.orgAst, ~layoutType) => {
              URI.setQueryParam(
                QueryParam.make1(
                  QueryKey.make("layoutType"),
-                 QueryValue.make(
-                   x |> Types__URLSearchParams.Layouts.toString,
-                 ),
+                 QueryValue.make(x |> Types__Layouts.Layout.toString),
                ),
              ),
            )
@@ -76,12 +74,12 @@ let make = (~ast: ReOrga.orgAst, ~layoutType) => {
       <DropDownMenu.Root>
         <DropDownMenu.Trigger> {"Trigger" |> s} </DropDownMenu.Trigger>
         <DropDownMenu.Content>
-          {Types__URLSearchParams.(
-             Layouts.options
+          {Types__Layouts.(
+             Layout.options
              |> Array.map(x =>
                   <React.Fragment key=x>
                     <DropDownMenu.Item onSelect={_ => onChange(x)}>
-                      {x |> Layouts.toString |> s}
+                      {x |> Layout.toString |> s}
                     </DropDownMenu.Item>
                   </React.Fragment>
                 )

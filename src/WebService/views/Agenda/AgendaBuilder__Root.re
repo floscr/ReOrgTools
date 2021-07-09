@@ -25,7 +25,7 @@ type state = Agenda.t;
 let initialState: Agenda.t =
   Agenda.{
     files: [|{id: "inbox", workspace: 0}|],
-    fields: [|Layout(Types__URLSearchParams.Layouts.default)|],
+    fields: [|Layout(Types__Layouts.Layout.default)|],
   };
 /* let initialState: Agenda.t = {files: [||], fields: [||]}; */
 

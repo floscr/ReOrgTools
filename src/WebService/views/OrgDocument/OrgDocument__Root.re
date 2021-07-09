@@ -105,7 +105,7 @@ let rec renderItems = (~level=0, ~properties=?, ~hasTodoParent=false, xs) => {
          OrgDocument__Component__Headline.renderHeadline(
            ~properties,
            headline,
-         );
+         )
 
        | Section({children, level, properties}) =>
          let isTodo =
@@ -192,7 +192,7 @@ let make = (~ast: ReOrga.orgAst, ~queryParams: Types__URLSearchParams.t) => {
     |> Option.getOrElse(children);
 
   Js.Dict.get(properties, "reorg_view")
-  |> Option.map(Types__URLSearchParams.Layouts.fromString)
+  |> Option.map(Types__Layouts.Layout.fromString)
   |> Option.getOrElse(layoutType)
   |> Types__URLSearchParams.(
        fun

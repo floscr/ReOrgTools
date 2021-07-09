@@ -12,11 +12,11 @@ module Agenda = {
   };
 
   type field =
-    | Layout(Types__URLSearchParams.Layouts.t);
+    | Layout(Types__Layouts.Layout.t);
 
   let fieldToString =
     fun
-    | Layout(x) => ("Layout", x |> Types__URLSearchParams.Layouts.toString);
+    | Layout(x) => ("Layout", x |> Types__Layouts.Layout.toString);
 
   type filesT = array(File.t);
 
@@ -34,7 +34,7 @@ module Agenda = {
              (
                switch (key, value) {
                | ("Layout", x) =>
-                 Some(Layout(x |> Types__URLSearchParams.Layouts.fromString))
+                 Some(Layout(x |> Types__Layouts.Layout.fromString))
 
                | _ => None
                }
