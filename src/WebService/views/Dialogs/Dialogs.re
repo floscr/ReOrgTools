@@ -96,11 +96,6 @@ let make = () => {
                        Dialogs__Lightbox.id,
                        <Dialogs__Lightbox images=items />,
                      ))
-                   | AgendaCreate =>
-                     Some((
-                       Dialogs__AgendaCreate.id,
-                       <Dialogs__AgendaCreate />,
-                     ))
                    }
                  )
                  |> Option.map(((id, x)) =>
