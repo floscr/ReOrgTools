@@ -11,15 +11,12 @@ module Agenda = {
     let make = (id, workspace) => {id, workspace};
   };
 
-  type viewType =
-    | Calendar;
-
   type field =
-    | ViewType(viewType);
+    | Layout(Types__URLSearchParams.Layouts.t);
 
   let fieldToString =
     fun
-    | ViewType(Calendar) => ("ViewType", "Calendar");
+    | Layout(x) => ("Layout", x |> Types__URLSearchParams.Layouts.toString);
 
   type filesT = array(File.t);
 
@@ -36,7 +33,9 @@ module Agenda = {
            (acc, (key, value)) => {
              (
                switch (key, value) {
-               | ("ViewType", "Calendar") => Some(ViewType(Calendar))
+               | ("Layout", x) =>
+                 Some(Layout(x |> Types__URLSearchParams.Layouts.fromString))
+
                | _ => None
                }
              )
