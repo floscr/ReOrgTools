@@ -11,6 +11,61 @@ module Agenda = {
     };
   };
 
+  module Time = {
+    // Js Format: { current: nullable(currentTFromString), from: nullable(Js.Date.t), to_: nullable(Js.Date.t) }
+    type currentT =
+      | CurrentDay
+      | CurrentWeek
+      | CurrentMonth;
+
+    let currentTFromString =
+      fun
+      | "Day" => CurrentDay
+      | "Week" => CurrentWeek
+      | "Month" => CurrentMonth
+      | _ => CurrentMonth;
+
+    type timeT =
+      | Current(currentT)
+      | Timestamp(Js.Date.t);
+
+    type timerangeT =
+      | TimeRange((option(timeT), option(timeT)));
+    type t = result(timerangeT, string);
+
+    let make = (current, from, to_) =>
+      switch (current, from, to_) {
+      // Current without from/to delimiters
+      | (Some(cur), None, None) =>
+        Ok(TimeRange((Some(Current(cur |> currentTFromString)), None)))
+
+      // From Date - Current
+      | (Some(cur), Some(from), None) =>
+        Ok(
+          TimeRange((
+            Some(Timestamp(from)),
+            Some(Current(cur |> currentTFromString)),
+          )),
+        )
+
+      // Current - To Date
+      | (Some(cur), None, Some(to_)) =>
+        Ok(
+          TimeRange((
+            Some(Current(cur |> currentTFromString)),
+            Some(Timestamp(to_)),
+          )),
+        )
+
+      // Timerange
+      | (None, Some(from), Some(to_)) =>
+        Ok(TimeRange((Some(Timestamp(from)), Some(Timestamp(to_)))))
+
+      // Invalid
+      | _ => Error("Invalid time format")
+      };
+  };
+
   type field =
     | Layout(Types__Org.Layout.t);
 
@@ -23,9 +78,10 @@ module Agenda = {
   type t = {
     files: filesT,
     fields: array(field),
+    timerange: option(Time.t),
   };
 
-  let make = (files, fields: array((string, string))) => {
+  let make = (files, fields: array((string, string)), timerange) => {
     files,
     fields:
       fields
@@ -42,6 +98,7 @@ module Agenda = {
            },
            [||],
          ),
+    timerange,
   };
 };
 
@@ -133,11 +190,21 @@ module Decode = {
       |> run(json)
     );
 
+  let decodeAgendaTimerangeJson = json =>
+    Decode.Pipeline.(
+      succeed(Agenda.Time.make)
+      |> field("current", optional(string))
+      |> field("from", optional(date))
+      |> field("to_", optional(date))
+      |> run(json)
+    );
+
   let decodeAgendaJson = json =>
     Decode.Pipeline.(
       succeed(Agenda.make)
       |> field("files", array(decodeAgendaFilesJson))
       |> field("fields", array(tuple2(string, string)))
+      |> optionalField("timerange", decodeAgendaTimerangeJson)
       |> run(json)
     );
 

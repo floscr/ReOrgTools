@@ -26,6 +26,7 @@ let initialState: Agenda.t =
   Agenda.{
     files: [|{id: "inbox", workspace: 0}, {id: "gtd", workspace: 0}|],
     fields: [|Layout(Types__Org.Layout.SimpleTodo)|],
+    timerange: None,
   };
 /* let initialState: Agenda.t = {files: [||], fields: [||]}; */
 
