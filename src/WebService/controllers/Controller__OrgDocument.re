@@ -85,6 +85,14 @@ let make =
     files
     |> Option.some
     |> Option.map(StringMap.valueArray)
+    |> Option.filter(
+         Array.all(
+           fun
+           | File.Fetched(_)
+           | File.Cached(_) => true
+           | _ => false,
+         ),
+       )
     |> Option.flatMap(Array.head)
     |> Option.flatMap(
          fun
