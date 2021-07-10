@@ -40,9 +40,9 @@ module Agenda = {
       | CurrentFrom(timestampT, currentT)
       | Timerange(timestampT, timestampT);
 
-    type t = result(timerangeT, string);
+    type t = result(timerangeT, (string, Js.Json.t));
 
-    let make = (current, from, to_): t =>
+    let make = (current, from, to_, originalJson): t =>
       switch (current, from, to_) {
       | (Some(cur), None, None) =>
         Ok(CurrentOnly(cur |> currentTFromString))
@@ -56,7 +56,7 @@ module Agenda = {
       | (None, Some(from), Some(to_)) => Ok(Timerange(from, to_))
 
       // Invalid
-      | _ => Error("Invalid time format")
+      | _ => Error(("Invalid time format", originalJson))
       };
   };
 
@@ -191,6 +191,7 @@ module Decode = {
       |> field("current", optional(string))
       |> field("from", optional(date))
       |> field("to_", optional(date))
+      |> hardcoded(json)
       |> run(json)
     );
 
