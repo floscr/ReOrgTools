@@ -32,37 +32,28 @@ module Agenda = {
       | "Month" => CurrentMonth
       | _ => CurrentMonth;
 
-    type timeT =
-      | Current(currentT)
-      | Timestamp(Js.Date.t);
+    type timestampT = Js.Date.t;
 
-    type timerangeT = (option(timeT), option(timeT));
+    type timerangeT =
+      | CurrentOnly(currentT)
+      | CurrentTo(currentT, timestampT)
+      | CurrentFrom(timestampT, currentT)
+      | Timerange(timestampT, timestampT);
 
     type t = result(timerangeT, string);
 
-    let make = (current, from, to_) =>
+    let make = (current, from, to_): t =>
       switch (current, from, to_) {
-      // Current without from/to delimiters
       | (Some(cur), None, None) =>
-        Ok((Some(Current(cur |> currentTFromString)), None))
+        Ok(CurrentOnly(cur |> currentTFromString))
 
-      // From Date - Current
-      | (Some(cur), Some(from), None) =>
-        Ok((
-          Some(Timestamp(from)),
-          Some(Current(cur |> currentTFromString)),
-        ))
-
-      // Current - To Date
       | (Some(cur), None, Some(to_)) =>
-        Ok((
-          Some(Current(cur |> currentTFromString)),
-          Some(Timestamp(to_)),
-        ))
+        Ok(CurrentTo(cur |> currentTFromString, to_))
 
-      // Timerange
-      | (None, Some(from), Some(to_)) =>
-        Ok((Some(Timestamp(from)), Some(Timestamp(to_))))
+      | (Some(cur), Some(from), None) =>
+        Ok(CurrentFrom(from, cur |> currentTFromString))
+
+      | (None, Some(from), Some(to_)) => Ok(Timerange(from, to_))
 
       // Invalid
       | _ => Error("Invalid time format")
@@ -161,6 +152,7 @@ module Encode = {
                )
             |> jsonArray,
           ),
+          ("files", files |> Array.map(encodeAgendasFilesJson) |> jsonArray),
         ])
     );
 
