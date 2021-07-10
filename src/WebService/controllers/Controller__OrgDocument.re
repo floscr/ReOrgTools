@@ -45,10 +45,10 @@ let fetchDocument = (~id, ~user, ~dispatch, ~workspaceIndex) =>
 [@react.component]
 let make =
     (
-      ~id,
+      ~id: string,
       ~narrowToHeader=None,
       ~layoutType=Types__Layouts.Layout.default,
-      ~workspaceIndex,
+      ~workspaceIndex: int,
       ~showToolbar=true,
     ) => {
   let dispatch = Store.useDispatch();
