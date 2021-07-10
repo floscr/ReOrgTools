@@ -12,7 +12,14 @@ module Agenda = {
   };
 
   module Time = {
+    // Complex type that is outlined in the make function, but in short accepts:
+    // A time range, An abstract time definition (for the current day/week etc. outlined in currentT) or a mixture of both
+    //
+    // Since we can't represent this in json without creating arrays of mixed object,
+    // we store it as an object with holes in this format:
     // Js Format: { current: nullable(currentTFromString), from: nullable(Js.Date.t), to_: nullable(Js.Date.t) }
+    //
+    // When the js format doesnt apply to our restrictions (see make) we return an Error
     type currentT =
       | CurrentDay
       | CurrentWeek
@@ -29,37 +36,33 @@ module Agenda = {
       | Current(currentT)
       | Timestamp(Js.Date.t);
 
-    type timerangeT =
-      | TimeRange((option(timeT), option(timeT)));
+    type timerangeT = (option(timeT), option(timeT));
+
     type t = result(timerangeT, string);
 
     let make = (current, from, to_) =>
       switch (current, from, to_) {
       // Current without from/to delimiters
       | (Some(cur), None, None) =>
-        Ok(TimeRange((Some(Current(cur |> currentTFromString)), None)))
+        Ok((Some(Current(cur |> currentTFromString)), None))
 
       // From Date - Current
       | (Some(cur), Some(from), None) =>
-        Ok(
-          TimeRange((
-            Some(Timestamp(from)),
-            Some(Current(cur |> currentTFromString)),
-          )),
-        )
+        Ok((
+          Some(Timestamp(from)),
+          Some(Current(cur |> currentTFromString)),
+        ))
 
       // Current - To Date
       | (Some(cur), None, Some(to_)) =>
-        Ok(
-          TimeRange((
-            Some(Current(cur |> currentTFromString)),
-            Some(Timestamp(to_)),
-          )),
-        )
+        Ok((
+          Some(Current(cur |> currentTFromString)),
+          Some(Timestamp(to_)),
+        ))
 
       // Timerange
       | (None, Some(from), Some(to_)) =>
-        Ok(TimeRange((Some(Timestamp(from)), Some(Timestamp(to_)))))
+        Ok((Some(Timestamp(from)), Some(Timestamp(to_))))
 
       // Invalid
       | _ => Error("Invalid time format")
