@@ -32,6 +32,13 @@ module Agenda = {
       | "Month" => CurrentMonth
       | _ => CurrentMonth;
 
+    let stringFromcurrentT =
+      fun
+      | CurrentDay => "Day"
+      | CurrentWeek => "Week"
+      | CurrentMonth => "Month"
+      | _ => "";
+
     type timestampT = Js.Date.t;
 
     type timerangeT =
@@ -139,9 +146,15 @@ module Encode = {
         object_([("id", string(id)), ("workspace", int(workspace))])
     );
 
+  /* let encodeAgendasTimerangeJson = (x: Agenda.Time.t) => */
+  /*   switch (x) { */
+  /*   | CurrentOnly(x) => object_(["current"]) */
+  /*   | _ => None */
+  /*   }; */
+
   let encodeAgendasJson =
     Json.Encode.(
-      ({files, fields}: Agenda.t) =>
+      ({files, fields, timerange}: Agenda.t) =>
         object_([
           ("files", files |> Array.map(encodeAgendasFilesJson) |> jsonArray),
           (
@@ -152,7 +165,7 @@ module Encode = {
                )
             |> jsonArray,
           ),
-          ("files", files |> Array.map(encodeAgendasFilesJson) |> jsonArray),
+          /* |> (xs => timerange |> Option.flatMap(Result.toOption)), */
         ])
     );
 
