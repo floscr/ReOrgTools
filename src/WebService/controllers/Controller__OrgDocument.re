@@ -67,8 +67,7 @@ let make =
   |> Option.map(x =>
        State__OrgDocuments.(
          switch ((x: File.t)) {
-         | File.Fetched({ast}) =>
-           <OrgDocument__Root ast narrowToHeader layoutType showToolbar />
+         | File.Fetched({ast})
          | File.Cached({ast}) =>
            <OrgDocument__Root ast narrowToHeader layoutType showToolbar />
          | File.InProgress => "Loading" |> s
