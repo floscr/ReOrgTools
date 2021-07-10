@@ -46,10 +46,9 @@ let fetchDocument = (~id, ~user, ~dispatch, ~workspaceIndex) =>
 let make =
     (
       ~id: string,
-      ~narrowToHeader=None,
       ~layoutType=Types__Layouts.Layout.default,
+      ~narrowToHeader=None,
       ~workspaceIndex: int,
-      ~showToolbar=true,
     ) => {
   let dispatch = Store.useDispatch();
   let user = Store.useSelector(Selector.User.loggedInUser);
@@ -69,7 +68,13 @@ let make =
          switch ((x: File.t)) {
          | File.Fetched({ast})
          | File.Cached({ast}) =>
-           <OrgDocument__Root ast narrowToHeader layoutType showToolbar />
+           <OrgDocument__Root
+             ast
+             id
+             layoutType
+             narrowToHeader
+             workspaceIndex
+           />
          | File.InProgress => "Loading" |> s
          | _ => React.null
          }

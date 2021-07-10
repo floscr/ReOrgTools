@@ -179,7 +179,8 @@ let make =
       ~ast: ReOrga.orgAst,
       ~narrowToHeader=None,
       ~layoutType=Types__Layouts.Layout.default,
-      ~showToolbar=true,
+      ~id: string,
+      ~workspaceIndex: int,
     ) => {
   let {children, properties} = ast;
 
@@ -205,12 +206,5 @@ let make =
          </div>
        | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div>
      )
-  |> (
-    xs =>
-      <Radix.ScrollArea.Wrapper>
-        <div className=Styles.root>
-          {showToolbar ? <> <OrgDocument__Toolbar ast layoutType /> xs </> : xs}
-        </div>
-      </Radix.ScrollArea.Wrapper>
-  );
+  |> (xs => <div className=Styles.root> xs </div>);
 };

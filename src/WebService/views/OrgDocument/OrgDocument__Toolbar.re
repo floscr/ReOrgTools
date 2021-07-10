@@ -29,11 +29,30 @@ module Styles = {
 };
 
 [@react.component]
-let make = (~ast: ReOrga.orgAst, ~layoutType) => {
+let make = (~workspaceIndex: int, ~id: string, ~layoutType) => {
   open Radix__DropDownMenu;
+
+  let files = Store.useSelector(Selector.OrgDocuments.files);
+  let file = StringMap.get(id, files);
 
   let isSidebarOpen = Store.useSelector(Selector.Settings.isSidebarOpen);
   let dispatch = State.Store.useDispatch();
+
+  let title =
+    file
+    |> Option.flatMap(x =>
+         State__OrgDocuments.(
+           switch ((x: File.t)) {
+           | File.Fetched({ast})
+           | File.Cached({ast}) => Some(ast)
+           | _ => None
+           }
+         )
+       )
+    |> Option.flatMap(({properties}: ReOrga.orgAst) =>
+         Js.Dict.get(properties, "title")
+       )
+    |> Option.getOrElse(String.empty);
 
   let onChange = x => {
     ReludeURL.(
@@ -66,9 +85,7 @@ let make = (~ast: ReOrga.orgAst, ~layoutType) => {
           SettingsAction(State__Settings.ToggleSidebar) |> dispatch
         }
       />
-      {ast.properties->Js.Dict.get("title")
-       |> Option.getOrElse(String.empty)
-       |> s}
+      {title |> s}
     </div>
     <div className=Styles.selectWrapper>
       <DropDownMenu.Root>

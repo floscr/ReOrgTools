@@ -157,19 +157,21 @@ let make = () => {
       />
       <pre> {validation |> Validation.toString |> s} </pre>
     </Radix.ScrollArea.Wrapper>
-    {files
-     |> Array.mapWithIndex(({id, workspace}: Agenda.File.t, i) =>
-          <React.Fragment key=i>
-            <Controller__OrgDocument
-              id
-              workspaceIndex=workspace
-              layoutType={
-                layoutType |> Option.getOrElse(Types__Layouts.Layout.default)
-              }
-              showToolbar=false
-            />
-          </React.Fragment>
-        )
-     |> React.array}
+    <Radix.ScrollArea.Wrapper>
+      {files
+       |> Array.mapWithIndex(({id, workspace}: Agenda.File.t, i) =>
+            <React.Fragment key=i>
+              <Controller__OrgDocument
+                id
+                workspaceIndex=workspace
+                layoutType={
+                  layoutType
+                  |> Option.getOrElse(Types__Layouts.Layout.default)
+                }
+              />
+            </React.Fragment>
+          )
+       |> React.array}
+    </Radix.ScrollArea.Wrapper>
   </div>;
 };

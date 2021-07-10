@@ -109,12 +109,15 @@ let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
     {switch (id) {
      | Some(id) =>
        <article className={Styles.main(isSidebarOpen)}>
-         <Controller__OrgDocument
-           id
-           narrowToHeader
-           layoutType
-           workspaceIndex
-         />
+         <Radix.ScrollArea.Wrapper>
+           <OrgDocument__Toolbar workspaceIndex id layoutType />
+           <Controller__OrgDocument
+             id
+             narrowToHeader
+             layoutType
+             workspaceIndex
+           />
+         </Radix.ScrollArea.Wrapper>
        </article>
 
      | _ => React.null
