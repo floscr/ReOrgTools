@@ -2,11 +2,15 @@ open ReOrga;
 open Relude.Globals;
 
 module File = {
-  type content = {
+  type identifier = {
     id: string,
+    workspace: int,
+  };
+
+  type content = {
+    identifier,
     text: string,
     ast: ReOrga.orgAst,
-    workspace: int,
     mtimeMs: float,
   };
 
@@ -34,10 +38,12 @@ module Store = {
     | FetchSuccess(id, workspaceIndex, {text, mtimeMs}) =>
       let file =
         File.Fetched({
-          id,
+          identifier: {
+            id,
+            workspace: workspaceIndex,
+          },
           text,
           ast: Org.parseOrga(text, ReOrga.Org.defaultOptions),
-          workspace: workspaceIndex,
           mtimeMs,
         });
 

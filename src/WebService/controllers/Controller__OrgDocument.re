@@ -45,11 +45,12 @@ let fetchDocument = (~id, ~user, ~dispatch, ~workspaceIndex) =>
 [@react.component]
 let make =
     (
-      ~id: string,
+      ~identifier: State__OrgDocuments.File.identifier,
       ~layoutType=Types__Layouts.Layout.default,
       ~narrowToHeader=None,
-      ~workspaceIndex: int,
     ) => {
+  let {id, workspace}: State__OrgDocuments.File.identifier = identifier;
+
   let dispatch = Store.useDispatch();
   let user = Store.useSelector(Selector.User.loggedInUser);
 
@@ -57,7 +58,7 @@ let make =
   let file = StringMap.get(id, files);
 
   ReludeReact.Effect.useEffect1WithEq(
-    () => fetchDocument(~id, ~user, ~workspaceIndex, ~dispatch),
+    () => fetchDocument(~id, ~user, ~workspaceIndex=workspace, ~dispatch),
     String.eq,
     id,
   );

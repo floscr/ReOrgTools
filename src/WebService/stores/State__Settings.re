@@ -3,12 +3,12 @@ open ReactUtils;
 
 module Agenda = {
   module File = {
-    type t = {
-      id: string,
-      workspace: int,
-    };
+    type t = State__OrgDocuments.File.identifier;
 
-    let make = (id, workspace) => {id, workspace};
+    let make = (id, workspace): State__OrgDocuments.File.identifier => {
+      id,
+      workspace,
+    };
   };
 
   type field =

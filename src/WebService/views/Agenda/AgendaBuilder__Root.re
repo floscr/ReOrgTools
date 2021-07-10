@@ -159,11 +159,10 @@ let make = () => {
     </Radix.ScrollArea.Wrapper>
     <Radix.ScrollArea.Wrapper>
       {files
-       |> Array.mapWithIndex(({id, workspace}: Agenda.File.t, i) =>
+       |> Array.mapWithIndex((identifier, i) =>
             <React.Fragment key=i>
               <Controller__OrgDocument
-                id
-                workspaceIndex=workspace
+                identifier
                 layoutType={
                   layoutType
                   |> Option.getOrElse(Types__Layouts.Layout.default)

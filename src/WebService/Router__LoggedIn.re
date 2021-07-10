@@ -108,17 +108,17 @@ let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
   <MainWrapper id isSidebarOpen>
     {switch (id) {
      | Some(id) =>
+       let identifier: State__OrgDocuments.File.identifier = {
+         id,
+         workspace: workspaceIndex,
+       };
+
        <article className={Styles.main(isSidebarOpen)}>
          <Radix.ScrollArea.Wrapper>
            <OrgDocument__Toolbar workspaceIndex id layoutType />
-           <Controller__OrgDocument
-             id
-             narrowToHeader
-             layoutType
-             workspaceIndex
-           />
+           <Controller__OrgDocument identifier narrowToHeader layoutType />
          </Radix.ScrollArea.Wrapper>
-       </article>
+       </article>;
 
      | _ => React.null
      }}
