@@ -1,6 +1,6 @@
 open Webapi.Url;
 open Relude.Globals;
-open Types__Layouts;
+open Types__Org;
 
 type t = {
   narrowToHeader: option(string),

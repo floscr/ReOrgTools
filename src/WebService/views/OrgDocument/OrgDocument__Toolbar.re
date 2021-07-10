@@ -65,7 +65,7 @@ let make = (~workspaceIndex: int, ~id: string, ~layoutType) => {
              URI.setQueryParam(
                QueryParam.make1(
                  QueryKey.make("layoutType"),
-                 QueryValue.make(x |> Types__Layouts.Layout.toString),
+                 QueryValue.make(x |> Types__Org.Layout.toString),
                ),
              ),
            )
@@ -91,7 +91,7 @@ let make = (~workspaceIndex: int, ~id: string, ~layoutType) => {
       <DropDownMenu.Root>
         <DropDownMenu.Trigger> {"Trigger" |> s} </DropDownMenu.Trigger>
         <DropDownMenu.Content>
-          {Types__Layouts.(
+          {Types__Org.(
              Layout.options
              |> Array.map(x =>
                   <React.Fragment key=x>

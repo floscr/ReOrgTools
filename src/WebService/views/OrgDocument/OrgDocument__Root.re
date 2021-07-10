@@ -175,10 +175,7 @@ let rec renderItems = (~level=0, ~properties=?, ~hasTodoParent=false, xs) => {
 
 [@react.component]
 let make =
-    (
-      ~layoutType=Types__Layouts.Layout.default,
-      ~xs: array(ReOrga.sectionAst),
-    ) => {
+    (~layoutType=Types__Org.Layout.default, ~xs: array(ReOrga.sectionAst)) => {
   <div className=Styles.root>
     {switch (layoutType) {
      | Kanban => <OrgDocument__ViewStyle__Kanban xs />

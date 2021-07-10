@@ -25,7 +25,7 @@ type state = Agenda.t;
 let initialState: Agenda.t =
   Agenda.{
     files: [|{id: "inbox", workspace: 0}, {id: "gtd", workspace: 0}|],
-    fields: [|Layout(Types__Layouts.Layout.SimpleTodo)|],
+    fields: [|Layout(Types__Org.Layout.SimpleTodo)|],
   };
 /* let initialState: Agenda.t = {files: [||], fields: [||]}; */
 
@@ -160,9 +160,7 @@ let make = () => {
     <Radix.ScrollArea.Wrapper>
       <Controller__OrgDocument
         identifiers=files
-        layoutType={
-          layoutType |> Option.getOrElse(Types__Layouts.Layout.default)
-        }
+        layoutType={layoutType |> Option.getOrElse(Types__Org.Layout.default)}
       />
     </Radix.ScrollArea.Wrapper>
   </div>;

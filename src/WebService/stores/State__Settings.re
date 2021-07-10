@@ -12,11 +12,11 @@ module Agenda = {
   };
 
   type field =
-    | Layout(Types__Layouts.Layout.t);
+    | Layout(Types__Org.Layout.t);
 
   let fieldToString =
     fun
-    | Layout(x) => ("Layout", x |> Types__Layouts.Layout.toString);
+    | Layout(x) => ("Layout", x |> Types__Org.Layout.toString);
 
   type filesT = array(File.t);
 
@@ -34,7 +34,7 @@ module Agenda = {
              (
                switch (key, value) {
                | ("Layout", x) =>
-                 Some(Layout(x |> Types__Layouts.Layout.fromString))
+                 Some(Layout(x |> Types__Org.Layout.fromString))
                | _ => None
                }
              )

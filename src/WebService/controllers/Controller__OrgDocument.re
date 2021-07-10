@@ -51,7 +51,7 @@ type t =
 let make =
     (
       ~identifiers: array(State__OrgDocuments.File.identifier),
-      ~layoutType=Types__Layouts.Layout.default,
+      ~layoutType=Types__Org.Layout.default,
       ~narrowToHeader=None,
     ) => {
   let dispatch = Store.useDispatch();
@@ -113,7 +113,7 @@ let make =
                AllFetched(Array.concat(xs, ys));
              /* let layoutType = */
              /*   Js.Dict.get(properties, "reorg_view") */
-             /*   |> Option.map(Types__Layouts.Layout.fromString) */
+             /*   |> Option.map(Types__Org.Layout.fromString) */
              /*   |> Option.getOrElse(layoutType); */
              }
            },
