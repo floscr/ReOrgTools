@@ -206,7 +206,7 @@ let make =
          }
        | SimpleTodo =>
          <div className=Styles.mainWrapper>
-           <OrgDocument__ViewStyle__SimpleTodo ast />
+           <OrgDocument__ViewStyle__SimpleTodo xs />
          </div>
        | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div>
      )

@@ -70,6 +70,6 @@ let rec renderItems = (~properties=?, xs) => {
 };
 
 [@react.component]
-let make = (~ast: ReOrga.orgAst) => {
-  renderItems(ast.children);
+let make = (~xs: array(ReOrga.sectionAst)) => {
+  renderItems(xs);
 };
