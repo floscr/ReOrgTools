@@ -42,6 +42,11 @@ let fetchDocument = (~id, ~user, ~dispatch, ~workspaceIndex) =>
      })
   |> ignore;
 
+type t =
+  | Initial
+  | Loading
+  | AllFetched(array(ReOrga.sectionAst));
+
 [@react.component]
 let make =
     (
@@ -85,39 +90,41 @@ let make =
     files
     |> Option.some
     |> Option.map(StringMap.valueArray)
-    |> Option.filter(
-         Array.all(
-           fun
-           | File.Fetched(_)
-           | File.Cached(_) => true
-           | _ => false,
+    |> Option.map(
+         Array.foldLeft(
+           (acc, cur) => {
+             switch (acc, cur) {
+             // Wait for other files to be finished
+             | (Loading, _) => Loading
+             | (_, File.InProgress) => Loading
+             // File Fetched
+             | (AllFetched(xs), File.Fetched({ast}))
+             | (AllFetched(xs), File.Cached({ast})) =>
+               let {children, properties} = ast;
+               Js.log(ast);
+               let ys =
+                 narrowToHeader
+                 |> Option.flatMap(text =>
+                      Org.narrowToHeadlineWithText(~text, children)
+                    )
+                 |> Option.map((x: ReOrga.sectionAst) => [|x.parent|])
+                 |> Option.getOrElse(children);
+
+               AllFetched(Array.concat(xs, ys));
+             /* let layoutType = */
+             /*   Js.Dict.get(properties, "reorg_view") */
+             /*   |> Option.map(Types__Layouts.Layout.fromString) */
+             /*   |> Option.getOrElse(layoutType); */
+             }
+           },
+           AllFetched([||]),
          ),
        )
-    |> Option.flatMap(Array.head)
     |> Option.flatMap(
          fun
-         | File.Fetched({ast})
-         | File.Cached({ast}) => {
-             let {children, properties} = ast;
+         | Loading => Some("Loading" |> s)
+         | AllFetched(xs) => Some(<OrgDocument__Root xs layoutType />)
 
-             Js.log(ast);
-
-             let xs =
-               narrowToHeader
-               |> Option.flatMap(text =>
-                    Org.narrowToHeadlineWithText(~text, children)
-                  )
-               |> Option.map((x: ReOrga.sectionAst) => [|x.parent|])
-               |> Option.getOrElse(children);
-
-             let layoutType =
-               Js.Dict.get(properties, "reorg_view")
-               |> Option.map(Types__Layouts.Layout.fromString)
-               |> Option.getOrElse(layoutType);
-
-             Some(<OrgDocument__Root xs layoutType />);
-           }
-         | File.InProgress => Some("Loading" |> s)
          | _ => None,
        )
     |> Option.getOrElseLazy(() => React.null)
