@@ -179,17 +179,14 @@ let make =
       ~layoutType=Types__Layouts.Layout.default,
       ~xs: array(ReOrga.sectionAst),
     ) => {
-  layoutType
-  |> Types__URLSearchParams.(
-       fun
-       | Kanban => {
-           <OrgDocument__ViewStyle__Kanban xs />;
-         }
-       | SimpleTodo =>
-         <div className=Styles.mainWrapper>
-           <OrgDocument__ViewStyle__SimpleTodo xs />
-         </div>
-       | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div>
-     )
-  |> (xs => <div className=Styles.root> xs </div>);
+  <div className=Styles.root>
+    {switch (layoutType) {
+     | Kanban => <OrgDocument__ViewStyle__Kanban xs />
+     | SimpleTodo =>
+       <div className=Styles.mainWrapper>
+         <OrgDocument__ViewStyle__SimpleTodo xs />
+       </div>
+     | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div>
+     }}
+  </div>;
 };

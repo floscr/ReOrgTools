@@ -85,14 +85,7 @@ let make =
              |> Option.map(Types__Layouts.Layout.fromString)
              |> Option.getOrElse(layoutType);
 
-           <OrgDocument__Root
-             xs
-             properties
-             id
-             layoutType
-             narrowToHeader
-             workspaceIndex
-           />;
+           <OrgDocument__Root xs layoutType />;
          | File.InProgress => "Loading" |> s
          | _ => React.null
          }
