@@ -49,49 +49,69 @@ let make =
       ~layoutType=Types__Layouts.Layout.default,
       ~narrowToHeader=None,
     ) => {
-  let {id, workspace}: State__OrgDocuments.File.identifier =
-    identifiers->Js.Array.unsafe_get(0);
-
   let dispatch = Store.useDispatch();
   let user = Store.useSelector(Selector.User.loggedInUser);
 
-  let files = Store.useSelector(Selector.OrgDocuments.files);
-  let file = StringMap.get(id, files);
+  let filesStore = Store.useSelector(Selector.OrgDocuments.files);
+  let files =
+    StringMap.filter(
+      (key, _value) =>
+        identifiers
+        |> Array.find(({id}: State__OrgDocuments.File.identifier) =>
+             String.eq(id, key)
+           )
+        |> Option.isSome,
+      filesStore,
+    );
 
   ReludeReact.Effect.useEffect1WithEq(
-    () => fetchDocument(~id, ~user, ~workspaceIndex=workspace, ~dispatch),
-    String.eq,
-    id,
+    () =>
+      identifiers
+      |> Array.forEach(
+           ({id, workspace}: State__OrgDocuments.File.identifier) =>
+           fetchDocument(~id, ~user, ~workspaceIndex=workspace, ~dispatch)
+         ),
+    Array.eqBy(
+      (
+        a: State__OrgDocuments.File.identifier,
+        b: State__OrgDocuments.File.identifier,
+      ) =>
+      String.eq(a.id, b.id) && Int.eq(a.workspace, b.workspace)
+    ),
+    identifiers,
   );
 
-  file
-  |> Option.map(x =>
-       State__OrgDocuments.(
-         switch ((x: File.t)) {
+  State__OrgDocuments.(
+    files
+    |> Option.some
+    |> Option.map(StringMap.valueArray)
+    |> Option.flatMap(Array.head)
+    |> Option.flatMap(
+         fun
          | File.Fetched({ast})
-         | File.Cached({ast}) =>
-           let {children, properties} = ast;
+         | File.Cached({ast}) => {
+             let {children, properties} = ast;
 
-           Js.log(ast);
+             Js.log(ast);
 
-           let xs =
-             narrowToHeader
-             |> Option.flatMap(text =>
-                  Org.narrowToHeadlineWithText(~text, children)
-                )
-             |> Option.map((x: ReOrga.sectionAst) => [|x.parent|])
-             |> Option.getOrElse(children);
+             let xs =
+               narrowToHeader
+               |> Option.flatMap(text =>
+                    Org.narrowToHeadlineWithText(~text, children)
+                  )
+               |> Option.map((x: ReOrga.sectionAst) => [|x.parent|])
+               |> Option.getOrElse(children);
 
-           let layoutType =
-             Js.Dict.get(properties, "reorg_view")
-             |> Option.map(Types__Layouts.Layout.fromString)
-             |> Option.getOrElse(layoutType);
+             let layoutType =
+               Js.Dict.get(properties, "reorg_view")
+               |> Option.map(Types__Layouts.Layout.fromString)
+               |> Option.getOrElse(layoutType);
 
-           <OrgDocument__Root xs layoutType />;
-         | File.InProgress => "Loading" |> s
-         | _ => React.null
-         }
+             Some(<OrgDocument__Root xs layoutType />);
+           }
+         | File.InProgress => Some("Loading" |> s)
+         | _ => None,
        )
-     )
-  |> Option.getOrElseLazy(() => React.null);
+    |> Option.getOrElseLazy(() => React.null)
+  );
 };
