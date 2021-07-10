@@ -162,7 +162,7 @@ let make = () => {
        |> Array.mapWithIndex((identifier, i) =>
             <React.Fragment key=i>
               <Controller__OrgDocument
-                identifier
+                identifiers=[|identifier|]
                 layoutType={
                   layoutType
                   |> Option.getOrElse(Types__Layouts.Layout.default)

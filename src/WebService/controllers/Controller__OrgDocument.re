@@ -45,11 +45,12 @@ let fetchDocument = (~id, ~user, ~dispatch, ~workspaceIndex) =>
 [@react.component]
 let make =
     (
-      ~identifier: State__OrgDocuments.File.identifier,
+      ~identifiers: array(State__OrgDocuments.File.identifier),
       ~layoutType=Types__Layouts.Layout.default,
       ~narrowToHeader=None,
     ) => {
-  let {id, workspace}: State__OrgDocuments.File.identifier = identifier;
+  let {id, workspace}: State__OrgDocuments.File.identifier =
+    identifiers->Js.Array.unsafe_get(0);
 
   let dispatch = Store.useDispatch();
   let user = Store.useSelector(Selector.User.loggedInUser);

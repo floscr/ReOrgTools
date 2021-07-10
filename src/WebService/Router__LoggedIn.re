@@ -116,7 +116,11 @@ let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
        <article className={Styles.main(isSidebarOpen)}>
          <Radix.ScrollArea.Wrapper>
            <OrgDocument__Toolbar workspaceIndex id layoutType />
-           <Controller__OrgDocument identifier narrowToHeader layoutType />
+           <Controller__OrgDocument
+             identifiers=[|identifier|]
+             narrowToHeader
+             layoutType
+           />
          </Radix.ScrollArea.Wrapper>
        </article>;
 
