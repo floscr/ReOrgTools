@@ -24,7 +24,7 @@ type state = Agenda.t;
 
 let initialState: Agenda.t =
   Agenda.{
-    files: [|{id: "inbox", workspace: 0}|],
+    files: [|{id: "inbox", workspace: 0}, {id: "gtd", workspace: 0}|],
     fields: [|Layout(Types__Layouts.Layout.SimpleTodo)|],
   };
 /* let initialState: Agenda.t = {files: [||], fields: [||]}; */
@@ -158,19 +158,12 @@ let make = () => {
       <pre> {validation |> Validation.toString |> s} </pre>
     </Radix.ScrollArea.Wrapper>
     <Radix.ScrollArea.Wrapper>
-      {files
-       |> Array.mapWithIndex((identifier, i) =>
-            <React.Fragment key=i>
-              <Controller__OrgDocument
-                identifiers=[|identifier|]
-                layoutType={
-                  layoutType
-                  |> Option.getOrElse(Types__Layouts.Layout.default)
-                }
-              />
-            </React.Fragment>
-          )
-       |> React.array}
+      <Controller__OrgDocument
+        identifiers=files
+        layoutType={
+          layoutType |> Option.getOrElse(Types__Layouts.Layout.default)
+        }
+      />
     </Radix.ScrollArea.Wrapper>
   </div>;
 };
