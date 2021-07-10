@@ -68,13 +68,31 @@ let make =
          switch ((x: File.t)) {
          | File.Fetched({ast})
          | File.Cached({ast}) =>
+           let {children, properties} = ast;
+
+           Js.log(ast);
+
+           let xs =
+             narrowToHeader
+             |> Option.flatMap(text =>
+                  Org.narrowToHeadlineWithText(~text, children)
+                )
+             |> Option.map((x: ReOrga.sectionAst) => [|x.parent|])
+             |> Option.getOrElse(children);
+
+           let layoutType =
+             Js.Dict.get(properties, "reorg_view")
+             |> Option.map(Types__Layouts.Layout.fromString)
+             |> Option.getOrElse(layoutType);
+
            <OrgDocument__Root
-             ast
+             xs
+             properties
              id
              layoutType
              narrowToHeader
              workspaceIndex
-           />
+           />;
          | File.InProgress => "Loading" |> s
          | _ => React.null
          }

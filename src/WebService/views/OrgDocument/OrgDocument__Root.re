@@ -176,25 +176,10 @@ let rec renderItems = (~level=0, ~properties=?, ~hasTodoParent=false, xs) => {
 [@react.component]
 let make =
     (
-      ~ast: ReOrga.orgAst,
-      ~narrowToHeader=None,
       ~layoutType=Types__Layouts.Layout.default,
-      ~id: string,
-      ~workspaceIndex: int,
+      ~xs: array(ReOrga.sectionAst),
     ) => {
-  let {children, properties} = ast;
-
-  Js.log(ast);
-
-  let xs =
-    narrowToHeader
-    |> Option.flatMap(text => Org.narrowToHeadlineWithText(~text, children))
-    |> Option.map((x: ReOrga.sectionAst) => [|x.parent|])
-    |> Option.getOrElse(children);
-
-  Js.Dict.get(properties, "reorg_view")
-  |> Option.map(Types__Layouts.Layout.fromString)
-  |> Option.getOrElse(layoutType)
+  layoutType
   |> Types__URLSearchParams.(
        fun
        | Kanban => {
