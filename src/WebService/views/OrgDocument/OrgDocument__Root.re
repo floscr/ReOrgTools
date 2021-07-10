@@ -9,11 +9,6 @@ module Styles = {
 
   let root =
     style([
-      display(`flex),
-      flexDirection(column),
-      position(relative),
-      flexGrow(1.),
-      flexShrink(1.),
       selector("h1", [fontSize(rem(1.4)), paddingBottom(Spacing.large)]),
       selector("h2", [fontSize(rem(1.3))]),
       selector("p, li", [lineHeight(`abs(1.55))]),
