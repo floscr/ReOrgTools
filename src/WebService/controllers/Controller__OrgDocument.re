@@ -6,10 +6,11 @@ open State;
 
 let fetchDocument = (~id, ~user, ~dispatch, ~workspaceIndex) =>
   user
-  |> Option.tap(user => {
+  |> Option.tap(_ =>
        OrgDocumentsAction(State__OrgDocuments.Store.FetchProgress(id))
-       |> dispatch;
-
+       |> dispatch
+     )
+  |> Option.tap(user => {
        API__OrgDocument.Request.make(~workspaceIndex, ~file=id, ~user)
        |> IO.tap(data => {
             let id = API__Routes.Routes.fileUrl(~id, ~workspaceIndex);
@@ -38,7 +39,7 @@ let fetchDocument = (~id, ~user, ~dispatch, ~workspaceIndex) =>
               )
               |> dispatch,
           )
-       |> ignore;
+       |> ignore
      })
   |> ignore;
 
@@ -52,6 +53,7 @@ let make =
     (
       ~identifiers: array(State__OrgDocuments.File.identifier),
       ~layoutType=Types__Org.Layout.default,
+      ~timerange: option(State__Settings.Agenda.Time.t)=?,
       ~narrowToHeader=None,
     ) => {
   let dispatch = Store.useDispatch();
@@ -100,21 +102,22 @@ let make =
              // File Fetched
              | (AllFetched(xs), File.Fetched({ast}))
              | (AllFetched(xs), File.Cached({ast})) =>
-               let {children, properties} = ast;
-               Js.log(ast);
+               let {children}: ReOrga.orgAst = ast;
+
                let ys =
-                 narrowToHeader
-                 |> Option.flatMap(text =>
-                      Org.narrowToHeadlineWithText(~text, children)
-                    )
-                 |> Option.map((x: ReOrga.sectionAst) => [|x.parent|])
-                 |> Option.getOrElse(children);
+                 children
+                 // Narrow to header when given
+                 |> (
+                   xs =>
+                     narrowToHeader
+                     |> Option.flatMap(text =>
+                          Org.narrowToHeadlineWithText(~text, xs)
+                        )
+                     |> Option.map((x: ReOrga.sectionAst) => [|x.parent|])
+                     |> Option.getOrElse(xs)
+                 );
 
                AllFetched(Array.concat(xs, ys));
-             /* let layoutType = */
-             /*   Js.Dict.get(properties, "reorg_view") */
-             /*   |> Option.map(Types__Org.Layout.fromString) */
-             /*   |> Option.getOrElse(layoutType); */
              }
            },
            AllFetched([||]),
@@ -124,7 +127,6 @@ let make =
          fun
          | Loading => Some("Loading" |> s)
          | AllFetched(xs) => Some(<OrgDocument__Root xs layoutType />)
-
          | _ => None,
        )
     |> Option.getOrElseLazy(() => React.null)
