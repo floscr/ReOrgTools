@@ -109,7 +109,7 @@ let make = () => {
     );
 
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
-  let {files, fields}: state = state;
+  let {files, fields, timerange}: state = state;
 
   let layoutType =
     fields
@@ -161,6 +161,7 @@ let make = () => {
     <Radix.ScrollArea.Wrapper>
       <Controller__OrgDocument
         identifiers=files
+        ?timerange
         layoutType={layoutType |> Option.getOrElse(Types__Org.Layout.default)}
       />
     </Radix.ScrollArea.Wrapper>

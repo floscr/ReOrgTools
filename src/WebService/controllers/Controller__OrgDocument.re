@@ -126,7 +126,16 @@ let make =
     |> Option.flatMap(
          fun
          | Loading => Some("Loading" |> s)
-         | AllFetched(xs) => Some(<OrgDocument__Root xs layoutType />)
+         | AllFetched(xs) =>
+           (
+             switch (layoutType) {
+             | Kanban => <OrgDocument__ViewStyle__Kanban xs />
+             | SimpleTodo => <OrgDocument__ViewStyle__SimpleTodo xs />
+             | _ => <OrgDocument__Root xs />
+             }
+           )
+           |> Option.some
+
          | _ => None,
        )
     |> Option.getOrElseLazy(() => React.null)

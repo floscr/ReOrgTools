@@ -79,17 +79,6 @@ module Styles = {
         ],
       ),
     ]);
-
-  let mainWrapper =
-    style([
-      padding2(~h=Spacing.xxlarge, ~v=Spacing.xlarge),
-      flexGrow(1.),
-      flexShrink(1.),
-      maxWidth(px(860)),
-      wordWrap(breakWord),
-      width(pct(100.)),
-      margin2(~v=zero, ~h=auto),
-    ]);
 };
 
 let rec renderItems = (~level=0, ~properties=?, ~hasTodoParent=false, xs) => {
@@ -174,16 +163,8 @@ let rec renderItems = (~level=0, ~properties=?, ~hasTodoParent=false, xs) => {
 };
 
 [@react.component]
-let make =
-    (~layoutType=Types__Org.Layout.default, ~xs: array(ReOrga.sectionAst)) => {
+let make = (~xs: array(ReOrga.sectionAst)) => {
   <div className=Styles.root>
-    {switch (layoutType) {
-     | Kanban => <OrgDocument__ViewStyle__Kanban xs />
-     | SimpleTodo =>
-       <div className=Styles.mainWrapper>
-         <OrgDocument__ViewStyle__SimpleTodo xs />
-       </div>
-     | _ => <div className=Styles.mainWrapper> {renderItems(xs)} </div>
-     }}
+    {renderItems(xs) |> Wrappers.paddedWrapper}
   </div>;
 };

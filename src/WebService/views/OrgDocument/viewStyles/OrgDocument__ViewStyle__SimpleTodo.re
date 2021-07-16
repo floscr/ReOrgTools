@@ -71,5 +71,5 @@ let rec renderItems = (~properties=?, xs) => {
 
 [@react.component]
 let make = (~xs: array(ReOrga.sectionAst)) => {
-  renderItems(xs);
+  renderItems(xs) |> Wrappers.paddedWrapper;
 };
