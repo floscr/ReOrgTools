@@ -53,6 +53,36 @@ let renderHeadline =
   </button>;
 };
 
+type orgRangeT =
+  | Single(Js.Date.t)
+  | FromTo(Js.Date.t, Js.Date.t);
+
+let isInTimeRange =
+    (
+      ~timerange: State__Settings.Agenda.Time.timerangeT,
+      ~start: option(Js.Date.t),
+      ~end_: option(Js.Date.t),
+    ) => {
+  let orgRange =
+    switch (start, end_) {
+    | (Some(start), Some(end_)) => Ok(FromTo(start, end_))
+    | (Some(x), _)
+    | (_, Some(x)) => Ok(Single(x))
+    | _ => Error("Impossible Range") // Should not be possible
+    };
+
+  /* State__Settings.Agenda.Time.( */
+
+  /* switch (timerange, orgRange) { */
+  /* | (CurrentOnly(x), Single(y)) =>  */
+  /* | _ => false; */
+  /* } */
+
+  /* ) */
+
+  true;
+};
+
 let rec renderItems =
         (
           ~properties=?,
@@ -67,17 +97,16 @@ let rec renderItems =
 
        | Section({children, level, properties}) =>
          timerange
-         |> Option.map(Result.toOption)
-         |> Option.flatten
-         |> Option.reject(_ =>
+         |> Option.flatMap(Result.toOption)
+         |> Option.reject(timerange =>
               children
               |> Array.find(x =>
-                   switch (getItem(x)) {
-                   | Planning({start, end_}) => true
+                   switch (getItem(x) |> Utils.log) {
+                   | Planning({start, end_}) =>
+                     isInTimeRange(~timerange, ~start, ~end_)
                    | _ => false
                    }
                  )
-              |> Utils.log
               |> Option.isSome
             )
          |> Option.foldLazy(
