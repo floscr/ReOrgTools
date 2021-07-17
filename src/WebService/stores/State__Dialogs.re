@@ -6,8 +6,7 @@ type lightBoxProps = {
 type dialog =
   | FilePicker
   | CommandsMenu
-  | Lightbox(lightBoxProps)
-  | AgendaCreate;
+  | Lightbox(lightBoxProps);
 
 type state = {dialogs: array(dialog)};
 

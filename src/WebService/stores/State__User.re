@@ -45,7 +45,7 @@ type action =
   | Login(User.t)
   | Logout;
 
-let reducer = (state, action) => {
+let reducer = (_state, action) => {
   switch (action) {
   | Login(user) => {user: LoggedInUser(user)}
   | Logout => {user: Unauthorized}

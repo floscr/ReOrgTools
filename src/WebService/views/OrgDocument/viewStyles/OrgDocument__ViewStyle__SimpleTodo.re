@@ -62,9 +62,7 @@ let rec renderItems =
   xs
   |> Array.mapWithIndex((x, i) => {
        switch (x |> getItem) {
-       | Headline({children, position, keyword} as x)
-           when keyword |> Option.isSome =>
-         /* Js.log(x); */
+       | Headline({children, position, keyword}) when keyword |> Option.isSome =>
          renderHeadline(~position, ~properties, children)
 
        | Section({children, level, properties}) =>

@@ -35,7 +35,8 @@ type action =
   | NoOp;
 
 let reducer =
-    (state: state, action: action): ReludeReact.Reducer.update(action, state) =>
+    (_state: state, action: action)
+    : ReludeReact.Reducer.update(action, state) =>
   switch (action) {
   | UpdateSettings(state) => Update(state)
   | NoOp => NoUpdate
