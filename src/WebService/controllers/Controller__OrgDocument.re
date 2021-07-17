@@ -130,7 +130,8 @@ let make =
            (
              switch (layoutType) {
              | Kanban => <OrgDocument__ViewStyle__Kanban xs />
-             | SimpleTodo => <OrgDocument__ViewStyle__SimpleTodo xs />
+             | SimpleTodo =>
+               <OrgDocument__ViewStyle__SimpleTodo xs ?timerange />
              | _ => <OrgDocument__Root xs />
              }
            )

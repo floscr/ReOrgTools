@@ -53,15 +53,41 @@ let renderHeadline =
   </button>;
 };
 
-let rec renderItems = (~properties=?, xs) => {
+let rec renderItems =
+        (
+          ~properties=?,
+          ~timerange: option(State__Settings.Agenda.Time.t)=?,
+          xs,
+        ) => {
   xs
   |> Array.mapWithIndex((x, i) => {
        switch (x |> getItem) {
-       | Headline({children, position, keyword}) when keyword |> Option.isSome =>
+       | Headline({children, position, keyword} as x)
+           when keyword |> Option.isSome =>
+         /* Js.log(x); */
          renderHeadline(~position, ~properties, children)
 
        | Section({children, level, properties}) =>
-         renderItems(~properties, children) |> wrapWithKey(level, i)
+         timerange
+         |> Option.map(Result.toOption)
+         |> Option.flatten
+         |> Option.reject(_ =>
+              children
+              |> Array.find(x =>
+                   switch (getItem(x)) {
+                   | Planning({start, end_}) => true
+                   | _ => false
+                   }
+                 )
+              |> Utils.log
+              |> Option.isSome
+            )
+         |> Option.foldLazy(
+              _ =>
+                renderItems(~timerange?, ~properties, children)
+                |> wrapWithKey(level, i),
+              _ => React.null,
+            )
 
        | _ => React.null
        }
@@ -70,6 +96,10 @@ let rec renderItems = (~properties=?, xs) => {
 };
 
 [@react.component]
-let make = (~xs: array(ReOrga.sectionAst)) => {
-  renderItems(xs) |> Wrappers.paddedWrapper;
+let make =
+    (
+      ~xs: array(ReOrga.sectionAst),
+      ~timerange: option(State__Settings.Agenda.Time.t)=?,
+    ) => {
+  renderItems(~timerange?, xs) |> Wrappers.paddedWrapper;
 };
