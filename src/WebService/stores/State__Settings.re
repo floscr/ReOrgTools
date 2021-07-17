@@ -146,27 +146,48 @@ module Encode = {
         object_([("id", string(id)), ("workspace", int(workspace))])
     );
 
-  /* let encodeAgendasTimerangeJson = (x: Agenda.Time.t) => */
-  /*   switch (x) { */
-  /*   | CurrentOnly(x) => object_(["current"]) */
-  /*   | _ => None */
-  /*   }; */
+  let encodeAgendasTimerangeJson = (x: Agenda.Time.timerangeT) =>
+    Json.Encode.(
+      (
+        switch (x) {
+        | CurrentOnly(x) =>
+          Some(
+            object_([
+              ("current", string(Agenda.Time.stringFromcurrentT(x))),
+            ]),
+          )
+        | _ => None
+        }
+      )
+      |> Option.map(x => [("timerange", x)])
+    );
 
   let encodeAgendasJson =
     Json.Encode.(
       ({files, fields, timerange}: Agenda.t) =>
-        object_([
-          ("files", files |> Array.map(encodeAgendasFilesJson) |> jsonArray),
-          (
-            "fields",
-            fields
-            |> Array.map(x =>
-                 tuple2(string, string, Agenda.fieldToString(x))
-               )
-            |> jsonArray,
+        object_(
+          [
+            (
+              "files",
+              files |> Array.map(encodeAgendasFilesJson) |> jsonArray,
+            ),
+            (
+              "fields",
+              fields
+              |> Array.map(x =>
+                   tuple2(string, string, Agenda.fieldToString(x))
+                 )
+              |> jsonArray,
+            ),
+          ]
+          |> (
+            xs =>
+              timerange
+              |> Option.flatMap(Result.toOption)
+              |> Option.flatMap(encodeAgendasTimerangeJson)
+              |> Option.fold(xs, List.concat(xs))
           ),
-          /* |> (xs => timerange |> Option.flatMap(Result.toOption)), */
-        ])
+        )
     );
 
   let encodeBookmarksJson =
