@@ -156,7 +156,22 @@ module Encode = {
               ("current", string(Agenda.Time.stringFromcurrentT(x))),
             ]),
           )
-        | _ => None
+        | CurrentTo(current, to_) =>
+          Some(
+            object_([
+              ("current", string(Agenda.Time.stringFromcurrentT(current))),
+              ("to_", date(to_)),
+            ]),
+          )
+        | CurrentFrom(from, current) =>
+          Some(
+            object_([
+              ("current", string(Agenda.Time.stringFromcurrentT(current))),
+              ("from", date(from)),
+            ]),
+          )
+        | Timerange(from, to_) =>
+          Some(object_([("from", date(from)), ("to_", date(to_))]))
         }
       )
       |> Option.map(x => [("timerange", x)])
@@ -222,9 +237,9 @@ module Decode = {
   let decodeAgendaTimerangeJson = json =>
     Decode.Pipeline.(
       succeed(Agenda.Time.make)
-      |> field("current", optional(string))
-      |> field("from", optional(date))
-      |> field("to_", optional(date))
+      |> optionalField("current", string)
+      |> optionalField("from", date)
+      |> optionalField("to_", date)
       |> hardcoded(json)
       |> run(json)
     );
