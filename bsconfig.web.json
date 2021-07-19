@@ -35,6 +35,7 @@
   "suffix": ".bs.js",
   "bs-dependencies": [
     "@glennsl/bs-json",
+    "@mobily/re-date",
     "bs-bastet",
     "bs-css",
     "bs-css-emotion",

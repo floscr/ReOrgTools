@@ -71,16 +71,17 @@ let isInTimeRange =
     | _ => Error("Impossible Range") // Should not be possible
     };
 
-  /* State__Settings.Agenda.Time.( */
-
-  /* switch (timerange, orgRange) { */
-  /* | (CurrentOnly(x), Single(y)) =>  */
-  /* | _ => false; */
-  /* } */
-
-  /* ) */
-
-  true;
+  State__Settings.Agenda.Time.(
+    orgRange
+    |> Result.map(orgRange =>
+         switch (timerange, orgRange) {
+         | (CurrentOnly(current), Single(date)) =>
+           isWithinSingle(current, date)
+         | _ => false
+         }
+       )
+  )
+  |> Result.getOrElse(false);
 };
 
 let rec renderItems =

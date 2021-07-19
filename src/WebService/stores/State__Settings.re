@@ -65,6 +65,15 @@ module Agenda = {
       // Invalid
       | _ => Error(("Invalid time format", originalJson))
       };
+
+    let isWithinSingle = (current: currentT, date: Js.Date.t) => {
+      let now = Js.Date.make();
+      switch (current) {
+      | CurrentDay => ReDate.isSameDay(now, date)
+      | CurrentWeek => ReDate.isSameWeek(now, date)
+      | CurrentMonth => ReDate.isSameMonth(now, date)
+      };
+    };
   };
 
   type field =
