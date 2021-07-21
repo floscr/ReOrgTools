@@ -30,14 +30,13 @@ module Agenda = {
       | "Day" => CurrentDay
       | "Week" => CurrentWeek
       | "Month" => CurrentMonth
-      | _ => CurrentMonth;
+      | _ => CurrentDay;
 
     let stringFromcurrentT =
       fun
       | CurrentDay => "Day"
       | CurrentWeek => "Week"
-      | CurrentMonth => "Month"
-      | _ => "";
+      | CurrentMonth => "Month";
 
     type timestampT = Js.Date.t;
 
@@ -65,6 +64,39 @@ module Agenda = {
       // Invalid
       | _ => Error(("Invalid time format", originalJson))
       };
+
+    let currentToInterval = (current: currentT): ReDate.interval => {
+      let now = Js.Date.make();
+      switch (current) {
+      | CurrentDay => {
+          start: now |> ReDate.startOfDay,
+          end_: now |> ReDate.endOfDay,
+        }
+      | CurrentWeek => {
+          start: now |> ReDate.startOfWeek,
+          end_: now |> ReDate.endOfWeek,
+        }
+      | CurrentMonth => {
+          start: now |> ReDate.startOfMonth,
+          end_: now |> ReDate.endOfMonth,
+        }
+      };
+    };
+
+    let timeRangeToInterval = (timerange: timerangeT) => {
+      switch (timerange) {
+      | CurrentOnly(current) => currentToInterval(current)
+      | CurrentTo(current, end_) => {
+          start: currentToInterval(current).start,
+          end_,
+        }
+      | CurrentFrom(start, current) => {
+          start,
+          end_: currentToInterval(current).end_,
+        }
+      | Timerange(start, end_) => {start, end_}
+      };
+    };
 
     let isWithinSingle = (current: currentT, date: Js.Date.t) => {
       let now = Js.Date.make();

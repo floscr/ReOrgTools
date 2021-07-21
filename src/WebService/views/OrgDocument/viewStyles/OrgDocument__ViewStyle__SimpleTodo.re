@@ -63,24 +63,19 @@ let isInTimeRange =
       ~start: option(Js.Date.t),
       ~end_: option(Js.Date.t),
     ) => {
-  let orgRange =
+  let orgRange: result(ReDate.interval, string) =
     switch (start, end_) {
-    | (Some(start), Some(end_)) => Ok(FromTo(start, end_))
-    | (Some(x), _)
-    | (_, Some(x)) => Ok(Single(x))
-    | _ => Error("Impossible Range") // Should not be possible
+    | (Some(start), Some(end_)) => Ok({start, end_})
+    | (Some(start), _) => Ok({start, end_: start |> ReDate.endOfDay})
+    | (_, Some(end_)) => Ok({start: end_ |> ReDate.startOfDay, end_})
+    | _ => Error("Impossible Range")
     };
 
-  State__Settings.Agenda.Time.(
-    orgRange
-    |> Result.map(orgRange =>
-         switch (timerange, orgRange) {
-         | (CurrentOnly(current), Single(date)) =>
-           isWithinSingle(current, date)
-         | _ => false
-         }
-       )
-  )
+  let timeRangeInterval =
+    State__Settings.Agenda.Time.timeRangeToInterval(timerange);
+
+  orgRange
+  |> Result.map(ReDate.areIntervalsOverlapping(timeRangeInterval))
   |> Result.getOrElse(false);
 };
 
@@ -102,7 +97,7 @@ let rec renderItems =
          |> Option.reject(timerange =>
               children
               |> Array.find(x =>
-                   switch (getItem(x) |> Utils.log) {
+                   switch (getItem(x)) {
                    | Planning({start, end_}) =>
                      isInTimeRange(~timerange, ~start, ~end_)
                    | _ => false
