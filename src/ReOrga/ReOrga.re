@@ -134,18 +134,20 @@ type headline = {
   parent: sectionAst,
 };
 
+type planning = {
+  type_: PlanningType.t,
+  start: option(Js.Date.t),
+  end_: option(Js.Date.t),
+  parent: sectionAst,
+};
+
 type orgItem =
   | Unmatched
   | Section(section)
   | Headline(headline)
   | Paragraph({children: array(sectionAst)})
   | PlainText(plainText)
-  | Planning({
-      type_: PlanningType.t,
-      start: option(Js.Date.t),
-      end_: option(Js.Date.t),
-      parent: sectionAst,
-    })
+  | Planning(planning)
   | Stars(stars)
   | Todo({
       keyword: string,
@@ -180,7 +182,7 @@ type orgItem =
       properties: Js.Dict.t(string),
     });
 
-let getItem = item => {
+let getItem = (item: sectionAst) => {
   let t = Js.String.split(".", item.type_) |> Array.toList;
 
   switch (t) {
@@ -286,6 +288,34 @@ module Org = {
     | Document({children}) => Some(children)
     | _ => None
     };
+
+  module Headline = {
+    type t = headline;
+
+    let getPlanning = ({parent}: t): option(planning) =>
+      parent
+      |> getItem
+      |> (
+        fun
+        | Section({children}) =>
+          children
+          |> Array.find(x =>
+               x
+               |> getItem
+               |> (
+                 fun
+                 | Planning(_) => true
+                 | _ => false
+               )
+             )
+          |> Option.flatMap(x =>
+               switch (getItem(x)) {
+               | Planning(x) => Some(x)
+               | _ => None
+               }
+             )
+      );
+  };
 
   let rec narrowToHeadlineWithText = (~text, xs: array(sectionAst)) =>
     xs

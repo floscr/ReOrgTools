@@ -76,7 +76,7 @@ module Styles = {
     ]);
 };
 
-let makeHeadlineKey = position =>
+let makeHeadlineKey = (position: ReOrga.positionAst) =>
   "headline"
   ++ "-"
   ++ (position.start.line |> string_of_int)

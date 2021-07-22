@@ -98,39 +98,12 @@ let keepItem = (~conds=[], headline: ReOrga.headline) => {
   conds |> List.find(cond => cond(headline) === false) |> Option.isNone;
 };
 
-let rec renderItems =
-        (
-          ~properties=?,
-          ~timerange: option(State__Settings.Agenda.Time.t)=?,
-          xs,
-        ) => {
+let rec renderItems = (~properties=?, xs) => {
   xs
   |> Array.mapWithIndex((x, i) => {
        switch (x |> getItem) {
        | Headline({children, position, keyword}) when keyword |> Option.isSome =>
          renderHeadline(~position, ~properties, children)
-
-       | Section({children, level, properties}) =>
-         timerange
-         |> Option.flatMap(Result.toOption)
-         |> Option.reject(timerange =>
-              children
-              |> Array.find(x =>
-                   switch (getItem(x)) {
-                   | Planning({start, end_}) =>
-                     isInTimeRange(~timerange, ~start, ~end_)
-                   | _ => false
-                   }
-                 )
-              |> Option.isSome
-            )
-         |> Option.foldLazy(
-              _ =>
-                renderItems(~timerange?, ~properties, children)
-                |> wrapWithKey(level, i),
-              _ => React.null,
-            )
-
        | _ => React.null
        }
      })
@@ -147,30 +120,17 @@ let make =
     [
       (true, ({keyword}: ReOrga.headline) => keyword |> Option.isSome),
       (
-        timerange |> Option.flatMap(Result.toOption) |> Option.isSome,
+        timerange |> Option.isSome,
         // Planning items
-        ({parent}: ReOrga.headline) =>
-          parent
-          |> getItem
-          |> (
-            fun
-            | Section({children}) =>
-              timerange
-              |> Option.flatMap(Result.toOption)
-              |> Option.reject(timerange =>
-                   children
-                   |> Array.find(x =>
-                        switch (getItem(x)) {
-                        | Planning({start, end_}) =>
-                          isInTimeRange(~timerange, ~start, ~end_)
-                        | _ => false
-                        }
-                      )
-                   |> Option.isNone
-                 )
-              |> Option.isSome
-            | _ => false
-          ),
+        (x: ReOrga.headline) =>
+          switch (
+            timerange |> Option.flatMap(Result.toOption),
+            Org.Headline.getPlanning(x),
+          ) {
+          | (Some(timerange), Some({start, end_})) =>
+            isInTimeRange(~timerange, ~start, ~end_)
+          | _ => false
+          },
       ),
     ]
     |> List.foldLeft(
@@ -180,6 +140,6 @@ let make =
 
   xs
   |> unfoldTree(~cond=keepItem(~conds))
-  |> renderItems(~timerange?)
+  |> renderItems
   |> Wrappers.paddedWrapper;
 };
