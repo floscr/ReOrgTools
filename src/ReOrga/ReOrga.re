@@ -116,6 +116,13 @@ module PlanningType = {
     | Scheduled => "Scheduled";
 };
 
+type section = {
+  children: array(sectionAst),
+  level: int,
+  position: positionAst,
+  properties: Js.Dict.t(string),
+};
+
 type headline = {
   children: array(sectionAst),
   content: string,
@@ -129,12 +136,7 @@ type headline = {
 
 type orgItem =
   | Unmatched
-  | Section({
-      children: array(sectionAst),
-      level: int,
-      position: positionAst,
-      properties: Js.Dict.t(string),
-    })
+  | Section(section)
   | Headline(headline)
   | Paragraph({children: array(sectionAst)})
   | PlainText(plainText)
