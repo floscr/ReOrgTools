@@ -79,18 +79,25 @@ let isInTimeRange =
   |> Result.getOrElse(false);
 };
 
-let rec unfoldTree = (~acc=[||], rest) => {
+let rec unfoldTree = (~cond=_ => true, ~acc=[||], rest) => {
   rest
   |> Array.foldLeft(
        (childAcc, child) =>
          switch (child |> getItem) {
-         | Headline(_) => Array.append(child, childAcc)
+         | Headline(headline) when cond(headline) =>
+           Array.append(child, childAcc)
          | Section({children}) =>
-           Array.concat(childAcc, unfoldTree(~acc, children))
+           Array.concat(childAcc, unfoldTree(~acc, ~cond, children))
          | _ => childAcc
          },
        acc,
      );
+};
+
+let keepItem = (headline: ReOrga.headline) => {
+  let {keyword} = headline;
+
+  keyword |> Option.isSome;
 };
 
 let rec renderItems =
@@ -138,6 +145,6 @@ let make =
       ~xs: array(ReOrga.sectionAst),
       ~timerange: option(State__Settings.Agenda.Time.t)=?,
     ) => {
-  Js.log(unfoldTree(xs));
+  Js.log(unfoldTree(~cond=keepItem, xs));
   renderItems(~timerange?, xs) |> Wrappers.paddedWrapper;
 };
