@@ -94,10 +94,8 @@ let rec unfoldTree = (~cond=_ => true, ~acc=[||], rest) => {
      );
 };
 
-let keepItem = (headline: ReOrga.headline) => {
-  let {keyword} = headline;
-
-  keyword |> Option.isSome;
+let keepItem = (~conds=[], headline: ReOrga.headline) => {
+  conds |> List.find(cond => cond(headline) === false) |> Option.isNone;
 };
 
 let rec renderItems =
@@ -145,6 +143,41 @@ let make =
       ~xs: array(ReOrga.sectionAst),
       ~timerange: option(State__Settings.Agenda.Time.t)=?,
     ) => {
-  Js.log(unfoldTree(~cond=keepItem, xs));
+  let conds =
+    [
+      (true, ({keyword}: ReOrga.headline) => keyword |> Option.isSome),
+      (
+        timerange |> Option.flatMap(Result.toOption) |> Option.isSome,
+        ({parent}: ReOrga.headline) =>
+          parent
+          |> getItem
+          |> (
+            fun
+            | Section({children}) =>
+              timerange
+              |> Option.flatMap(Result.toOption)
+              |> Option.reject(timerange =>
+                   children
+                   |> Array.find(x =>
+                        switch (getItem(x)) {
+                        | Planning({start, end_}) =>
+                          isInTimeRange(~timerange, ~start, ~end_)
+                        | _ => false
+                        }
+                      )
+                   |> Option.isNone
+                 )
+              |> Option.isSome
+            | _ => false
+          ),
+      ),
+    ]
+    |> List.foldLeft(
+         (acc, (keep, fn)) => keep ? List.append(fn, acc) : acc,
+         [],
+       );
+
+  Js.log(unfoldTree(~cond=keepItem(~conds), xs));
+
   renderItems(~timerange?, xs) |> Wrappers.paddedWrapper;
 };
