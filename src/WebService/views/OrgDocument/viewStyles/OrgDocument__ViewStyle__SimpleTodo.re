@@ -148,6 +148,7 @@ let make =
       (true, ({keyword}: ReOrga.headline) => keyword |> Option.isSome),
       (
         timerange |> Option.flatMap(Result.toOption) |> Option.isSome,
+        // Planning items
         ({parent}: ReOrga.headline) =>
           parent
           |> getItem
@@ -177,7 +178,8 @@ let make =
          [],
        );
 
-  Js.log(unfoldTree(~cond=keepItem(~conds), xs));
-
-  renderItems(~timerange?, xs) |> Wrappers.paddedWrapper;
+  xs
+  |> unfoldTree(~cond=keepItem(~conds))
+  |> renderItems(~timerange?)
+  |> Wrappers.paddedWrapper;
 };
