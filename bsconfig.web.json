@@ -54,7 +54,7 @@
     "@glennsl/bs-jest"
   ],
   "warnings": {
-    "number": "-33",
+    "number": "-33-48",
     "error": "+101"
   },
   "refmt": 3
