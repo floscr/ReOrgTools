@@ -116,6 +116,22 @@ let make =
       ~xs: array(ReOrga.sectionAst),
       ~timerange: option(State__Settings.Agenda.Time.t)=?,
     ) => {
+  let dateCompare =
+    Ord.by(
+      (x: ReOrga.sectionAst) =>
+        (
+          switch (getItem(x)) {
+          | Headline(x) => Some(x)
+          | _ => None
+          }
+        )
+        |> Option.flatMap(Org.Headline.getPlanning)
+        |> Option.flatMap(({start}: ReOrga.planning) => start)
+        |> Option.map(Js.Date.getTime)
+        |> Option.getOrElse(0.),
+      Float.compare,
+    );
+
   let conds =
     [
       (true, ({keyword}: ReOrga.headline) => keyword |> Option.isSome),
@@ -140,6 +156,7 @@ let make =
 
   xs
   |> unfoldTree(~cond=keepItem(~conds))
+  |> Array.sortBy(dateCompare)
   |> renderItems
   |> Wrappers.paddedWrapper;
 };
