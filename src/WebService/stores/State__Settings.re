@@ -265,10 +265,16 @@ module Encode = {
 };
 
 module Decode = {
-  module Decode = Decode.AsResult.OfParseError;
+  module R =
+    Decode.ParseError.ResultOf({
+      type t = [ Decode.ParseError.base];
+      let handle = x => (x :> t);
+    });
+
+  module D = Decode.Base.Make(R.TransformError, R);
 
   let decodeAgendaFilesJson = json =>
-    Decode.Pipeline.(
+    D.Pipeline.(
       succeed(Agenda.File.make)
       |> field("id", string)
       |> field("workspace", intFromNumber)
@@ -276,7 +282,7 @@ module Decode = {
     );
 
   let decodeAgendaTimerangeJson = json =>
-    Decode.Pipeline.(
+    D.Pipeline.(
       succeed(Agenda.Time.make)
       |> optionalField("current", string)
       |> optionalField("from", date)
@@ -286,7 +292,7 @@ module Decode = {
     );
 
   let decodeAgendaJson = json =>
-    Decode.Pipeline.(
+    D.Pipeline.(
       succeed(Agenda.make)
       |> field("files", array(decodeAgendaFilesJson))
       |> field("fields", array(tuple2(string, string)))
@@ -295,7 +301,7 @@ module Decode = {
     );
 
   let decodeBookmarksJson = json =>
-    Decode.Pipeline.(
+    D.Pipeline.(
       succeed(Bookmark.make)
       |> field("title", string)
       |> field("value", string)
@@ -311,7 +317,7 @@ module Decode = {
   };
 
   let decodeJson = json =>
-    Decode.Pipeline.(
+    D.Pipeline.(
       succeed(make)
       |> optionalField("agendas", array(decodeAgendaJson))
       |> optionalField("bookmarks", array(decodeBookmarksJson))
