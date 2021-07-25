@@ -97,16 +97,6 @@ module Agenda = {
       | Timerange(start, end_) => {start, end_}
       };
     };
-
-    let isWithinSingle = (current: currentT, date: Js.Date.t) => {
-      let now = Js.Date.make();
-      switch (current) {
-      | CurrentDay => ReDate.isSameDay(now, date)
-      | CurrentWeek =>
-        ReDate.isSameWeek(~weekStartsOn=ReDate.Monday, now, date)
-      | CurrentMonth => ReDate.isSameMonth(now, date)
-      };
-    };
   };
 
   module Filter = {
