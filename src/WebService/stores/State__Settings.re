@@ -108,6 +108,13 @@ module Agenda = {
     };
   };
 
+  type filter =
+    | Add(string)
+    | Remove(string);
+
+  type tagFilter = filter;
+  type todoFilter = filter;
+
   type field =
     | Layout(Types__Org.Layout.t);
 
@@ -121,9 +128,11 @@ module Agenda = {
     files: filesT,
     fields: array(field),
     timerange: option(Time.t),
+    tags: option(string),
+    /* todos: array(filter), */
   };
 
-  let make = (files, fields: array((string, string)), timerange) => {
+  let make = (files, fields: array((string, string)), timerange, tags) => {
     files,
     fields:
       fields
@@ -141,6 +150,8 @@ module Agenda = {
            [||],
          ),
     timerange,
+    tags,
+    /* todos, */
   };
 };
 
@@ -310,12 +321,37 @@ module Decode = {
       |> run(json)
     );
 
+  /* let decodeFilterField =  */
+
+  let parseFilter = x =>
+    x
+    |> String.splitAt(1)
+    |> (
+      fun
+      | ("+", color) => Ok(color)
+      | ("-", color) => Ok(color)
+      | (_a, _b) =>
+        Error(Decode.ParseError.Val(`InvalidFilter, Js.Json.string(x)))
+    );
+
+  let decodeFilter = json =>
+    D.string(json) |> Result.flatMap(x => parseFilter(x));
+
+  /* let parseFilters = xs => Array.Result.traverse(parseFilter, xs); */
+  /* |> ( */
+  /*   fun */
+  /*   | Ok(xs) => R.pure(xs) */
+  /*   | Error(err) => Decode.ParseError(err) */
+  /* ); */
+
   let decodeAgendaJson = json =>
     D.Pipeline.(
       succeed(Agenda.make)
       |> field("files", array(decodeAgendaFilesJson))
       |> field("fields", array(tuple2(string, string)))
       |> optionalField("timerange", decodeAgendaTimerangeJson)
+      |> optionalField("tags", decodeFilter)
+      /* |> optionalField("todos", array(tuple2(string, string))) */
       |> run(json)
     );
 
