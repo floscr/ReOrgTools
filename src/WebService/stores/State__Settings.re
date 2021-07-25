@@ -73,8 +73,8 @@ module Agenda = {
           end_: now |> ReDate.endOfDay,
         }
       | CurrentWeek => {
-          start: now |> ReDate.startOfWeek,
-          end_: now |> ReDate.endOfWeek,
+          start: now |> ReDate.startOfWeek(~weekStartsOn=ReDate.Monday),
+          end_: now |> ReDate.endOfWeek(~weekStartsOn=ReDate.Monday),
         }
       | CurrentMonth => {
           start: now |> ReDate.startOfMonth,
@@ -102,7 +102,8 @@ module Agenda = {
       let now = Js.Date.make();
       switch (current) {
       | CurrentDay => ReDate.isSameDay(now, date)
-      | CurrentWeek => ReDate.isSameWeek(now, date)
+      | CurrentWeek =>
+        ReDate.isSameWeek(~weekStartsOn=ReDate.Monday, now, date)
       | CurrentMonth => ReDate.isSameMonth(now, date)
       };
     };
