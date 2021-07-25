@@ -64,7 +64,7 @@ module FilePicker = {
 module Validation = {
   type err =
     | JsonDecodeError
-    | DecodeError(Decode_AsResult_OfParseError.ParseError.failure);
+    | DecodeError(State__Settings.Decode.R.error);
 
   type succ =
     | Ok;
@@ -78,10 +78,8 @@ module Validation = {
            (
              switch (err) {
              | JsonDecodeError => "Failed to decode json"
-             | DecodeError(
-                 (x: Decode_AsResult_OfParseError.ParseError.failure),
-               ) =>
-               Decode.ParseError.failureToDebugString(x)
+             | DecodeError(err) =>
+               State__Settings.Decode.failureToDebugString(err)
              }
            )
            |> (x => "Error: " ++ x),
@@ -143,10 +141,10 @@ let make = () => {
                x
                |> State__Settings.Decode.decodeAgendaJson
                |> Result.tap(x => UpdateSettings(x) |> send)
-               |> Result.tapError(err =>
-                    Decode.ParseError.failureToDebugString(err) |> Js.log
-                  )
              )
+          /* |> Result.tapError(err => */
+          /*      Decode.ParseError.failureToDebugString(err) |> Js.log */
+          /*    ) */
           |> Option.fold(Error(Validation.JsonDecodeError), x =>
                x
                |> Result.fold(
