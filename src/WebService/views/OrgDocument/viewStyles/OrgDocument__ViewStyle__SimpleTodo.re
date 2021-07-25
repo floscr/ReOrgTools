@@ -75,7 +75,10 @@ let isInTimeRange =
     State__Settings.Agenda.Time.timeRangeToInterval(timerange);
 
   orgRange
-  |> Result.map(ReDate.areIntervalsOverlapping(timeRangeInterval))
+  |> Result.map(x =>
+       ReDate.areIntervalsOverlapping(timeRangeInterval, x)
+       || ReDate.isBefore(timeRangeInterval.start, x.end_)
+     )
   |> Result.getOrElse(false);
 };
 
@@ -134,11 +137,13 @@ let make =
 
   let conds =
     [
+      // Only with TODO keyword
       (true, ({keyword}: ReOrga.headline) => keyword |> Option.isSome),
+      // Planning items
       (
         timerange |> Option.isSome,
-        // Planning items
-        (x: ReOrga.headline) =>
+        (x: ReOrga.headline) => {
+          Js.log(x);
           switch (
             timerange |> Option.flatMap(Result.toOption),
             Org.Headline.getPlanning(x),
@@ -146,7 +151,8 @@ let make =
           | (Some(timerange), Some({start, end_})) =>
             isInTimeRange(~timerange, ~start, ~end_)
           | _ => false
-          },
+          };
+        },
       ),
     ]
     |> List.foldLeft(
