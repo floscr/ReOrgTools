@@ -27,6 +27,7 @@ let initialState: Agenda.t = {
   fields: [|Layout(Types__Org.Layout.SimpleTodo)|],
   timerange: Some(Ok(Agenda.Time.CurrentOnly(Agenda.Time.CurrentWeek))),
   tags: Some([|Agenda.Filter.Add("Foo")|]),
+  todos: None,
 };
 /* let initialState: Agenda.t = {files: [||], fields: [||]}; */
 

@@ -126,16 +126,18 @@ let make =
     |> Option.flatMap(
          fun
          | Loading => Some("Loading" |> s)
-         | AllFetched(xs) =>
-           (
-             switch (layoutType) {
-             | Kanban => <OrgDocument__ViewStyle__Kanban xs />
-             | SimpleTodo =>
-               <OrgDocument__ViewStyle__SimpleTodo xs ?timerange />
-             | _ => <OrgDocument__Root xs />
-             }
-           )
-           |> Option.some
+         | AllFetched(xs) => {
+             /* Js.log(xs); */
+             (
+               switch (layoutType) {
+               | Kanban => <OrgDocument__ViewStyle__Kanban xs />
+               | SimpleTodo =>
+                 <OrgDocument__ViewStyle__SimpleTodo xs ?timerange />
+               | _ => <OrgDocument__Root xs />
+               }
+             )
+             |> Option.some;
+           }
 
          | _ => None,
        )

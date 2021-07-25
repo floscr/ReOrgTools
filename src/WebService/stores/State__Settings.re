@@ -131,10 +131,11 @@ module Agenda = {
     fields: array(field),
     timerange: option(Time.t),
     tags: option(array(Filter.tagFilter)),
-    /* todos: array(filter), */
+    todos: option(array(Filter.todoFilter)),
   };
 
-  let make = (files, fields: array((string, string)), timerange, tags) => {
+  let make =
+      (files, fields: array((string, string)), timerange, tags, todos) => {
     files,
     fields:
       fields
@@ -153,7 +154,7 @@ module Agenda = {
          ),
     timerange,
     tags,
-    /* todos, */
+    todos,
   };
 };
 
@@ -231,7 +232,7 @@ module Encode = {
       |> Option.map(x => [("timerange", x)])
     );
 
-  let encodeTagsJson =
+  let encodeFiltersJson =
     Agenda.Filter.(
       fun
       | Add(x) => String.concat("+", x)
@@ -241,7 +242,7 @@ module Encode = {
 
   let encodeAgendasJson =
     Json.Encode.(
-      ({files, fields, timerange, tags}: Agenda.t) =>
+      ({files, fields, timerange, tags, todos}: Agenda.t) =>
         object_(
           [
             (
@@ -267,7 +268,15 @@ module Encode = {
           |> (
             xs =>
               tags
-              |> Option.map(xs => [("tags", array(encodeTagsJson, xs))])
+              |> Option.map(xs => [("tags", array(encodeFiltersJson, xs))])
+              |> Option.fold(xs, List.concat(xs))
+          )
+          |> (
+            xs =>
+              todos
+              |> Option.map(xs =>
+                   [("todos", array(encodeFiltersJson, xs))]
+                 )
               |> Option.fold(xs, List.concat(xs))
           ),
         )
@@ -337,8 +346,6 @@ module Decode = {
       |> run(json)
     );
 
-  /* let decodeFilterField =  */
-
   let parseFilter = x =>
     x
     |> String.splitAt(1)
@@ -353,13 +360,6 @@ module Decode = {
   let decodeFilter = json =>
     D.string(json) |> Result.flatMap(x => parseFilter(x));
 
-  /* let parseFilters = xs => Array.Result.traverse(parseFilter, xs); */
-  /* |> ( */
-  /*   fun */
-  /*   | Ok(xs) => R.pure(xs) */
-  /*   | Error(err) => Decode.ParseError(err) */
-  /* ); */
-
   let decodeAgendaJson = json =>
     D.Pipeline.(
       succeed(Agenda.make)
@@ -367,7 +367,7 @@ module Decode = {
       |> field("fields", array(tuple2(string, string)))
       |> optionalField("timerange", decodeAgendaTimerangeJson)
       |> optionalField("tags", array(decodeFilter))
-      /* |> optionalField("todos", array(tuple2(string, string))) */
+      |> optionalField("todos", array(decodeFilter))
       |> run(json)
     );
 
