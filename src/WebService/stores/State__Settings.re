@@ -108,12 +108,14 @@ module Agenda = {
     };
   };
 
-  type filter =
-    | Add(string)
-    | Remove(string);
+  module Filter = {
+    type t =
+      | Add(string)
+      | Remove(string);
 
-  type tagFilter = filter;
-  type todoFilter = filter;
+    type tagFilter = t;
+    type todoFilter = t;
+  };
 
   type field =
     | Layout(Types__Org.Layout.t);
@@ -128,7 +130,7 @@ module Agenda = {
     files: filesT,
     fields: array(field),
     timerange: option(Time.t),
-    tags: option(string),
+    tags: option(array(Filter.tagFilter)),
     /* todos: array(filter), */
   };
 
@@ -229,9 +231,17 @@ module Encode = {
       |> Option.map(x => [("timerange", x)])
     );
 
+  let encodeTagsJson =
+    Agenda.Filter.(
+      fun
+      | Add(x) => String.concat("+", x)
+      | Remove(x) => String.concat("-", x)
+    )
+    >> Json.Encode.string;
+
   let encodeAgendasJson =
     Json.Encode.(
-      ({files, fields, timerange}: Agenda.t) =>
+      ({files, fields, timerange, tags}: Agenda.t) =>
         object_(
           [
             (
@@ -252,6 +262,12 @@ module Encode = {
               timerange
               |> Option.flatMap(Result.toOption)
               |> Option.flatMap(encodeAgendasTimerangeJson)
+              |> Option.fold(xs, List.concat(xs))
+          )
+          |> (
+            xs =>
+              tags
+              |> Option.map(xs => [("tags", array(encodeTagsJson, xs))])
               |> Option.fold(xs, List.concat(xs))
           ),
         )
@@ -328,8 +344,8 @@ module Decode = {
     |> String.splitAt(1)
     |> (
       fun
-      | ("+", color) => Ok(color)
-      | ("-", color) => Ok(color)
+      | ("+", x) => Ok(Agenda.Filter.Add(x))
+      | ("-", x) => Ok(Agenda.Filter.Remove(x))
       | (_a, _b) =>
         Error(Decode.ParseError.Val(`InvalidFilter, Js.Json.string(x)))
     );
@@ -350,7 +366,7 @@ module Decode = {
       |> field("files", array(decodeAgendaFilesJson))
       |> field("fields", array(tuple2(string, string)))
       |> optionalField("timerange", decodeAgendaTimerangeJson)
-      |> optionalField("tags", decodeFilter)
+      |> optionalField("tags", array(decodeFilter))
       /* |> optionalField("todos", array(tuple2(string, string))) */
       |> run(json)
     );

@@ -22,13 +22,12 @@ module Agenda = State__Settings.Agenda;
 
 type state = Agenda.t;
 
-let initialState: Agenda.t =
-  Agenda.{
-    files: [|{id: "inbox", workspace: 0}, {id: "work", workspace: 1}|],
-    fields: [|Layout(Types__Org.Layout.SimpleTodo)|],
-    timerange: Some(Ok(Agenda.Time.CurrentOnly(Agenda.Time.CurrentWeek))),
-    tags: Some("Foo"),
-  };
+let initialState: Agenda.t = {
+  files: [|{id: "inbox", workspace: 0}, {id: "work", workspace: 1}|],
+  fields: [|Layout(Types__Org.Layout.SimpleTodo)|],
+  timerange: Some(Ok(Agenda.Time.CurrentOnly(Agenda.Time.CurrentWeek))),
+  tags: Some([|Agenda.Filter.Add("Foo")|]),
+};
 /* let initialState: Agenda.t = {files: [||], fields: [||]}; */
 
 type action =
