@@ -63,6 +63,7 @@ module Implementation = {
     module Settings = {
       let settings = state => state.settingsState;
       let bookmarks = state => state.settingsState.bookmarks;
+      let agendas = state => state.settingsState.agendas;
       let isSidebarOpen = state => state.settingsState.isSidebarOpen;
     };
     module Workspaces = {

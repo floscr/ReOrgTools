@@ -106,6 +106,21 @@ module Agenda = {
 
     type tagFilter = t;
     type todoFilter = t;
+
+    let getString: t => string =
+      fun
+      | Add(x) => x
+      | Remove(x) => x;
+
+    let toBool: t => bool =
+      fun
+      | Add(_) => true
+      | Remove(_) => false;
+
+    let eqString = (t, x: string): bool => t |> getString |> String.eq(x);
+
+    let needsTag = (xs: array(t)): bool =>
+      Array.find(toBool, xs) |> Option.isSome;
   };
 
   type field =
@@ -115,9 +130,11 @@ module Agenda = {
     fun
     | Layout(x) => ("Layout", x |> Types__Org.Layout.toString);
 
+  type agendaId = string;
   type filesT = array(File.t);
 
   type t = {
+    id: agendaId,
     files: filesT,
     fields: array(field),
     timerange: option(Time.t),
@@ -126,7 +143,8 @@ module Agenda = {
   };
 
   let make =
-      (files, fields: array((string, string)), timerange, tags, todos) => {
+      (id, files, fields: array((string, string)), timerange, tags, todos) => {
+    id,
     files,
     fields:
       fields
@@ -173,6 +191,7 @@ type state = {
 
 type action =
   | SaveLastViewdFile(string)
+  | SaveAgendaState(Agenda.t)
   | SaveState(state)
   | ToggleSidebar
   | ToggleBookmark(Bookmark.t)
@@ -233,9 +252,10 @@ module Encode = {
 
   let encodeAgendasJson =
     Json.Encode.(
-      ({files, fields, timerange, tags, todos}: Agenda.t) =>
+      ({id, files, fields, timerange, tags, todos}: Agenda.t) =>
         object_(
           [
+            ("id", string(id)),
             (
               "files",
               files |> Array.map(encodeAgendasFilesJson) |> jsonArray,
@@ -354,6 +374,7 @@ module Decode = {
   let decodeAgendaJson = json =>
     D.Pipeline.(
       succeed(Agenda.make)
+      |> field("id", string)
       |> field("files", array(decodeAgendaFilesJson))
       |> field("fields", array(tuple2(string, string)))
       |> optionalField("timerange", decodeAgendaTimerangeJson)
@@ -400,6 +421,21 @@ let storeSettings = state => {
 let reducer = (state, action) => {
   switch (action) {
   | SaveState(state) => state
+  | SaveAgendaState(agenda) =>
+    {
+      ...state,
+      agendas:
+        Array.indexOfBy(
+          (a: Agenda.t, b: Agenda.t) => a.id === b.id,
+          agenda,
+          state.agendas,
+        )
+        |> Option.foldLazy(
+             _ => Array.append(agenda, state.agendas),
+             index => Array.replaceAt(index, agenda, state.agendas),
+           ),
+    }
+    |> tap(storeSettings)
   | ToggleSidebar =>
     {...state, isSidebarOpen: !state.isSidebarOpen} |> tap(storeSettings)
   | SaveLastViewdFile((lastViewedFile: string)) =>

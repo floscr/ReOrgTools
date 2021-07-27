@@ -69,7 +69,7 @@ let reducer =
 
 module MainWrapper = {
   [@react.component]
-  let make = (~id, ~isSidebarOpen, ~children) => {
+  let make = (~id=?, ~isSidebarOpen, ~children) => {
     <>
       {switch (isSidebarOpen) {
        | true => <aside className=Styles.sidebar> <Sidebar id /> </aside>
@@ -81,15 +81,13 @@ module MainWrapper = {
 };
 
 let showAgenda = () => {
-  <MainWrapper id=None isSidebarOpen=false>
-    <AgendaBuilder__Root />
-  </MainWrapper>;
+  <MainWrapper isSidebarOpen=false> <AgendaBuilder__Root /> </MainWrapper>;
 };
 
 let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
   let {narrowToHeader, layoutType}: Types__URLSearchParams.t = queryParams;
 
-  <MainWrapper id isSidebarOpen>
+  <MainWrapper ?id isSidebarOpen>
     {switch (id) {
      | Some(id) =>
        let identifier: State__OrgDocuments.File.identifier = {
@@ -216,8 +214,17 @@ let make = () => {
 
   <main ref={ReactDOMRe.Ref.domRef(rootRef)}>
     {switch (state.areSettingsLoaded, url.path) {
+     // Agenda
      | (true, ["agenda", "new"]) =>
        <div className=Styles.root> {showAgenda()} </div>
+     | (true, ["agendas", id]) =>
+       <MainWrapper isSidebarOpen=true>
+         <article className={Styles.main(true)}>
+           <Agenda__Root.Component id />
+         </article>
+       </MainWrapper>
+
+     // File
      | (true, ["file", workspaceIndex, id]) =>
        let workspaceIndex =
          workspaceIndex |> String.toInt |> Option.getOrElse(0);
@@ -230,7 +237,10 @@ let make = () => {
          {showMain(~id, ~queryParams, ~workspaceIndex, ~isSidebarOpen, ())}
        </div>;
 
+     // Loading settings
      | (false, _) => React.null
+
+     // Default
      | _ => showMain(~queryParams, ~isSidebarOpen, ())
      }}
     <Dialogs />

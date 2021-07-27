@@ -2,6 +2,7 @@ open Relude.Globals;
 open ReOrga;
 open OrgDocument__Utils;
 open ReactUtils;
+open State;
 
 module Styles = {
   open Css;
@@ -23,10 +24,11 @@ module Agenda = State__Settings.Agenda;
 type state = Agenda.t;
 
 let initialState: Agenda.t = {
+  id: "Example",
   files: [|{id: "inbox", workspace: 0}, {id: "work", workspace: 1}|],
   fields: [|Layout(Types__Org.Layout.SimpleTodo)|],
   timerange: Some(Ok(Agenda.Time.CurrentOnly(Agenda.Time.CurrentWeek))),
-  tags: Some([|Agenda.Filter.Add("Foo")|]),
+  tags: Some([|Agenda.Filter.Add("WORK")|]),
   todos: None,
 };
 /* let initialState: Agenda.t = {files: [||], fields: [||]}; */
@@ -90,6 +92,8 @@ module Validation = {
 
 [@react.component]
 let make = () => {
+  let dispatch = State.Store.useDispatch();
+
   let (value, setValue) =
     React.useState(() =>
       initialState
@@ -109,7 +113,7 @@ let make = () => {
     );
 
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
-  let {files, fields, timerange}: state = state;
+  let {files, fields, timerange, tags}: state = state;
 
   let layoutType =
     fields
@@ -142,6 +146,10 @@ let make = () => {
                x
                |> State__Settings.Decode.decodeAgendaJson
                |> Result.tap(x => UpdateSettings(x) |> send)
+               |> Result.tap((x: State__Settings.Agenda.t) =>
+                    SettingsAction(State__Settings.SaveAgendaState(x))
+                    |> dispatch
+                  )
              )
           /* |> Result.tapError(err => */
           /*      Decode.ParseError.failureToDebugString(err) |> Js.log */
@@ -159,11 +167,7 @@ let make = () => {
       <pre> {validation |> Validation.toString |> s} </pre>
     </Radix.ScrollArea.Wrapper>
     <Radix.ScrollArea.Wrapper>
-      <Controller__OrgDocument
-        identifiers=files
-        ?timerange
-        layoutType={layoutType |> Option.getOrElse(Types__Org.Layout.default)}
-      />
+      <Agenda__Root.OrgWrapper agenda=state ?layoutType />
     </Radix.ScrollArea.Wrapper>
   </div>;
 };

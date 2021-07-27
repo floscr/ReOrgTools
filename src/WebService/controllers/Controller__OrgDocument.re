@@ -54,6 +54,7 @@ let make =
       ~identifiers: array(State__OrgDocuments.File.identifier),
       ~layoutType=Types__Org.Layout.default,
       ~timerange: option(State__Settings.Agenda.Time.t)=?,
+      ~tags: option(array(State__Settings.Agenda.Filter.t))=?,
       ~narrowToHeader=None,
     ) => {
   let dispatch = Store.useDispatch();
@@ -132,7 +133,7 @@ let make =
                switch (layoutType) {
                | Kanban => <OrgDocument__ViewStyle__Kanban xs />
                | SimpleTodo =>
-                 <OrgDocument__ViewStyle__SimpleTodo xs ?timerange />
+                 <OrgDocument__ViewStyle__SimpleTodo xs ?timerange ?tags />
                | _ => <OrgDocument__Root xs />
                }
              )
