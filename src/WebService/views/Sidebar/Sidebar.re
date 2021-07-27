@@ -7,17 +7,9 @@ module Styles = {
   let innerSpacing = FixedTheme.Spacing.large;
 
   let root =
-    style([
-      position(relative),
-      padding(innerSpacing),
-      paddingRight(
-        `calc((`sub, innerSpacing, FixedTheme.Spacing.scrollbarWidth)),
-      ),
-      backgroundColor(var(ThemeKeys.baseGray1)),
-      overflowY(scroll),
-      flexGrow(1.),
-      flexShrink(1.),
-    ]);
+    style([backgroundColor(var(ThemeKeys.baseGray1)), overflow(hidden)]);
+
+  let scrollviewWrapper = style([padding(innerSpacing)]);
 
   let backIcon =
     style([position(absolute), top(innerSpacing), right(innerSpacing)]);
@@ -53,15 +45,19 @@ let make = (~id) => {
   let onBackClick = _ => send(SwitchMode(Workspaces));
 
   <div className=Styles.root>
-    <Sidebar__Agendas />
-    <Sidebar__Bookmarks />
-    {switch (state.mode, file) {
-     | (Outline, Some(State__OrgDocuments.File.Fetched({ast}))) =>
-       <>
-         <button onClick=onBackClick> {"<- Go back" |> s} </button>
-         <Outline ast />
-       </>
-     | _ => <Workspaces__Component onFileClick />
-     }}
+    <Radix.ScrollArea.Wrapper>
+      <div className=Styles.scrollviewWrapper>
+        <Sidebar__Agendas />
+        <Sidebar__Bookmarks />
+        {switch (state.mode, file) {
+         | (Outline, Some(State__OrgDocuments.File.Fetched({ast}))) =>
+           <>
+             <button onClick=onBackClick> {"<- Go back" |> s} </button>
+             <Outline ast />
+           </>
+         | _ => <Workspaces__Component onFileClick />
+         }}
+      </div>
+    </Radix.ScrollArea.Wrapper>
   </div>;
 };
