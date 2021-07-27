@@ -6,13 +6,14 @@ module Styles = {
   open Css;
   let innerSpacing = FixedTheme.Spacing.xlarge;
 
-  let root =
+  let main =
     style([
       position(fixed),
       top(zero),
       left(zero),
       right(zero),
       bottom(zero),
+      overflow(hidden),
     ]);
 
   let rootWithSidebar = isSidebarOpen =>
@@ -23,20 +24,25 @@ module Styles = {
 
   let sidebar =
     style([
-      position(fixed),
-      width(vw(20.)),
+      minWidth(vw(20.)),
+      maxWidth(px(200)),
       height(vh(100.)),
       display(flexBox),
       flexDirection(column),
     ]);
 
-  let main = isSidebarOpen =>
+  let sidebarWrapper =
     style([
-      gridColumnStart(isSidebarOpen ? 2 : 1),
-      display(`flex),
-      flexDirection(column),
-      overflow(hidden),
+      position(absolute),
+      top(zero),
+      left(zero),
+      right(zero),
+      bottom(zero),
+      flexDirection(row),
+      display(flexBox),
     ]);
+
+  let contentWrapper = style([flexGrow(1.), flexShrink(1.)]);
 };
 
 type state = {
@@ -67,48 +73,47 @@ let reducer =
   | NoOp => NoUpdate
   };
 
-module MainWrapper = {
+module WithSidebar = {
   [@react.component]
   let make = (~id=?, ~isSidebarOpen, ~children) => {
-    <>
+    <div className=Styles.sidebarWrapper>
       {switch (isSidebarOpen) {
        | true => <aside className=Styles.sidebar> <Sidebar id /> </aside>
        | _ => React.null
        }}
       children
-    </>;
+    </div>;
   };
 };
 
 let showAgenda = () => {
-  <MainWrapper isSidebarOpen=false> <AgendaBuilder__Root /> </MainWrapper>;
+  <WithSidebar isSidebarOpen=false> <AgendaBuilder__Root /> </WithSidebar>;
 };
 
 let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
   let {narrowToHeader, layoutType}: Types__URLSearchParams.t = queryParams;
 
-  <MainWrapper ?id isSidebarOpen>
+  <WithSidebar ?id isSidebarOpen>
     {switch (id) {
      | Some(id) =>
        let identifier: State__OrgDocuments.File.identifier = {
          id,
          workspace: workspaceIndex,
        };
-
-       <article className={Styles.main(isSidebarOpen)}>
+       <div className=Styles.contentWrapper>
+         <OrgDocument__Toolbar workspaceIndex id layoutType />
          <Radix.ScrollArea.Wrapper>
-           <OrgDocument__Toolbar workspaceIndex id layoutType />
            <Controller__OrgDocument
              identifiers=[|identifier|]
              narrowToHeader
              layoutType
            />
          </Radix.ScrollArea.Wrapper>
-       </article>;
+       </div>;
 
      | _ => React.null
      }}
-  </MainWrapper>;
+  </WithSidebar>;
 };
 
 [@react.component]
@@ -212,30 +217,24 @@ let make = () => {
     Some(() => detachShortcuts());
   });
 
-  <main ref={ReactDOMRe.Ref.domRef(rootRef)}>
+  <main className=Styles.main ref={ReactDOMRe.Ref.domRef(rootRef)}>
     {switch (state.areSettingsLoaded, url.path) {
      // Agenda
-     | (true, ["agenda", "new"]) =>
-       <div className=Styles.root> {showAgenda()} </div>
+     | (true, ["agenda", "new"]) => showAgenda()
      | (true, ["agendas", id]) =>
-       <MainWrapper isSidebarOpen=true>
-         <article className={Styles.main(true)}>
-           <Agenda__Root.Component id />
-         </article>
-       </MainWrapper>
+       <WithSidebar isSidebarOpen=true>
+         <div className=Styles.contentWrapper>
+           <Radix.ScrollArea.Wrapper>
+             <Agenda__Root.Component id />
+           </Radix.ScrollArea.Wrapper>
+         </div>
+       </WithSidebar>
 
      // File
      | (true, ["file", workspaceIndex, id]) =>
        let workspaceIndex =
          workspaceIndex |> String.toInt |> Option.getOrElse(0);
-       let className =
-         ClassName.pure(Styles.root)
-         |> ClassName.append(Styles.rootWithSidebar(isSidebarOpen))
-         |> ClassName.unwrap;
-
-       <div className>
-         {showMain(~id, ~queryParams, ~workspaceIndex, ~isSidebarOpen, ())}
-       </div>;
+       showMain(~id, ~queryParams, ~workspaceIndex, ~isSidebarOpen, ());
 
      // Loading settings
      | (false, _) => React.null
