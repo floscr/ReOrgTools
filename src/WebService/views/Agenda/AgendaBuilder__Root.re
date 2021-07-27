@@ -137,7 +137,7 @@ let make = () => {
           setValue(value);
 
           value
-          |> Json.parse
+          |> ReactUtils.JsonParser.parseIgnoreTrailing
           |> Option.map(x =>
                x
                |> State__Settings.Decode.decodeAgendaJson

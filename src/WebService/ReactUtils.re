@@ -1,5 +1,24 @@
 open Relude.Globals;
 
+module JsonParser = {
+  // Regex taken from https://github.com/nokazn/strip-json-trailing-commas/blob/main/src/index.ts
+  // Parses json, if the first parse fails it removes all trailing commas and parses again.
+  // Adds convinience factor for editing json, should not be used on large strings.
+  let parseIgnoreTrailing = (x: string): option(Js.Json.t) =>
+    x
+    |> Json.parse
+    |> Option.orElseLazy(~fallback=_ =>
+         x
+         |> String.replaceRegex(
+              ~search=[%re
+                "/(?<=(true|false|null|[\\\"\d}\]])\s*)\s*,(?=\s*[}\]])/g"
+              ],
+              ~replaceWith="",
+            )
+         |> Json.parse
+       );
+};
+
 [@bs.send] external blur: Js.t({..}) => unit = "blur";
 
 let blurOnClick = e => e |> ReactEvent.Mouse.currentTarget |> blur;
