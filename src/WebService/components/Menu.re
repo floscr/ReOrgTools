@@ -30,7 +30,7 @@ module Styles = {
 
   let resultsRoot =
     style([
-      overflowY(scroll),
+      overflowY(hidden),
       flexGrow(1.),
       display(`flex),
       flexDirection(column),
@@ -200,7 +200,9 @@ let make =
         placeholder
       />
       <div className=Styles.resultsRoot>
-        <ul className=Styles.resultsList> {renderItems(state)} </ul>
+        <Radix.ScrollArea.Wrapper>
+          <ul className=Styles.resultsList> {renderItems(state)} </ul>
+        </Radix.ScrollArea.Wrapper>
       </div>
     </div>
   </ComboKeysWrapper>;
