@@ -128,6 +128,11 @@ let scrollIntoViewIfNeeded =
   };
 };
 
+let eventPrevent = (fn, event) => {
+  event->ReactEvent.Synthetic.preventDefault;
+  event->fn;
+};
+
 module Form = {
   module Style = {
     open Css;
