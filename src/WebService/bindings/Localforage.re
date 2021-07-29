@@ -71,3 +71,13 @@ module Localforage_IO = {
          {j|Key "$key" not found in db|j},
        );
 };
+
+type window;
+[@bs.val] external window: window;
+[@bs.set_index] external makeGlobal: (window, string, 'a) => unit;
+let makeGlobal = (name, value) => makeGlobal(window, name, value);
+makeGlobal("localforageState", key =>
+  Relude.Globals.(
+    Localforage_IO.get(key) |> IO.tap(Js.log) |> IO.unsafeRunAsync(ignore)
+  )
+);
