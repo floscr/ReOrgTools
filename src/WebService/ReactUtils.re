@@ -174,7 +174,6 @@ module Form = {
           [
             backgroundColor(var(ThemeKeys.bgColor)),
             fontFamily(`custom("Ubuntu Mono")),
-            fontSize(rem(0.9)),
             lineHeight(`abs(1.42)),
             border(px(1), `solid, var(ThemeKeys.baseGray7)),
             focus([
