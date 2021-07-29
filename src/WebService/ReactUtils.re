@@ -127,3 +127,62 @@ let scrollIntoViewIfNeeded =
   | None => ()
   };
 };
+
+module Form = {
+  module Style = {
+    open Css;
+    open FixedTheme;
+
+    let form =
+      style([
+        selector(
+          "input, textarea",
+          [
+            padding(Spacing.medium),
+            color(var(ThemeKeys.baseGray14)),
+            borderRadius(BorderRadius.small),
+          ],
+        ),
+        selector(
+          "input[type='submit']",
+          [
+            borderStyle(none),
+            fontWeight(bolder),
+            hover([
+              backgroundColor(var(ThemeKeys.accentMain)),
+              color(white),
+              cursor(pointer),
+            ]),
+          ],
+        ),
+        selector(
+          "textarea, input[type='text']",
+          [
+            backgroundColor(var(ThemeKeys.bgColor)),
+            fontFamily(`custom("Ubuntu Mono")),
+            fontSize(rem(0.9)),
+            lineHeight(`abs(1.42)),
+            border(px(1), `solid, var(ThemeKeys.baseGray7)),
+            focus([
+              outlineWidth(zero),
+              borderColor(var(ThemeKeys.accentMain)),
+            ]),
+          ],
+        ),
+      ]);
+  };
+
+  module Wrapper = {
+    [@react.component]
+    let make = (~onSubmit=?, ~children) => {
+      <form ?onSubmit className=Style.form> children </form>;
+    };
+  };
+
+  module SubmitButton = {
+    [@react.component]
+    let make = (~disabled: option(bool)=?) => {
+      <input type_="submit" value="Submit" ?disabled />;
+    };
+  };
+};

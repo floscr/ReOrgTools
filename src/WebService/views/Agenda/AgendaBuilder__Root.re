@@ -128,43 +128,46 @@ let make = () => {
 
   <div className=Styles.root>
     <Radix.ScrollArea.Wrapper>
-      <textarea
-        value
-        rows=30
-        className=Styles.textArea
-        onChange={event => {
-          open ReactEvent.Form;
-
-          persist(event);
-          let value = target(event)##value;
-
-          setValue(value);
-
+      <ReactUtils.Form.Wrapper>
+        <textarea
           value
-          |> ReactUtils.JsonParser.parseIgnoreTrailing
-          |> Option.map(x =>
-               x
-               |> State__Settings.Decode.decodeAgendaJson
-               |> Result.tap(x => UpdateSettings(x) |> send)
-               |> Result.tap((x: State__Settings.Agenda.t) =>
-                    SettingsAction(State__Settings.SaveAgendaState(x))
-                    |> dispatch
-                  )
-             )
-          /* |> Result.tapError(err => */
-          /*      Decode.ParseError.failureToDebugString(err) |> Js.log */
-          /*    ) */
-          |> Option.fold(Error(Validation.JsonDecodeError), x =>
-               x
-               |> Result.fold(
-                    err => Error(Validation.DecodeError(err)),
-                    _ => Ok(Validation.Ok),
-                  )
-             )
-          |> (x => setValidation(_ => x));
-        }}
-      />
-      <pre> {validation |> Validation.toString |> s} </pre>
+          rows=30
+          className=Styles.textArea
+          onChange={event => {
+            open ReactEvent.Form;
+
+            persist(event);
+            let value = target(event)##value;
+
+            setValue(value);
+
+            value
+            |> ReactUtils.JsonParser.parseIgnoreTrailing
+            |> Option.map(x =>
+                 x
+                 |> State__Settings.Decode.decodeAgendaJson
+                 |> Result.tap(x => UpdateSettings(x) |> send)
+                 |> Result.tap((x: State__Settings.Agenda.t) =>
+                      SettingsAction(State__Settings.SaveAgendaState(x))
+                      |> dispatch
+                    )
+               )
+            /* |> Result.tapError(err => */
+            /*      Decode.ParseError.failureToDebugString(err) |> Js.log */
+            /*    ) */
+            |> Option.fold(Error(Validation.JsonDecodeError), x =>
+                 x
+                 |> Result.fold(
+                      err => Error(Validation.DecodeError(err)),
+                      _ => Ok(Validation.Ok),
+                    )
+               )
+            |> (x => setValidation(_ => x));
+          }}
+        />
+        <pre> {validation |> Validation.toString |> s} </pre>
+        <input type_="submit" value="Submit" />
+      </ReactUtils.Form.Wrapper>
     </Radix.ScrollArea.Wrapper>
     <Radix.ScrollArea.Wrapper>
       <Agenda__Root.OrgWrapper agenda=state ?layoutType />
