@@ -112,7 +112,17 @@ let make = () => {
          )
     );
 
+  let isValid = validation |> Result.isOk;
+
   let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
+
+  let onSubmit = _ =>
+    switch (isValid) {
+    | true =>
+      SettingsAction(State__Settings.SaveAgendaState(state)) |> dispatch
+    | _ => ()
+    };
+
   let {files, fields, timerange, tags}: state = state;
 
   let layoutType =
@@ -128,7 +138,7 @@ let make = () => {
 
   <div className=Styles.root>
     <Radix.ScrollArea.Wrapper>
-      <ReactUtils.Form.Wrapper>
+      <ReactUtils.Form.Wrapper onSubmit={onSubmit |> eventPrevent}>
         <textarea
           value
           rows=30
@@ -147,14 +157,7 @@ let make = () => {
                  x
                  |> State__Settings.Decode.decodeAgendaJson
                  |> Result.tap(x => UpdateSettings(x) |> send)
-                 |> Result.tap((x: State__Settings.Agenda.t) =>
-                      SettingsAction(State__Settings.SaveAgendaState(x))
-                      |> dispatch
-                    )
                )
-            /* |> Result.tapError(err => */
-            /*      Decode.ParseError.failureToDebugString(err) |> Js.log */
-            /*    ) */
             |> Option.fold(Error(Validation.JsonDecodeError), x =>
                  x
                  |> Result.fold(
@@ -166,7 +169,7 @@ let make = () => {
           }}
         />
         <pre> {validation |> Validation.toString |> s} </pre>
-        <input type_="submit" value="Submit" />
+        <ReactUtils.Form.SubmitButton disabled={!isValid} />
       </ReactUtils.Form.Wrapper>
     </Radix.ScrollArea.Wrapper>
     <Radix.ScrollArea.Wrapper>
