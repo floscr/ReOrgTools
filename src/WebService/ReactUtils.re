@@ -146,6 +146,7 @@ module Form = {
             padding(Spacing.medium),
             color(var(ThemeKeys.baseGray14)),
             borderRadius(BorderRadius.small),
+            fontSize(rem(0.9)),
           ],
         ),
         selector(
@@ -153,11 +154,19 @@ module Form = {
           [
             borderStyle(none),
             fontWeight(bolder),
-            hover([
-              backgroundColor(var(ThemeKeys.accentMain)),
-              color(white),
-              cursor(pointer),
-            ]),
+            backgroundColor(var(ThemeKeys.baseGray3)),
+            padding2(~v=Spacing.medium, ~h=Spacing.xlarge),
+            not_(
+              ":disabled",
+              [
+                hover([
+                  backgroundColor(var(ThemeKeys.accentMain)),
+                  color(white),
+                  cursor(pointer),
+                ]),
+              ],
+            ),
+            disabled([opacity(0.3)]),
           ],
         ),
         selector(
