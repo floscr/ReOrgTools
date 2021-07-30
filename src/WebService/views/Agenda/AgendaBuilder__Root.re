@@ -12,6 +12,7 @@ module Styles = {
     style([
       width(pct(100.)),
       height(pct(100.)),
+      padding(Spacing.large),
       display(`flex),
       children([flexGrow(1.), flex(`num(1.))]),
     ]);
