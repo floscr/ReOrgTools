@@ -17,14 +17,21 @@ module Styles = {
 
 module OrgWrapper = {
   [@react.component]
-  let make =
-      (
-        ~agenda: State__Settings.Agenda.t,
-        ~layoutType=Types__Org.Layout.default,
-      ) => {
-    let {files, timerange, tags}: State__Settings.Agenda.t = agenda;
+  let make = (~agenda: State__Settings.Agenda.t) => {
+    let {files, timerange, tags, fields}: State__Settings.Agenda.t = agenda;
 
-    <Controller__OrgDocument identifiers=files ?timerange ?tags layoutType />;
+    let layoutType =
+      fields
+      |> Array.find(
+           fun
+           | State__Settings.Agenda.Layout(_) => true,
+         )
+      |> Option.map(
+           fun
+           | State__Settings.Agenda.Layout(x) => x,
+         );
+
+    <Controller__OrgDocument identifiers=files ?timerange ?tags ?layoutType />;
   };
 };
 
