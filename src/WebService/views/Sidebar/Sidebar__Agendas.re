@@ -6,6 +6,7 @@ open State;
 let make = () => {
   module Styles = Sidebar__Utils.Styles;
 
+  let dispatch = State.Store.useDispatch();
   let agendas = Store.useSelector(Selector.Settings.agendas);
 
   <>
@@ -19,12 +20,20 @@ let make = () => {
     </div>
     <ul className=Styles.ul>
       {agendas
-       |> Array.map(({id}: State__Settings.Agenda.t) =>
+       |> Array.map(({id} as agenda: State__Settings.Agenda.t) =>
             <li className=Styles.li key={j|agenda-$id|j}>
               <button
                 className=Styles.button
                 onClick={_ => ReasonReactRouter.replace({j|/agendas/$id|j})}>
                 {id |> s}
+                <IconButton
+                  style=Styles.optionsButton
+                  id="delete_outline"
+                  onClick={_ =>
+                    SettingsAction(State__Settings.RemoveAgenda(agenda))
+                    |> dispatch
+                  }
+                />
               </button>
             </li>
           )
