@@ -192,6 +192,7 @@ type state = {
 type action =
   | SaveLastViewdFile(string)
   | SaveAgendaState(Agenda.t)
+  | RemoveAgenda(Agenda.t)
   | SaveState(state)
   | ToggleSidebar
   | ToggleBookmark(Bookmark.t)
@@ -433,6 +434,21 @@ let reducer = (state, action) => {
         |> Option.foldLazy(
              _ => Array.append(agenda, state.agendas),
              index => Array.replaceAt(index, agenda, state.agendas),
+           ),
+    }
+    |> tap(storeSettings)
+  | RemoveAgenda(agenda) =>
+    {
+      ...state,
+      agendas:
+        Array.indexOfBy(
+          (a: Agenda.t, b: Agenda.t) => a.id === b.id,
+          agenda,
+          state.agendas,
+        )
+        |> Option.foldLazy(
+             _ => state.agendas,
+             index => Array.removeAt(index, state.agendas),
            ),
     }
     |> tap(storeSettings)

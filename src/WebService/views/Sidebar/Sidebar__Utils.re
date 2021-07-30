@@ -39,9 +39,15 @@ module Styles = {
       focus(focusStyle),
     ]);
 
+  let optionsButton =
+    style([color(var(ThemeKeys.baseGray10)), lineHeight(`abs(0.))]);
+
   let button =
     style([
       padding2(~v=FixedTheme.Spacing.xsmall, ~h=FixedTheme.Spacing.large),
+      display(flexBox),
+      justifyContent(spaceBetween),
+      alignItems(center),
       lineHeight(`abs(1.)),
       borderRadius(px(50)),
       cursor(pointer),
