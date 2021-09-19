@@ -1,0 +1,417 @@
+#+TITLE: Project
+
+* Tasks
+** ACTIVE Custom Views :FEATURE:COOL:
+:LOGBOOK:
+CLOCK: [2021-07-22 Thu 16:36]--[2021-07-22 Thu 22:34] =>  5:58
+CLOCK: [2021-07-20 Tue 12:52]--[2021-07-20 Tue 12:53] =>  0:01
+CLOCK: [2021-06-27 Sun 12:19]--[2021-06-28 Mon 20:12] => 31:53
+CLOCK: [2021-06-26 Sat 17:53]--[2021-06-26 Sat 21:13] =>  3:20
+CLOCK: [2021-05-18 Tue 08:47]--[2021-05-18 Tue 08:53] =>  0:06
+:END:
+
+Need to refactor into views that can have multiple files open
+
+- Add multiple items
+- Add groups
+  - by tag
+  - by todo
+  - by date
+- Add filters
+  - by tag
+  - by todo
+  - by date
+- Reverse direction
+- Sorting
+
+*** Tasks
+**** TODO Update orgajs, switching to date-fns
+**** TODO FullCalendar
+
+[[https://fullcalendar.io/demos][Demos | FullCalendar]]
+
+** TODO User Actions :FEATURE:
+*** Tasks
+**** TODO Archiving
+**** TODO Change of done state
+**** TODO Editing
+** TODO Prepare Backend
+*** Tasks
+**** TODO Upload script for uberspace :FEATURE:DEPLOY:BACKEND:
+**** TODO [#C] Clean up outdated token login from [[file:~/Code/Projects/ReOrgTools/src/WebService/stores/State__Workspaces.re::Localforage.Localforage_IO.removeItem(Types__LocalStorage.user);][User]] :BACKEND:
+**** TODO [#C] Dont add timeframe on jst tokens on development :BACKEND:
+:LOGBOOK:
+CLOCK: [2021-05-06 Thu 09:10]--[2021-05-06 Thu 09:10] =>  0:00
+:END:
+
+[[https://github.com/search?q=extension%3Are+Store+dispatch+reducer&ref=opensearch][Search · extension:re Store dispatch reducer]]
+
+** SOMEDAY Security :FIX:
+
+- [ ] Nofollower on links
+
+** SOMEDAY Link Parsing of regular paragraphs :FIX:
+** SOMEDAY [#C] Dark Mode :ENHANCEMENT:
+
+- https://betterprogramming.pub/6-lesser-known-javascript-features-d45060a999ed?s=09
+- [[https://gist.github.com/tunguskha/e4dceb7080bfeea486cd476e9631a413][Darken & Lighten colors in pure CSS using variables.]]
+
+#+begin_src css
+:root {
+  /* Base color using HSL */
+  --hue: 207;
+  --saturation: 64%;
+  --light: 44%;
+
+  /* Base color in variable */
+  --primary-color: hsl(var(--hue), var(--saturation), var(--light));
+  /* Base color lighten using calc */
+  --primary-color-lighten: hsl(var(--hue), var(--saturation), calc(var(--light) + 10%));
+  /* Base color darken using calc */
+  --primary-color-darken: hsl(var(--hue), var(--saturation), calc(var(--light) - 10%));
+}
+#+end_src
+
+*** Inspiration from Discord
+
+#+begin_src css
+.theme-dark {
+    --header-primary: #fff;
+    --header-secondary: #b9bbbe;
+    --text-normal: #dcddde;
+    --text-muted: #72767d;
+    --text-link: #00b0f4;
+    --channels-default: #8e9297;
+    --interactive-normal: #b9bbbe;
+    --interactive-hover: #dcddde;
+    --interactive-active: #fff;
+    --interactive-muted: #4f545c;
+    --background-primary: #36393f;
+    --background-secondary: #2f3136;
+    --background-secondary-alt: #292b2f;
+    --background-tertiary: #202225;
+    --background-accent: #4f545c;
+    --background-floating: #18191c;
+    --background-mobile-primary: #36393f;
+    --background-mobile-secondary: #2f3136;
+    --background-modifier-hover: rgba(79,84,92,0.16);
+    --background-modifier-active: rgba(79,84,92,0.24);
+    --background-modifier-selected: rgba(79,84,92,0.32);
+    --background-modifier-accent: hsla(0,0%,100%,0.06);
+    --background-mentioned: rgba(250,166,26,0.05);
+    --background-mentioned-hover: rgba(250,166,26,0.08);
+    --background-message-hover: rgba(4,4,5,0.07);
+    --background-help-warning: rgba(250,166,26,0.1);
+    --background-help-info: rgba(0,176,244,0.1);
+    --scrollbar-thin-thumb: #202225;
+    --scrollbar-thin-track: transparent;
+    --scrollbar-auto-thumb: #202225;
+    --scrollbar-auto-track: #2e3338;
+    --scrollbar-auto-scrollbar-color-thumb: #202225;
+    --scrollbar-auto-scrollbar-color-track: #2f3136;
+    --elevation-stroke: 0 0 0 1px rgba(4,4,5,0.15);
+    --elevation-low: 0 1px 0 rgba(4,4,5,0.2),0 1.5px 0 rgba(6,6,7,0.05),0 2px 0 rgba(4,4,5,0.05);
+    --elevation-medium: 0 4px 4px rgba(0,0,0,0.16);
+    --elevation-high: 0 8px 16px rgba(0,0,0,0.24);
+    --logo-primary: #fff;
+    --focus-primary: #00b0f4;
+    --radio-group-dot-foreground: #8ea1e1;
+    --guild-header-text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+    --channeltextarea-background: #40444b;
+    --activity-card-background: #202225;
+    --textbox-markdown-syntax: #8e9297;
+    --deprecated-card-bg: rgba(32,34,37,0.6);
+    --deprecated-card-editable-bg: rgba(32,34,37,0.3);
+    --deprecated-store-bg: #36393f;
+    --deprecated-quickswitcher-input-background: #72767d;
+    --deprecated-quickswitcher-input-placeholder: hsla(0,0%,100%,0.3);
+    --deprecated-text-input-bg: rgba(0,0,0,0.1);
+    --deprecated-text-input-border: rgba(0,0,0,0.3);
+    --deprecated-text-input-border-hover: #040405;
+    --deprecated-text-input-border-disabled: #202225;
+    --deprecated-text-input-prefix: #dcddde;
+}
+
+.auto-Ge5KZx::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+.auto-Ge5KZx::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+.auto-Ge5KZx::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-auto-thumb);
+    min-height: 40px;
+}
+.auto-Ge5KZx::-webkit-scrollbar-thumb, .auto-Ge5KZx::-webkit-scrollbar-track {
+    border: 4px solid transparent;
+    background-clip: padding-box;
+    border-radius: 8px;
+}
+.scroller-2LSbBU::-webkit-scrollbar-track {
+    margin-bottom: 8px;
+}
+.auto-Ge5KZx::-webkit-scrollbar-thumb, .auto-Ge5KZx::-webkit-scrollbar-track {
+    border: 4px solid transparent;
+    background-clip: padding-box;
+    border-radius: 8px;
+}
+.auto-Ge5KZx::-webkit-scrollbar-track {
+    background-color: var(--scrollbar-auto-track);
+}
+#+end_src
+
+** SOMEDAY [#C] List indentation parsing :FIX:
+** SOMEDAY [#C] Try catch around Stat :FIX:
+
+[[file:~/Code/Projects/ReOrgTools/src/Server/src/App/Api.re::let stats = Stat.statSync(path);]]
+
+* Ideas
+** Competitors
+
+*** [[https://dynalist.io/][Home - Dynalist]]
+
+Using code mirror 6
+
+*** [[https://obsidian.md/][Obsidian]]
+[[https://github.com/trashhalo/obsidian-rust-plugin][trashhalo/obsidian-rust-plugin]]
+
+** My wanted features
+*** TODO Bookmark search
+** Technical Ideas
+*** TODO Drag And Drop
+
+[[https://github.com/shakacode/re-dnd][shakacode/re-dnd: Drag & drop for reason-react]]
+
+*** TODO Look at [[https://gitlab.com/nomadic-labs/umami-wallet/umami/-/tree/master/src][src · master · Nomadic Labs / Umami Wallet group / umami · GitLab]] for architecture
+
+Uses:
+- [[https://github.com/rescriptbr/reform][rescriptbr/reform: Reasonably making forms sound good]]
+- [[https://redex.github.io/package/child-reprocess/][child-reprocess | redex]]
+
+*** TODO Add animation library
+
+[[https://github.com/eldh/bs-react-spring][eldh/bs-react-spring: Reason bindings for react-spring]]
+
+*** TODO Steal resize panel code
+
+[[https://codesandbox.io/s/framer-motion-resize-panel-zs9tp][framer-motion-resize-panel - CodeSandbox]]
+*** TODO Edit local files with
+[[https://stackblitz.com/edit/file-picker?file=index.js&view=editor][file-picker - StackBlitz]]
+https://file-picker.stackblitz.io/
+[[https://web.dev/browser-fs-access/][Reading and writing files and directories with the browser-fs-access library]]
+*** TODO The File System Access API: simplifying access to local files
+:PROPERTIES:
+:CREATED:  [2021-06-04 Fri 14:52]
+:END:
+
+https://web.dev/file-system-access/
+*** TODO [#C] Virtualized List :ENHANCEMENT:PERFORMANCE:FRONTEND:
+
+[[https://github.com/r281GQ/reasonml-virtualized-list/tree/c7485cc92c38725aac3e12aa150c86e68771c6af][r281GQ/reasonml-virtualized-list at c7485cc92c38725aac3e12aa150c86e68771c6af]]
+
+*** TODO [#C] Look at parcel reason react boilerplate :PERFORMANCE:BACKEND:DEPLOY:
+
+[[https://github.com/Thinkei/parcel-reason-react-boilerplate][Thinkei/parcel-reason-react-boilerplate: An opinionated boilerplate template to work with Reason-React]]
+
+*** TODO [#C] Check out these express bindings
+
+[[https://github.com/bloodyowl/rescript-express][bloodyowl/rescript-express: Experimental (nearly zero-cost) bindings to express]]
+*** TODO [#C] Thumbnail generation :ENHANCEMENT:PERFORMANCE:BACKEND:
+
+Maybe with sha256 as the filename
+
+*** SOMEDAY [#C] Add reductive devtools
+:LOGBOOK:
+CLOCK: [2021-04-09 Fri 08:54]--[2021-04-09 Fri 08:55] =>  0:01
+:END:
+
+[[https://github.com/ambientlight/reductive-dev-tools][ambientlight/reductive-dev-tools: reductive and reason-react reducer component integration with Redux DevTools]]
+
+*** SOMEDAY Static File Authentication
+:LOGBOOK:
+CLOCK: [2021-05-16 Sun 13:57]--[2021-05-16 Sun 13:57] =>  0:00
+:END:
+
+Basically, create another token just for static files,
+that expires in x amount of time.
+Provide a token every time the user logs on
+Attach the token to the image
+
+[[https://github.com/smbwain/signed][smbwain/signed: Tiny node.js/express library for signing urls and validating them based on secret key.]]
+[[https://stackoverflow.com/questions/34096744/how-should-i-load-images-if-i-use-token-based-authentication][ajax - How should I load images if I use token-based authentication - Stack Overflow]]
+
+*** SOMEDAY Add img loading property to reason-react tag
+:PROPERTIES:
+:CREATED:  [2021-05-18 Tue 08:45]
+:END:
+
+So you can ~<loading="lazy" />~
+
+*** SOMEDAY Disable vendor prefixing in emotion
+
+https://github.com/emotion-js/emotion/issues/400#issuecomment-396279462
+
+*** SOMEDAY [#C] Offline App with ServiceWorkers :FEATURE:
+:LOGBOOK:
+CLOCK: [2021-04-04 Sun 11:05]--[2021-04-04 Sun 15:16] =>  4:11
+CLOCK: [2021-04-03 Sat 15:17]--[2021-04-03 Sat 17:17] =>  2:00
+CLOCK: [2021-04-03 Sat 15:16]--[2021-04-03 Sat 15:16] =>  0:00
+:END:
+
+Use [[https://webpack.js.org/) :: https://github.com/NekR/offline-plugin][NekR/offline-plugin: Offline plugin (ServiceWorker, AppCache) for webpack (]]
+
+**** Tasks
+
+***** TODO Store file Storage
+
+**** Links
+- [[https://developers.google.com/web/fundamentals/codelabs/offline][Adding a Service Worker and Offline into your Web App]]
+- [[https://gist.github.com/Rich-Harris/fd6c3c73e6e707e312d7c5d7d0f3b2f9#gistcomment-3116211][Stuff I wish Id known sooner about service workers]]
+*** DragDrop
+
+Use the react library, much more features
+
+[[https://github.com/atlassian/react-beautiful-dnd][atlassian/react-beautiful-dnd: Beautiful and accessible drag and drop for lists with React]]
+[[https://egghead.io/lessons/react-create-and-style-a-list-of-data-with-react][Create and Style a List of Data with React | egghead.io]]
+
+#+begin_src reason
+module DragDropContext = {
+  [@bs.module "react-beautiful-dnd"] external reactClass: ReasonReact.reactClass = "DragDropContext";
+
+  [@bs.obj] external makeProps: (~onDragEnd: unit => unit=?, unit) => _ = "";
+
+  let make = (~onDragEnd=?, children) =>
+    ReasonReact.wrapJsForReason(~reactClass, ~props=makeProps(~onDragEnd?, ()), children);
+};
+#+end_src
+
+There's also [[https://github.com/shakacode/re-dnd][shakacode/re-dnd: Drag & drop for reason-react]]
+But it has a ppx and doesnt work with my setup
+** Design Ideas
+*** Allow splitting of the view, allow multiple panes
+
+This would be awesome for writing!
+You could open a link as a
+Maybe you could even take paragraphs and lines from it!
+Quickly transfer knowledge from a source to the document
+
+*** Add border around Multiple Following Todo items :ATTACH:
+:PROPERTIES:
+:CREATED:  [2021-04-19 Mon 22:18]
+:ID:       d8227342-7ff7-4c6b-9861-fa7cdba0caca
+:END:
+
+[[attachment:_20210419_221935screenshotEL33OO.png]]
+
+#+begin_src css
+.css-15lc94o + .css-15lc94o {
+    margin-bottom: 0;
+    margin-top: 0;
+    border-bottom: 0;
+}
+<style>
+.css-15lc94o {
+    display: block;
+    margin: 1.38rem 0 1.38rem;
+    border: 1px solid #c4b4b4;
+    padding: 14px;
+}
+#+end_src
+*** Indentation style just like in emacs
+
+Same font size but indented
+Maybe even flat style
+
+*** TODO [#C] Thumbnail View :ATTACH:FEATURE:COOL:
+:PROPERTIES:
+:ID:       22a766ea-50d2-466b-9311-f92e0bed0f29
+:END:
+
+[[attachment:_20210419_220758screenshotib6nMf.png]]
+
+*** SOMEDAY [#C] Animated Focus Selection
+
+[[https://codepen.io/argyleink/pen/JjEzeLp][animate outline offset on focus]]
+
+** Brainstorming
+*** API Fetching
+
+Fetching of movie or book meta data
+Linking to other sites
+Custom actions
+
+Get
+
+*** Version History via Git? :TECHNICAL:
+*** Public Notes :PRODUCT:
+** TODO Archiver org
+:PROPERTIES:
+:CREATED:  [2021-07-15 Thu 10:42]
+:END:
+
+* Notes
+** Deploying Node to uberspace
+- [[https://www.carrier-lost.org/node-js-webserver-auf-einem-uberspace-einrichten/][node.js webserver auf einem uberspace einrichten]]
+- [[https://manual.uberspace.de/web-backends.html#setup][Uberspace: web backends]]
+- [[https://matthiasloibl.com/posts/deploying-a-website-with-git-on-uberspace/][Deploying a website with git on uberspace]]
+- [[https://github.com/fhemberger/uberspace-deployment][(Semi)automated deployment with Git and services on Uberspace]]
+** Talk with @nikolad
+
+Roam has lots of users, might be profitable to go public?
+
+* Links
+** [[https://orgmode.org/worg/dev/org-syntax.html][Org Syntax (draft)]]
+** Parser Research
+*** Search · Angstrom extension:re
+:PROPERTIES:
+:CREATED:  [2020-07-24 Fri 17:26]
+:END:
+
+https://github.com/search?q=Angstrom+extension%3Are&type=
+
+*** [[https://github.com/airbnb/Lona?s=09][airbnb/Lona: A tool for defining design systems and using them to generate cross-platform UI code, Sketch files, and other artifacts.]]
+*** [[https://github.com/airbnb/Lona/tree/master/compiler/core/src/decode?s=09][Lona/compiler/core/src/decode at master · airbnb/Lona]]
+*** ostera/rules_reason: Reason/OCaml rules and tools for Bazel
+:PROPERTIES:
+:CREATED:  [2020-07-24 Fri 17:38]
+:END:
+
+https://github.com/ostera/rules_reason
+
+*** [[https://github.com/pyrocat101/opal][pyrocat101/opal: Self-contained monadic parser combinators for OCaml]]
+** A11Y Research
+- [[https://jkrsp.com/accessibility-for-rich-text-editors/][10 tips for building accessible rich text editors | jkrsp]]
+
+** Inspiration :ATTACH:
+:PROPERTIES:
+:ID:       334e78dd-10fd-4836-a5af-fcf240bcfd30
+:END:
+*** [[https://flow.rest/][Flow — Clear your mind through expressive writing]]
+*** [[https://www.routine.co/?ref=producthunt][Routine - A productivity app]]
+
+
+*** [[https://obsidian.md/][Obsidian]]
+*** [[https://ycp.so/][Yusuf C Parak (@ycpso)]]
+[[https://github.com/ycparak/ycparak.com][ycparak/ycparak.com: 🎧 Personal site and note taking system, inspired by Andy Matuschaks notes.]]
+[[attachment:_20210216_135408EgjEq1pXgAESBXh.jpeg]]
+
+*** [[https://tecosaur.com/public/][Tecosaur Personal Notes]] :ATTACH:
+[[https://tecosaur.com/public/syncing.html][Syncing]]
+
+[[attachment:_20210216_135814screenshotQG6a5W.png]]
+*** [[https://www.steveruiz.me/about][About - Steve Ruiz]] :ATTACH:
+
+[[attachment:_20210308_100742screenshotKm9HyV.png]]
+
+[[attachment:_20210308_100719screenshotzyMTno.png]]
+*** [[https://blog.maximeheckel.com/posts/the-power-of-composition-with-css-variables/][The Power of Composition with CSS Variables - Maxime Heckels Blog]]
+- [[file:Inspiration.org::*\[\[https://maximeheckel.com/\]\[Maxime Heckel | Personal Portfolio\]\]][Maxime Heckel | Personal Portfolio]]
+*** [[https://workflowy.com/][WorkFlowy - Organize your brai.]]
+
+[[file:Inspiration.org::*\[\[https://workflowy.com/\]\[WorkFlowy - Organize your brain.\]\]][WorkFlowy - Organize your brain.]]
+** Usage (Other People and Products)
+*** [[https://wiki.nikitavoloboev.xyz/][Introduction - Everything I know]]
+Intersting colleciton of a wiki
+** Other Links
+*** [[https://github.com/melange-re/melange][melange-re/melange: A mixture of tooling combined to produce JavaScript from OCaml & Reason]]
