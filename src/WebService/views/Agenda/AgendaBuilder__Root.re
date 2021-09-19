@@ -93,12 +93,23 @@ module Validation = {
 };
 
 [@react.component]
-let make = () => {
+let make = (~id: option(string)=?) => {
   let dispatch = State.Store.useDispatch();
+
+  let initialStateOrEditingState =
+    id
+    |> Option.flatMap(editingId =>
+         Store.useSelector(Selector.Settings.agendas)
+         |> Array.find(({id}: State__Settings.Agenda.t) =>
+              String.eq(id, editingId)
+            )
+       )
+    |> Option.getOrElse(initialState)
+    |> Utils.log;
 
   let (value, setValue) =
     React.useState(() =>
-      initialState
+      initialStateOrEditingState
       |> State__Settings.Encode.encodeAgendasJson
       |> (x => Js.Json.stringifyWithSpace(x, 2))
     );
@@ -116,7 +127,8 @@ let make = () => {
 
   let isValid = validation |> Result.isOk;
 
-  let (state, send) = ReludeReact.Reducer.useReducer(reducer, initialState);
+  let (state, send) =
+    ReludeReact.Reducer.useReducer(reducer, initialStateOrEditingState);
 
   let onSubmit = _ =>
     switch (isValid) {

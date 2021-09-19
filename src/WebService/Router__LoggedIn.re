@@ -86,8 +86,8 @@ module WithSidebar = {
   };
 };
 
-let showAgenda = () => {
-  <WithSidebar isSidebarOpen=false> <AgendaBuilder__Root /> </WithSidebar>;
+let showAgenda = (~id: option(string)=None, unit) => {
+  <WithSidebar isSidebarOpen=false> <AgendaBuilder__Root ?id /> </WithSidebar>;
 };
 
 let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
@@ -221,6 +221,7 @@ let make = () => {
     {switch (state.areSettingsLoaded, url.path) {
      // Agenda
      | (true, ["agenda", "new"]) => showAgenda()
+     | (true, ["agenda", "edit", id]) => showAgenda(~id=Some(id), ())
      | (true, ["agendas", id]) =>
        <WithSidebar isSidebarOpen=true>
          <div className=Styles.contentWrapper>

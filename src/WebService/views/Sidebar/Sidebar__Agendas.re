@@ -28,6 +28,14 @@ let make = () => {
                 {id |> s}
                 <IconButton
                   style=Styles.optionsButton
+                  id="edit"
+                  onClick={e => {
+                    ReactEvent.Mouse.stopPropagation(e);
+                    ReasonReactRouter.replace("/agenda/edit/" ++ id);
+                  }}
+                />
+                <IconButton
+                  style=Styles.optionsButton
                   id="delete_outline"
                   onClick={_ =>
                     SettingsAction(State__Settings.RemoveAgenda(agenda))
