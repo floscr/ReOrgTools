@@ -201,10 +201,9 @@ let make =
 
   xs
   |> Utils.log
-  |> unfoldTree(~cond=((tags, headline)) => {
-       Js.log(tags);
-       keepItem(~conds, ~tags, headline);
-     })
+  |> unfoldTree(~cond=((tags, headline)) =>
+       keepItem(~conds, ~tags, headline)
+     )
   /* |> Array.sortBy(dateCompare) */
   |> Array.reverse
   |> renderItems
