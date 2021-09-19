@@ -82,23 +82,37 @@ let isInTimeRange =
   |> Result.getOrElse(false);
 };
 
-let rec unfoldTree = (~cond=_ => true, ~acc=[||], rest) => {
+let rec unfoldTree = (~cond=_ => true, ~acc=[||], ~inheritedTags=[||], rest) => {
   rest
   |> Array.foldLeft(
        (childAcc, child) =>
          switch (child |> getItem) {
-         | Headline(headline) when cond(headline) =>
+         | Headline(headline) when cond((inheritedTags, headline)) =>
            Array.append(child, childAcc)
          | Section({children}) =>
-           Array.concat(childAcc, unfoldTree(~acc, ~cond, children))
+           let tags =
+             Array.head(children)
+             |> Option.map(getItem)
+             |> Option.flatMap(
+                  fun
+                  | Headline({tags}) =>
+                    Some(Array.concat(inheritedTags, tags))
+                  | _ => None,
+                )
+             |> Option.getOrElse(inheritedTags);
+
+           Array.concat(
+             childAcc,
+             unfoldTree(~acc, ~cond, ~inheritedTags=tags, children),
+           );
          | _ => childAcc
          },
        acc,
      );
 };
 
-let keepItem = (~conds=[], headline: ReOrga.headline) => {
-  conds |> List.find(cond => cond(headline) === false) |> Option.isNone;
+let keepItem = (~conds=[], ~tags: array(string), headline: ReOrga.headline) => {
+  conds |> List.find(cond => cond(tags, headline) === false) |> Option.isNone;
 };
 
 let rec renderItems = (~properties=?, xs) => {
@@ -118,6 +132,7 @@ let make =
     (
       ~xs: array(ReOrga.sectionAst),
       ~timerange: option(State__Settings.Agenda.Time.t)=?,
+      ~tags: array(State__Settings.Agenda.Filter.tagFilter)=[||],
     ) => {
   let dateCompare =
     Ord.by(
@@ -135,15 +150,28 @@ let make =
       Float.compare,
     );
 
+  let (tagAdds, tagRemoves) =
+    tags
+    |> Array.foldLeft(
+         ((adds, removes), cur) =>
+           State__Settings.Agenda.Filter.(
+             switch (cur) {
+             | Add(x) => (List.append(x, adds), removes)
+             | Remove(x) => (adds, List.append(x, removes))
+             }
+           ),
+         ([], []),
+       );
+
+  /* Js.log2("Adds", tagAdds); */
   let conds =
     [
       // Only with TODO keyword
-      (true, ({keyword}: ReOrga.headline) => keyword |> Option.isSome),
+      (true, (_, {keyword}: ReOrga.headline) => keyword |> Option.isSome),
       // Planning items
       (
         timerange |> Option.isSome,
-        (x: ReOrga.headline) => {
-          Js.log(x);
+        (_, x: ReOrga.headline) => {
           switch (
             timerange |> Option.flatMap(Result.toOption),
             Org.Headline.getPlanning(x),
@@ -154,6 +182,17 @@ let make =
           };
         },
       ),
+      (
+        tags |> Array.isNotEmpty,
+        (tags, {content}: ReOrga.headline) => {
+          switch (tagAdds, tagRemoves) {
+          | (adds, removes) =>
+            tags
+            |> Array.find(tag => {List.containsBy(String.eq, tag, adds)})
+            |> Option.isSome
+          };
+        },
+      ),
     ]
     |> List.foldLeft(
          (acc, (keep, fn)) => keep ? List.append(fn, acc) : acc,
@@ -161,8 +200,13 @@ let make =
        );
 
   xs
-  |> unfoldTree(~cond=keepItem(~conds))
-  |> Array.sortBy(dateCompare)
+  |> Utils.log
+  |> unfoldTree(~cond=((tags, headline)) => {
+       Js.log(tags);
+       keepItem(~conds, ~tags, headline);
+     })
+  /* |> Array.sortBy(dateCompare) */
+  |> Array.reverse
   |> renderItems
   |> Wrappers.paddedWrapper;
 };
