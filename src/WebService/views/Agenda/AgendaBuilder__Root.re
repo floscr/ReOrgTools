@@ -174,7 +174,7 @@ let make = () => {
       </ReactUtils.Form.Wrapper>
     </Radix.ScrollArea.Wrapper>
     <Radix.ScrollArea.Wrapper>
-      <Agenda__Root.OrgWrapper agenda=state ?layoutType />
+      <Agenda__Root.OrgWrapper agenda=state />
     </Radix.ScrollArea.Wrapper>
   </div>;
 };
