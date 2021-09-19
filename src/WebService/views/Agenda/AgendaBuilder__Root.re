@@ -31,6 +31,7 @@ let initialState: Agenda.t = {
   timerange: Some(Ok(Agenda.Time.CurrentOnly(Agenda.Time.CurrentWeek))),
   tags: Some([|Agenda.Filter.Add("WORK")|]),
   todos: None,
+  reverse: Some(true),
 };
 /* let initialState: Agenda.t = {files: [||], fields: [||]}; */
 

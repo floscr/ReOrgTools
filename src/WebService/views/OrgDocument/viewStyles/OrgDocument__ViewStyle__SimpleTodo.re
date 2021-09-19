@@ -133,6 +133,7 @@ let make =
       ~xs: array(ReOrga.sectionAst),
       ~timerange: option(State__Settings.Agenda.Time.t)=?,
       ~tags: array(State__Settings.Agenda.Filter.tagFilter)=[||],
+      ~reverse: option(bool)=?,
     ) => {
   let dateCompare =
     Ord.by(
@@ -200,12 +201,11 @@ let make =
        );
 
   xs
-  |> Utils.log
   |> unfoldTree(~cond=((tags, headline)) =>
        keepItem(~conds, ~tags, headline)
      )
   /* |> Array.sortBy(dateCompare) */
-  |> Array.reverse
+  |> (xs => reverse |> Option.getOrElse(false) ? Array.reverse(xs) : xs)
   |> renderItems
   |> Wrappers.paddedWrapper;
 };

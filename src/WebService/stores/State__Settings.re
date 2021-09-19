@@ -140,10 +140,19 @@ module Agenda = {
     timerange: option(Time.t),
     tags: option(array(Filter.tagFilter)),
     todos: option(array(Filter.todoFilter)),
+    reverse: option(bool),
   };
 
   let make =
-      (id, files, fields: array((string, string)), timerange, tags, todos) => {
+      (
+        id,
+        files,
+        fields: array((string, string)),
+        timerange,
+        tags,
+        todos,
+        reverse,
+      ) => {
     id,
     files,
     fields:
@@ -164,6 +173,7 @@ module Agenda = {
     timerange,
     tags,
     todos,
+    reverse,
   };
 };
 
@@ -253,7 +263,7 @@ module Encode = {
 
   let encodeAgendasJson =
     Json.Encode.(
-      ({id, files, fields, timerange, tags, todos}: Agenda.t) =>
+      ({id, files, fields, timerange, tags, todos, reverse}: Agenda.t) =>
         object_(
           [
             ("id", string(id)),
@@ -289,6 +299,12 @@ module Encode = {
               |> Option.map(xs =>
                    [("todos", array(encodeFiltersJson, xs))]
                  )
+              |> Option.fold(xs, List.concat(xs))
+          )
+          |> (
+            xs =>
+              reverse
+              |> Option.map(reverse => [("reverse", bool(reverse))])
               |> Option.fold(xs, List.concat(xs))
           ),
         )
@@ -381,6 +397,7 @@ module Decode = {
       |> optionalField("timerange", decodeAgendaTimerangeJson)
       |> optionalField("tags", array(decodeFilter))
       |> optionalField("todos", array(decodeFilter))
+      |> optionalField("reverse", boolean)
       |> run(json)
     );
 

@@ -18,7 +18,7 @@ module Styles = {
 module OrgWrapper = {
   [@react.component]
   let make = (~agenda: State__Settings.Agenda.t) => {
-    let {files, timerange, tags, fields}: State__Settings.Agenda.t = agenda;
+    let {files, timerange, tags, fields, reverse}: State__Settings.Agenda.t = agenda;
 
     let layoutType =
       fields
@@ -31,7 +31,13 @@ module OrgWrapper = {
            | State__Settings.Agenda.Layout(x) => x,
          );
 
-    <Controller__OrgDocument identifiers=files ?timerange ?tags ?layoutType />;
+    <Controller__OrgDocument
+      identifiers=files
+      ?timerange
+      ?tags
+      ?layoutType
+      ?reverse
+    />;
   };
 };
 
