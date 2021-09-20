@@ -82,39 +82,6 @@ let isInTimeRange =
   |> Result.getOrElse(false);
 };
 
-let rec unfoldTree = (~cond=_ => true, ~acc=[||], ~inheritedTags=[||], rest) => {
-  rest
-  |> Array.foldLeft(
-       (childAcc, child) =>
-         switch (child |> getItem) {
-         | Headline(headline) when cond((inheritedTags, headline)) =>
-           Array.append(child, childAcc)
-         | Section({children}) =>
-           let tags =
-             Array.head(children)
-             |> Option.map(getItem)
-             |> Option.flatMap(
-                  fun
-                  | Headline({tags}) =>
-                    Some(Array.concat(inheritedTags, tags))
-                  | _ => None,
-                )
-             |> Option.getOrElse(inheritedTags);
-
-           Array.concat(
-             childAcc,
-             unfoldTree(~acc, ~cond, ~inheritedTags=tags, children),
-           );
-         | _ => childAcc
-         },
-       acc,
-     );
-};
-
-let keepItem = (~conds=[], ~tags: array(string), headline: ReOrga.headline) => {
-  conds |> List.find(cond => cond(tags, headline) === false) |> Option.isNone;
-};
-
 let rec renderItems = (~properties=?, xs) => {
   xs
   |> Array.mapWithIndex((x, i) => {
@@ -201,8 +168,8 @@ let make =
        );
 
   xs
-  |> unfoldTree(~cond=((tags, headline)) =>
-       keepItem(~conds, ~tags, headline)
+  |> OrgDocument__ListBuilder.unfoldOrgTree(~cond=((tags, headline)) =>
+       OrgDocument__ListBuilder.keepItem(~conds, ~tags, headline)
      )
   /* |> Array.sortBy(dateCompare) */
   |> (xs => reverse |> Option.getOrElse(false) ? Array.reverse(xs) : xs)
