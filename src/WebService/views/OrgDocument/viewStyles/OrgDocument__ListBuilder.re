@@ -19,16 +19,10 @@ module Unfolded = {
            switch (child |> getItem) {
            | Headline(headline) when cond((inheritedTags, headline)) =>
              Array.append(child, childAcc)
-           | Section({children}) =>
+           | Section({children} as x) =>
              let tags =
-               Array.head(children)
-               |> Option.map(getItem)
-               |> Option.flatMap(
-                    fun
-                    | Headline({tags}) =>
-                      Some(Array.concat(inheritedTags, tags))
-                    | _ => None,
-                  )
+               x
+               |> ReOrga.Org.Section.getTags
                |> Option.getOrElse(inheritedTags);
 
              Array.concat(

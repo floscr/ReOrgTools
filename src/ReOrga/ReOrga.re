@@ -289,6 +289,19 @@ module Org = {
     | _ => None
     };
 
+  module Section = {
+    type t = section;
+
+    let getTags = ({children}: t): option(array(string)) =>
+      Array.head(children)
+      |> Option.map(getItem)
+      |> Option.flatMap(
+           fun
+           | Headline({tags}) => Some(tags)
+           | _ => None,
+         );
+  };
+
   module Headline = {
     type t = headline;
 
