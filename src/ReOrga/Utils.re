@@ -3,6 +3,11 @@ let log = x => {
   x;
 };
 
+let log2 = (x, y) => {
+  Js.log2(x, y);
+  y;
+};
+
 module Tuple2 = {
   let head = ((a, _)) => a;
   let tail = ((_, b)) => b;
