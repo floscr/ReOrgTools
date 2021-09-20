@@ -12,7 +12,12 @@ module Unfolded = {
     | Grouped(StringMap.t(ReOrga.sectionAst));
 
   let rec unfoldTreeUngrouped =
-          (~cond=_ => true, ~acc=[||], ~inheritedTags=[||], rest) => {
+          (
+            ~cond=_ => true,
+            ~acc: array(ReOrga.sectionAst)=[||],
+            ~inheritedTags: array(string)=[||],
+            rest,
+          ) => {
     rest
     |> Array.foldLeft(
          (childAcc, child) =>
