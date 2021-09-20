@@ -9,6 +9,7 @@ module.exports = {
     hot: true,
     inline: true,
     historyApiFallback: true,
+    clientLogLevel: 'silent',
   },
   output: {
     path: path.join(__dirname, "bundleOutput"),
