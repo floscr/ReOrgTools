@@ -12,7 +12,7 @@ module.exports = {
     clientLogLevel: 'silent',
   },
   output: {
-    path: path.join(__dirname, "bundleOutput"),
+    path: path.join(__dirname, 'bundleOutput'),
     publicPath: '/',
     filename: 'index.js',
   },
