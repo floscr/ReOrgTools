@@ -146,11 +146,11 @@ let make = () => {
     data =>
       data
       |> Js.Nullable.toOption
-      |> Option.tap(_ => SettingsLoaded |> send)
       |> Option.flatMap(State__Settings.Decode.decodeJson >> Result.toOption)
       |> Option.tap(x =>
            SettingsAction(State__Settings.SaveState(x)) |> dispatch
          )
+      |> Option.tap(_ => SettingsLoaded |> send)
       |> Option.filter(_ => isHomePage)
       |> Option.flatMap(({lastViewedFile}: State__Settings.state) =>
            lastViewedFile
