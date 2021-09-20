@@ -168,7 +168,8 @@ let make =
        );
 
   xs
-  |> OrgDocument__ListBuilder.unfoldOrgTree(~cond=((tags, headline)) =>
+  |> OrgDocument__ListBuilder.Unfolded.unfoldTreeUngrouped(
+       ~cond=((tags, headline)) =>
        OrgDocument__ListBuilder.keepItem(~conds, ~tags, headline)
      )
   /* |> Array.sortBy(dateCompare) */
