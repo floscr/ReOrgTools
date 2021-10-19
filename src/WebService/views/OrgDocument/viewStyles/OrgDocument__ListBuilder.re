@@ -34,6 +34,10 @@ module Unfolded = {
         )
       | _ => (ungroupedAcc |> Array.append(x), groupedAcc)
       };
+    let print = ((ungrouped, grouped)) => (
+      ungrouped,
+      grouped |> StringMap.toArray,
+    );
   };
 
   type t =
@@ -61,14 +65,24 @@ module Unfolded = {
                |> ReOrga.Org.Section.getTags
                |> Option.getOrElse(inheritedTags);
 
-             Array.concat(
-               childAcc,
-               unfoldTreeGrouped(~acc, ~cond, ~inheritedTags=tags, children),
-             );
+             unfoldTreeGrouped(~acc, ~cond, ~inheritedTags=tags, children);
            | _ => childAcc
            },
          acc,
-       );
+       )/*        | Headline(headline) when cond((inheritedTags, headline)) => */
+        /*          let group = makeGroupStr(child); */
+        /*          Grouped.append(group, child, childAcc); */
+        /*        | Section({children} as x) => */
+        /*          let tags = */
+        /*            x */
+        /*            |> ReOrga.Org.Section.getTags */
+        /*            |> Option.getOrElse(inheritedTags); */
+        /*          unfoldTreeGrouped(~acc, ~cond, ~inheritedTags=tags, children); */
+        /*        | _ => childAcc */
+        /*        }, */
+        /*      acc, */
+        ; /*        switch (child |> getItem) { */ /*      (childAcc, child) => */ /* |> Array.foldLeft( */
+        /*    ); */
   };
 
   let rec unfoldTreeUngrouped =

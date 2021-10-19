@@ -167,6 +167,23 @@ let make =
          [],
        );
 
+  Js.log2("xs", xs);
+
+  Js.log2(
+    "Grouped",
+    xs
+    |> OrgDocument__ListBuilder.Unfolded.unfoldTreeGrouped(
+         ~cond=((_tags, _headline)) => true,
+         ~makeGroupStr=
+           x =>
+             switch (x |> getItem) {
+             | Headline({keyword}) => keyword
+             | _ => None
+             },
+       )
+    |> OrgDocument__ListBuilder.Unfolded.Grouped.print,
+  );
+
   xs
   |> OrgDocument__ListBuilder.Unfolded.unfoldTreeUngrouped(
        ~cond=((tags, headline)) =>
