@@ -13,11 +13,41 @@ module Unfolded = {
   module Ungrouped = {
     type t = array(innerT);
     let empty = [||];
+
+    let rec make =
+            (
+              ~cond=_ => true,
+              ~acc: array(innerT)=[||],
+              ~inheritedTags: inheritedTagsT=[||],
+              rest,
+            ) => {
+      rest
+      |> Array.foldLeft(
+           (childAcc, child) =>
+             switch (child |> getItem) {
+             | Headline(headline) when cond((inheritedTags, headline)) =>
+               Array.append(child, childAcc)
+             | Section({children} as x) =>
+               let tags =
+                 x
+                 |> ReOrga.Org.Section.getTags
+                 |> Option.getOrElse(inheritedTags);
+
+               Array.concat(
+                 childAcc,
+                 make(~acc, ~cond, ~inheritedTags=tags, children),
+               );
+             | _ => childAcc
+             },
+           acc,
+         );
+    };
   };
 
   module Grouped = {
     type t = (Ungrouped.t, StringMap.t(array(innerT)));
     let empty = (Ungrouped.empty, StringMap.make());
+
     let append =
         (group: option(string), x: innerT, (ungroupedAcc, groupedAcc): t) =>
       switch (group) {
@@ -34,90 +64,53 @@ module Unfolded = {
         )
       | _ => (ungroupedAcc |> Array.append(x), groupedAcc)
       };
+
     let print = ((ungrouped, grouped)) => (
       ungrouped,
       grouped |> StringMap.toArray,
     );
-  };
 
-  type t =
-    | Ungrouped(Ungrouped.t)
-    | Grouped(Grouped.t);
+    let rec make =
+            (
+              ~acc: t=empty,
+              ~cond=_ => true,
+              ~inheritedTags: inheritedTagsT=[||],
+              ~makeGroupStr: innerT => option(string)=_ => None,
+              rest,
+            ) => {
+      rest
+      |> Array.foldLeft(
+           (childAcc, child) =>
+             switch (child |> getItem) {
+             | Headline(headline) when cond((inheritedTags, headline)) =>
+               let group = makeGroupStr(child);
+               append(group, child, childAcc);
 
-  let rec unfoldTreeGrouped =
-          (
-            ~acc: Grouped.t=Grouped.empty,
-            ~cond=_ => true,
-            ~inheritedTags: inheritedTagsT=[||],
-            ~makeGroupStr: innerT => option(string)=_ => None,
-            rest,
-          ) => {
-    rest
-    |> Array.foldLeft(
-         (childAcc, child) =>
-           switch (child |> getItem) {
-           | Headline(headline) when cond((inheritedTags, headline)) =>
-             let group = makeGroupStr(child);
-             Grouped.append(group, child, childAcc);
+             | Section({children} as x) =>
+               let tags =
+                 x
+                 |> ReOrga.Org.Section.getTags
+                 |> Option.getOrElse(inheritedTags);
 
-           | Section({children} as x) =>
-             let tags =
-               x
-               |> ReOrga.Org.Section.getTags
-               |> Option.getOrElse(inheritedTags);
-
-             unfoldTreeGrouped(
-               ~acc=childAcc,
-               ~cond,
-               ~inheritedTags=tags,
-               ~makeGroupStr,
-               children,
-             );
-           | _ => childAcc
-           },
-         acc,
-       );
-  };
-
-  let unfoldTreeGroupedByTodo =
-    unfoldTreeGrouped(~makeGroupStr=x =>
-      switch (x |> ReOrga.getItem) {
-      | Headline({keyword}) => keyword
-      | _ => None
-      }
-    );
-
-  let rec unfoldTreeUngrouped =
-          (
-            ~cond=_ => true,
-            ~acc: array(innerT)=[||],
-            ~inheritedTags: inheritedTagsT=[||],
-            rest,
-          ) => {
-    rest
-    |> Array.foldLeft(
-         (childAcc, child) =>
-           switch (child |> getItem) {
-           | Headline(headline) when cond((inheritedTags, headline)) =>
-             Array.append(child, childAcc)
-           | Section({children} as x) =>
-             let tags =
-               x
-               |> ReOrga.Org.Section.getTags
-               |> Option.getOrElse(inheritedTags);
-
-             Array.concat(
-               childAcc,
-               unfoldTreeUngrouped(
-                 ~acc,
+               make(
+                 ~acc=childAcc,
                  ~cond,
                  ~inheritedTags=tags,
+                 ~makeGroupStr,
                  children,
-               ),
-             );
-           | _ => childAcc
-           },
-         acc,
-       );
+               );
+             | _ => childAcc
+             },
+           acc,
+         );
+    };
+
+    let makeByTodo =
+      make(~makeGroupStr=x =>
+        switch (x |> ReOrga.getItem) {
+        | Headline({keyword}) => keyword
+        | _ => None
+        }
+      );
   };
 };

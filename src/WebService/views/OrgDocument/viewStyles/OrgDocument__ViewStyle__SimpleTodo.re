@@ -171,14 +171,13 @@ let make =
 
   Js.log2(
     "Grouped",
-    OrgDocument__ListBuilder.Unfolded.(
-      unfoldTreeGroupedByTodo(~cond=((_tags, _headline)) => true, xs)
-      |> Grouped.print
+    OrgDocument__ListBuilder.Unfolded.Grouped.(
+      make(~cond=((_tags, _headline)) => true, xs) |> print
     ),
   );
 
   xs
-  |> OrgDocument__ListBuilder.Unfolded.unfoldTreeUngrouped(
+  |> OrgDocument__ListBuilder.Unfolded.Ungrouped.make(
        ~cond=((tags, headline)) =>
        OrgDocument__ListBuilder.keepItem(~conds, ~tags, headline)
      )
