@@ -70,23 +70,33 @@ module Unfolded = {
       grouped |> StringMap.toArray,
     );
 
+    type makeByT =
+      | MakeTodo
+      | MakePlanning;
+
     let rec make =
             (
               ~acc: t=empty,
               ~cond=_ => true,
               ~inheritedTags: inheritedTagsT=[||],
+              ~makeByT=MakeTodo,
               ~makeGroupStr: innerT => option(string)=_ => None,
               rest,
             ) => {
       rest
       |> Array.foldLeft(
            (childAcc, child) =>
-             switch (child |> getItem) {
-             | Headline(headline) when cond((inheritedTags, headline)) =>
+             switch (makeByT, child |> getItem) {
+             | (MakeTodo, Headline(headline))
+                 when cond((inheritedTags, headline)) =>
                let group = makeGroupStr(child);
                append(group, child, childAcc);
 
-             | Section({children} as x) =>
+             | (MakePlanning, Planning(_)) =>
+               let group = makeGroupStr(child);
+               append(group, child, childAcc);
+
+             | (_, Section({children} as x)) =>
                let tags =
                  x
                  |> ReOrga.Org.Section.getTags
@@ -96,6 +106,7 @@ module Unfolded = {
                  ~acc=childAcc,
                  ~cond,
                  ~inheritedTags=tags,
+                 ~makeByT,
                  ~makeGroupStr,
                  children,
                );
@@ -106,9 +117,21 @@ module Unfolded = {
     };
 
     let makeByTodo =
-      make(~makeGroupStr=x =>
+      make(~makeByT=MakeTodo, ~makeGroupStr=x =>
         switch (x |> ReOrga.getItem) {
         | Headline({keyword}) => keyword
+        | _ => None
+        }
+      );
+
+    let makeByDate =
+      make(~makeByT=MakePlanning, ~makeGroupStr=x =>
+        switch (x |> ReOrga.getItem) {
+        | Planning({start}) =>
+          start
+          |> Utils.log
+          |> Option.map(DateTime.fromJSDate)
+          |> Option.map(DateTime.toFormat("yyyyMMdd"))
         | _ => None
         }
       );

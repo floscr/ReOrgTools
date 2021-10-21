@@ -172,7 +172,7 @@ let make =
   Js.log2(
     "Grouped",
     OrgDocument__ListBuilder.Unfolded.Grouped.(
-      make(~cond=((_tags, _headline)) => true, xs) |> print
+      makeByDate(~cond=((_tags, _headline)) => true, xs) |> print
     ),
   );
 
