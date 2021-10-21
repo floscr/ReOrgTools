@@ -46,10 +46,10 @@ module Unfolded = {
 
   let rec unfoldTreeGrouped =
           (
-            ~cond=_ => true,
-            ~makeGroupStr: innerT => option(string)=_ => None,
             ~acc: Grouped.t=Grouped.empty,
+            ~cond=_ => true,
             ~inheritedTags: inheritedTagsT=[||],
+            ~makeGroupStr: innerT => option(string)=_ => None,
             rest,
           ) => {
     rest
@@ -59,30 +59,24 @@ module Unfolded = {
            | Headline(headline) when cond((inheritedTags, headline)) =>
              let group = makeGroupStr(child);
              Grouped.append(group, child, childAcc);
+
            | Section({children} as x) =>
              let tags =
                x
                |> ReOrga.Org.Section.getTags
                |> Option.getOrElse(inheritedTags);
 
-             unfoldTreeGrouped(~acc, ~cond, ~inheritedTags=tags, children);
+             unfoldTreeGrouped(
+               ~acc=childAcc,
+               ~cond,
+               ~inheritedTags=tags,
+               ~makeGroupStr,
+               children,
+             );
            | _ => childAcc
            },
          acc,
-       )/*        | Headline(headline) when cond((inheritedTags, headline)) => */
-        /*          let group = makeGroupStr(child); */
-        /*          Grouped.append(group, child, childAcc); */
-        /*        | Section({children} as x) => */
-        /*          let tags = */
-        /*            x */
-        /*            |> ReOrga.Org.Section.getTags */
-        /*            |> Option.getOrElse(inheritedTags); */
-        /*          unfoldTreeGrouped(~acc, ~cond, ~inheritedTags=tags, children); */
-        /*        | _ => childAcc */
-        /*        }, */
-        /*      acc, */
-        ; /*        switch (child |> getItem) { */ /*      (childAcc, child) => */ /* |> Array.foldLeft( */
-        /*    ); */
+       );
   };
 
   let rec unfoldTreeUngrouped =
