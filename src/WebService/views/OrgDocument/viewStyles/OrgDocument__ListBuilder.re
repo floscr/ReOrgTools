@@ -79,6 +79,14 @@ module Unfolded = {
        );
   };
 
+  let unfoldTreeGroupedByTodo =
+    unfoldTreeGrouped(~makeGroupStr=x =>
+      switch (x |> ReOrga.getItem) {
+      | Headline({keyword}) => keyword
+      | _ => None
+      }
+    );
+
   let rec unfoldTreeUngrouped =
           (
             ~cond=_ => true,
