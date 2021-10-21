@@ -129,7 +129,6 @@ module Unfolded = {
         switch (x |> ReOrga.getItem) {
         | Planning({start}) =>
           start
-          |> Utils.log
           |> Option.map(DateTime.fromJSDate)
           |> Option.map(DateTime.toFormat("yyyyMMdd"))
         | _ => None

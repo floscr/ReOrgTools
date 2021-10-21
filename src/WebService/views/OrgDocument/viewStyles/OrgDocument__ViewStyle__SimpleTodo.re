@@ -1,6 +1,7 @@
 open Relude.Globals;
 open ReOrga;
 open OrgDocument__Utils;
+open ReactUtils;
 
 module Styles = {
   open Css;
@@ -167,22 +168,39 @@ let make =
          [],
        );
 
-  Js.log2("xs", xs);
+  /* Js.log2("xs", xs); */
 
-  Js.log2(
-    "Grouped",
-    OrgDocument__ListBuilder.Unfolded.Grouped.(
-      makeByDate(~cond=((_tags, _headline)) => true, xs) |> print
-    ),
-  );
+  /* Js.log2( */
+  /*   "Grouped", */
+  /*   OrgDocument__ListBuilder.Unfolded.Grouped.( */
+  /*     makeByDate(~cond=((_tags, _headline)) => true, xs) |> print */
+  /*   ), */
+  /* ); */
 
   xs
-  |> OrgDocument__ListBuilder.Unfolded.Ungrouped.make(
-       ~cond=((tags, headline)) =>
-       OrgDocument__ListBuilder.keepItem(~conds, ~tags, headline)
+  |> OrgDocument__ListBuilder.Unfolded.Grouped.makeByTodo
+  |> (((_, xs)) => xs)
+  |> StringMap.foldLeft(
+       (acc, key, value) => {
+         acc
+         |> Array.append(
+              <React.Fragment key>
+                {key |> s}
+                {value |> renderItems}
+              </React.Fragment>,
+            )
+       },
+       [||],
      )
-  /* |> Array.sortBy(dateCompare) */
-  |> (xs => reverse |> Option.getOrElse(false) ? Array.reverse(xs) : xs)
-  |> renderItems
+  |> React.array
   |> Wrappers.paddedWrapper;
+  /* xs */
+  /* |> OrgDocument__ListBuilder.Unfolded.Ungrouped.make( */
+  /*      ~cond=((tags, headline)) => */
+  /*      OrgDocument__ListBuilder.keepItem(~conds, ~tags, headline) */
+  /*    ) */
+  /* /\* |> Array.sortBy(dateCompare) *\/ */
+  /* |> (xs => reverse |> Option.getOrElse(false) ? Array.reverse(xs) : xs) */
+  /* |> renderItems */
+  /* |> Wrappers.paddedWrapper; */
 };
