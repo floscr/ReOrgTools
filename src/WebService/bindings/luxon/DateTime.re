@@ -39,7 +39,7 @@ external local:
 
 [@bs.send.pipe: dt] external toISO: unit => string;
 
-[@bs.send.pipe: dt] external toJSDate: unit => Js_date.t;
+[@bs.send.pipe: dt] external toJSDate: Js_date.t;
 
 [@bs.send.pipe: dt] external valueOf: unit => float;
 
