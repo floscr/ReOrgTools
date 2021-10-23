@@ -147,7 +147,7 @@ let make =
       ),
       (
         tags |> Array.isNotEmpty,
-        (tags, {content}: OrgTypes.Headline.t) => {
+        (tags, _) => {
           switch (tagAdds, tagRemoves) {
           | (adds, removes) =>
             tags
