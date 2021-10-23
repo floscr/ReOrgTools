@@ -30,14 +30,17 @@ module Headline = {
 };
 
 module Planning = {
-  type t = OrgTypes.Headline.t;
+  type t = OrgTypes.Planning.t;
 
   let get = (ast: sectionAst): option(t) => {
     ast
     |> Section.getChildren
     |> Utils.findWithTypeString("planning")
-    |> Option.map(OrgTypes.Headline.make);
+    |> Option.map(OrgTypes.Planning.make);
   };
 
-  let getKeyword = get >> Option.flatMap(({keyword}: t) => keyword);
+  let getStartTime =
+    get
+    >> Option.flatMap(({start}: OrgTypes.Planning.t) => start)
+    >> Option.map(Js.Date.getTime);
 };

@@ -106,16 +106,7 @@ let make =
   let dateCompare =
     Ord.by(
       (x: ReOrga.sectionAst) =>
-        (
-          switch (getItem(x)) {
-          | Headline(x) => Some(x)
-          | _ => None
-          }
-        )
-        |> Option.flatMap(Org.Headline.getPlanning)
-        |> Option.flatMap(({start}: OrgTypes.Planning.t) => start)
-        |> Option.map(Js.Date.getTime)
-        |> Option.getOrElse(0.),
+        OrgGlobals.Getters.Planning.getStartTime(x) |> Option.getOrElse(0.),
       Float.compare,
     );
 
@@ -143,12 +134,12 @@ let make =
       // Planning items
       (
         timerange |> Option.isSome,
-        (_, x: OrgTypes.Headline.t) => {
+        (_, {parent}: OrgTypes.Headline.t) => {
           switch (
             timerange |> Option.flatMap(Result.toOption),
-            Org.Headline.getPlanning(x),
+            parent |> OrgGlobals.Getters.Planning.get,
           ) {
-          | (Some(timerange), Some({start, end_})) =>
+          | (Some(timerange), Some(({start, end_}: OrgTypes.Planning.t))) =>
             isInTimeRange(~timerange, ~start, ~end_)
           | _ => false
           };
