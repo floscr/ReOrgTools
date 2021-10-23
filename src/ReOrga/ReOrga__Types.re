@@ -147,6 +147,7 @@ module OrgTypes = {
       keyword: item.keyword |> Js.Nullable.toOption,
     };
   };
+
   module Planning = {
     type t = {
       type_: PlanningType.t,
