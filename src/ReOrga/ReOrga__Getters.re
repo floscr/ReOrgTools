@@ -1,5 +1,5 @@
 open Relude.Globals;
-open ReOrga;
+open ReOrga__Types;
 
 let findWithTypeString = (t: string, xs: array(sectionAst)) =>
   xs |> Array.find(({type_}: sectionAst) => type_ === t);
