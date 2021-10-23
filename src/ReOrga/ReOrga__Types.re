@@ -100,22 +100,6 @@ type link = {
 
 type tags = {tags: array(string)};
 
-module PlanningType = {
-  type t =
-    | Scheduled
-    | Deadline;
-
-  let makeFromString =
-    fun
-    | "DEADLINE" => Deadline
-    | _ => Scheduled;
-
-  let makePrettyString =
-    fun
-    | Deadline => "Deadline"
-    | Scheduled => "Scheduled";
-};
-
 type section = {
   children: array(sectionAst),
   level: int,
@@ -149,12 +133,44 @@ module OrgTypes = {
   };
 
   module Planning = {
+    module Kind = {
+      type t =
+        | Scheduled
+        | Deadline;
+
+      let makeFromString =
+        fun
+        | "DEADLINE" => Deadline
+        | _ => Scheduled;
+
+      let makePrettyString =
+        fun
+        | Deadline => "Deadline"
+        | Scheduled => "Scheduled";
+    };
+
     type t = {
-      type_: PlanningType.t,
+      type_: Kind.t,
       start: option(Js.Date.t),
       end_: option(Js.Date.t),
       parent: sectionAst,
     };
+
+    let make = (item: sectionAst) =>
+      switch (item.timestamp |> Js.Nullable.toOption) {
+      | Some(x) => {
+          type_: item.type_ |> Kind.makeFromString,
+          start: x.date |> Js.Nullable.toOption,
+          end_: x.end_ |> Js.Nullable.toOption,
+          parent: item.parent,
+        }
+      | _ => {
+          type_: item.type_ |> Kind.makeFromString,
+          start: None,
+          end_: None,
+          parent: item.parent,
+        }
+      };
   };
 };
 
@@ -227,23 +243,7 @@ let getItem = (item: sectionAst) => {
       position: item.position,
     })
   | ["stars"] => Stars({level: item.level})
-  | ["planning"] =>
-    switch (item.timestamp |> Js.Nullable.toOption) {
-    | Some(x) =>
-      Planning({
-        type_: item.type_ |> PlanningType.makeFromString,
-        start: x.date |> Js.Nullable.toOption,
-        end_: x.end_ |> Js.Nullable.toOption,
-        parent: item.parent,
-      })
-    | _ =>
-      Planning({
-        type_: item.type_ |> PlanningType.makeFromString,
-        start: None,
-        end_: None,
-        parent: item.parent,
-      })
-    }
+  | ["planning"] => Planning(item |> OrgTypes.Planning.make)
   | ["link"] =>
     Link({
       value: nullableOrEmptyStr(item.value),

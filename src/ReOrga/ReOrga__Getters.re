@@ -29,9 +29,13 @@ module Headline = {
   let getKeyword = get >> Option.flatMap(({keyword}: t) => keyword);
 };
 
+module Planning = {
+  type t = OrgTypes.Headline.t;
+
+  let get = (ast: sectionAst): option(t) => {
     ast
-    |> getSectionChildren
-    |> findWithTypeString("headline")
+    |> Section.getChildren
+    |> Utils.findWithTypeString("planning")
     |> Option.map(OrgTypes.Headline.make);
   };
 

@@ -140,11 +140,13 @@ let renderHeadline = (~properties, headline: OrgTypes.Headline.t) => {
              Some(
                <span className=Styles.timeStamp>
                  {type_
-                  |> (
-                    fun
-                    | ReOrga.PlanningType.Scheduled => "schedule"
-                    | ReOrga.PlanningType.Deadline => "warning_amber"
-                  )
+                  |> OrgTypes.Planning.Kind.(
+                       (
+                         fun
+                         | Scheduled => "schedule"
+                         | Deadline => "warning_amber"
+                       )
+                     )
                   |> (id => <IconButton id style=Styles.timeStampIcon />)}
                  {start
                   |> Option.map(DateTime.fromJSDate)
