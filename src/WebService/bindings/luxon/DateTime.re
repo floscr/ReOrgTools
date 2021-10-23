@@ -1,6 +1,5 @@
 type dt = {
-  . /* DateTime type */
-  /**** Members ****/
+  .
   "year": int,
   "day": int,
   "month": int,
@@ -10,7 +9,8 @@ type dt = {
   "millisecond": int,
 };
 
-/**** Static Methods ****/
+/* Static Methods */
+
 [@bs.module "luxon"] [@bs.scope "DateTime"]
 external local:
   (
@@ -23,21 +23,25 @@ external local:
     ~millisecond: int=?,
     unit
   ) =>
-  dt =
-  "";
+  dt;
 
-/*** Methods ****/
-[@bs.send.pipe: dt] external setZone: string => dt = "";
+/* Methods */
 
-[@bs.send.pipe: dt] external toISODate: unit => string = "";
+[@bs.send.pipe: dt] external toMillis: int;
 
-[@bs.send.pipe: dt] external toFormat: string => string = "";
+[@bs.send.pipe: dt] external equals: dt => bool;
 
-[@bs.send.pipe: dt] external toISO: unit => string = "";
+[@bs.send.pipe: dt] external setZone: string => dt;
 
-[@bs.send.pipe: dt] external toJSDate: unit => Js_date.t = "";
+[@bs.send.pipe: dt] external toISODate: unit => string;
 
-[@bs.send.pipe: dt] external valueOf: unit => float = "";
+[@bs.send.pipe: dt] external toFormat: string => string;
+
+[@bs.send.pipe: dt] external toISO: unit => string;
+
+[@bs.send.pipe: dt] external toJSDate: unit => Js_date.t;
+
+[@bs.send.pipe: dt] external valueOf: unit => float;
 
 type arithmeticArgs = [
   | `DurationObj(Duration.durationObj)
@@ -55,8 +59,7 @@ external minus:
     | `Duration(Duration.d)
   ]
   ) =>
-  dt =
-  "";
+  dt;
 
 [@bs.send.pipe: dt]
 external plus:
@@ -68,10 +71,12 @@ external plus:
     | `Duration(Duration.d)
   ]
   ) =>
-  dt =
-  "";
+  dt;
 
-/* In the original API, these are all optional. But not in bs-luxon. In fact, in bs-luxon you should never use `fromObject` and always use `local` instead. */
+/* In the original API, these are all optional. But not in bs-luxon.
+   In fact, in bs-luxon you should never use `fromObject`
+   and always use `local` instead. */
+
 type objectDate = {
   .
   "year": int,
@@ -83,14 +88,15 @@ type objectDate = {
   "millisecond": int,
 };
 
-[@bs.module "luxon"] [@bs.scope "DateTime"]
-external fromJSDate: Js.Date.t => dt = "";
+[@bs.module "luxon"] [@bs.scope "DateTime"] external now: unit => dt;
 
 [@bs.module "luxon"] [@bs.scope "DateTime"]
-external fromObject: objectDate => dt = "";
+external fromJSDate: Js.Date.t => dt;
 
 [@bs.module "luxon"] [@bs.scope "DateTime"]
-external fromMillis: float => dt = "";
+external fromObject: objectDate => dt;
+
+[@bs.module "luxon"] [@bs.scope "DateTime"] external fromMillis: float => dt;
 
 [@bs.send.pipe: dt]
 external endOf:
@@ -98,8 +104,7 @@ external endOf:
   [@bs.string]
   [ | `year | `month | `week | `day | `hour | `minute | `second | `millisecond]
   ) =>
-  dt =
-  "";
+  dt;
 
 [@bs.send.pipe: dt]
 external startOf:
@@ -107,9 +112,35 @@ external startOf:
   [@bs.string]
   [ | `year | `month | `week | `day | `hour | `minute | `second | `millisecond]
   ) =>
-  dt =
-  "";
+  dt;
 
-/**** Static Members ****/
+/* Static Member */
+
 [@bs.module "luxon"] [@bs.scope "DateTime"]
 external dateTimeFull: string = "DATETIME_FULL";
+
+/* Relude Type */
+
+module DateType = {
+  open Relude.Globals;
+
+  type t = dt;
+
+  module Eq: BsBastet.Interface.EQ with type t = t = {
+    type nonrec t = t;
+    let eq = (a, b) => equals(a, b);
+  };
+
+  module Ord: BsBastet.Interface.ORD with type t = t = {
+    include Eq;
+    let compare = (a, b) => Int.compare(toMillis(a), toMillis(b));
+  };
+
+  include Relude_Extensions_Ord.OrdExtensions(Ord);
+};
+
+module DateMap = Relude_Map.WithOrd(DateType.Ord);
+
+module Globals = {
+  module DateMap = DateMap;
+};

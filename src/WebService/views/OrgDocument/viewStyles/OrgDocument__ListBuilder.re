@@ -46,90 +46,139 @@ module Unfolded = {
   };
 
   module Grouped = {
-    type t = (Ungrouped.t, StringMap.t(array(innerT)));
-    let empty = (Ungrouped.empty, StringMap.make());
+    /*
+     We can either group by a string or a date
+     Right now I can't find an easy way to reduce the duplication here without making it compare.
+     */
 
-    let append =
-        (group: option(string), ast: innerT, (ungroupedAcc, groupedAcc): t) =>
-      switch (group) {
-      | Some(group) => (
-          ungroupedAcc,
-          groupedAcc
-          |> StringMap.update(group, xs =>
-               xs
-               |> Option.foldLazy(
-                    _ => Some([|ast|]),
-                    xs => Some(Array.append(ast, xs)),
-                  )
-             ),
-        )
-      | _ => (ungroupedAcc |> Array.append(ast), groupedAcc)
+    module ByDate = {
+      open DateTime.Globals;
+
+      type t = (Ungrouped.t, DateMap.t(array(innerT)));
+      let empty = (Ungrouped.empty, DateMap.make());
+
+      let append =
+          (
+            groupKey: option(DateMap.key),
+            ast: innerT,
+            (ungrouped, grouped): t,
+          ) =>
+        switch (groupKey) {
+        | Some(key) => (
+            ungrouped,
+            grouped
+            |> DateMap.update(key, xs =>
+                 xs
+                 |> Option.foldLazy(
+                      _ => Some([|ast|]),
+                      xs => Some(Array.append(ast, xs)),
+                    )
+               ),
+          )
+        | _ => (ungrouped |> Array.append(ast), grouped)
+        };
+
+      let rec make =
+              (
+                ~acc: t=empty,
+                ~cond=_ => true,
+                ~makeGroupKey: innerT => option(DateMap.key)=_ => None,
+                rest,
+              ) => {
+        rest
+        |> Array.foldLeft(
+             (childAcc, child) =>
+               switch (child |> getItem) {
+               | Planning(_) =>
+                 let group = makeGroupKey(child);
+                 append(group, child.parent, childAcc);
+
+               | Section({children} as x) =>
+                 make(~acc=childAcc, ~cond, ~makeGroupKey, children)
+               | _ => childAcc
+               },
+             acc,
+           );
       };
+    };
 
-    let print = ((ungrouped, grouped)) => (
-      ungrouped,
-      grouped |> StringMap.toArray,
-    );
+    module ByString = {
+      type t = (Ungrouped.t, StringMap.t(array(innerT)));
+      let empty = (Ungrouped.empty, StringMap.make());
 
-    type makeByT =
-      | MakeTodo
-      | MakePlanning;
+      let append =
+          (
+            group: option(string),
+            ast: innerT,
+            (ungroupedAcc, groupedAcc): t,
+          ) =>
+        switch (group) {
+        | Some(group) => (
+            ungroupedAcc,
+            groupedAcc
+            |> StringMap.update(group, xs =>
+                 xs
+                 |> Option.foldLazy(
+                      _ => Some([|ast|]),
+                      xs => Some(Array.append(ast, xs)),
+                    )
+               ),
+          )
+        | _ => (ungroupedAcc |> Array.append(ast), groupedAcc)
+        };
 
-    let rec make =
-            (
-              ~acc: t=empty,
-              ~cond=_ => true,
-              ~inheritedTags: inheritedTagsT=[||],
-              ~makeByT=MakeTodo,
-              ~makeGroupStr: innerT => option(string)=_ => None,
-              rest,
-            ) => {
-      rest
-      |> Array.foldLeft(
-           (childAcc, child) =>
-             switch (makeByT, child |> getItem) {
-             | (MakeTodo, Headline(headline))
-                 when cond((inheritedTags, headline)) =>
-               let group = makeGroupStr(child);
-               append(group, child, childAcc);
+      type makeByT =
+        | MakeTodo;
 
-             | (MakePlanning, Planning(_)) =>
-               let group = makeGroupStr(child);
-               append(group, child, childAcc);
+      let rec make =
+              (
+                ~acc: t=empty,
+                ~cond=_ => true,
+                ~inheritedTags: inheritedTagsT=[||],
+                ~makeByT=MakeTodo,
+                ~makeGroupKey: innerT => option(string)=_ => None,
+                rest,
+              ) => {
+        rest
+        |> Array.foldLeft(
+             (childAcc, child) =>
+               switch (makeByT, child |> getItem) {
+               | (MakeTodo, Headline(headline))
+                   when cond((inheritedTags, headline)) =>
+                 let group = makeGroupKey(child);
+                 append(group, child.parent, childAcc);
 
-             | (_, Section({children} as x)) =>
-               let tags =
-                 child
-                 |> OrgGlobals.Getters.Tags.getTags
-                 |> Option.getOrElse(inheritedTags);
+               | (_, Section({children} as x)) =>
+                 let tags =
+                   child
+                   |> OrgGlobals.Getters.Tags.getTags
+                   |> Option.getOrElse(inheritedTags);
 
-               make(
-                 ~acc=childAcc,
-                 ~cond,
-                 ~inheritedTags=tags,
-                 ~makeByT,
-                 ~makeGroupStr,
-                 children,
-               );
-             | _ => childAcc
-             },
-           acc,
-         );
+                 make(
+                   ~acc=childAcc,
+                   ~cond,
+                   ~inheritedTags=tags,
+                   ~makeByT,
+                   ~makeGroupKey,
+                   children,
+                 );
+               | _ => childAcc
+               },
+             acc,
+           );
+      };
     };
 
     let makeByTodo =
-      make(
+      ByString.make(
         ~makeByT=MakeTodo,
-        ~makeGroupStr=OrgGlobals.Getters.Headline.getKeyword,
+        ~makeGroupKey=OrgGlobals.Getters.Headline.getKeyword,
       );
 
     let makeByDate =
-      make(~makeByT=MakePlanning, ~makeGroupStr=x =>
+      ByDate.make(~makeGroupKey=x =>
         switch (x |> ReOrga.getItem) {
-        | Planning({start}) =>
-          start
-          |> Option.map(DateTime.fromJSDate)
-          |> Option.map(DateTime.toFormat("yyyyMMdd"))
+        | Planning({start}) => start |> Option.map(DateTime.fromJSDate)
         | _ => None
         }
       );
