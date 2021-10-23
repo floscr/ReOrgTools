@@ -50,7 +50,7 @@ module Unfolded = {
     let empty = (Ungrouped.empty, StringMap.make());
 
     let append =
-        (group: option(string), x: innerT, (ungroupedAcc, groupedAcc): t) =>
+        (group: option(string), ast: innerT, (ungroupedAcc, groupedAcc): t) =>
       switch (group) {
       | Some(group) => (
           ungroupedAcc,
@@ -58,12 +58,12 @@ module Unfolded = {
           |> StringMap.update(group, xs =>
                xs
                |> Option.foldLazy(
-                    _ => Some([|x|]),
-                    xs => Some(Array.append(x, xs)),
+                    _ => Some([|ast|]),
+                    xs => Some(Array.append(ast, xs)),
                   )
              ),
         )
-      | _ => (ungroupedAcc |> Array.append(x), groupedAcc)
+      | _ => (ungroupedAcc |> Array.append(ast), groupedAcc)
       };
 
     let print = ((ungrouped, grouped)) => (
