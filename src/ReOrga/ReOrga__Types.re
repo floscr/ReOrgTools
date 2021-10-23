@@ -147,13 +147,14 @@ module OrgTypes = {
       keyword: item.keyword |> Js.Nullable.toOption,
     };
   };
-};
-
-type planning = {
-  type_: PlanningType.t,
-  start: option(Js.Date.t),
-  end_: option(Js.Date.t),
-  parent: sectionAst,
+  module Planning = {
+    type t = {
+      type_: PlanningType.t,
+      start: option(Js.Date.t),
+      end_: option(Js.Date.t),
+      parent: sectionAst,
+    };
+  };
 };
 
 type orgItem =
@@ -162,7 +163,7 @@ type orgItem =
   | Headline(OrgTypes.Headline.t)
   | Paragraph({children: array(sectionAst)})
   | PlainText(plainText)
-  | Planning(planning)
+  | Planning(OrgTypes.Planning.t)
   | Stars(stars)
   | Todo({
       keyword: string,
@@ -324,7 +325,7 @@ module Org = {
   module Headline = {
     type t = OrgTypes.Headline.t;
 
-    let getPlanning = ({parent}: t): option(planning) =>
+    let getPlanning = ({parent}: t): option(OrgTypes.Planning.t) =>
       parent
       |> getItem
       |> (

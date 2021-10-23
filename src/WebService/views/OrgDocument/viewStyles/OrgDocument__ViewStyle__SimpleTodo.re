@@ -113,7 +113,7 @@ let make =
           }
         )
         |> Option.flatMap(Org.Headline.getPlanning)
-        |> Option.flatMap(({start}: ReOrga.planning) => start)
+        |> Option.flatMap(({start}: OrgTypes.Planning.t) => start)
         |> Option.map(Js.Date.getTime)
         |> Option.getOrElse(0.),
       Float.compare,
