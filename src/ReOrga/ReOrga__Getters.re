@@ -27,6 +27,22 @@ module Headline = {
   };
 
   let getKeyword = get >> Option.flatMap(({keyword}: t) => keyword);
+
+  let rec findWithText = (~text, xs: array(sectionAst)) =>
+    xs
+    |> Array.foldLeft(
+         (acc, cur) => {
+           acc
+           |> Option.orElseLazy(~fallback=() =>
+                switch (getItem(cur)) {
+                | Headline({content}) when content === text => Some(cur)
+                | Section({children}) => findWithText(~text, children)
+                | _ => acc
+                }
+              )
+         },
+         None,
+       );
 };
 
 module Tags = {

@@ -302,27 +302,6 @@ module Org = {
     | _ => None
     };
 
-  module Section = {
-    type t = section;
-  };
-
-  let rec narrowToHeadlineWithText = (~text, xs: array(sectionAst)) =>
-    xs
-    |> Array.foldLeft(
-         (acc, cur) => {
-           acc
-           |> Option.orElseLazy(~fallback=() =>
-                switch (getItem(cur)) {
-                | Headline({content}) when content === text => Some(cur)
-                | Section({children}) =>
-                  narrowToHeadlineWithText(~text, children)
-                | _ => acc
-                }
-              )
-         },
-         None,
-       );
-
   let todoKeywords = [|
     "TODO",
     "ACTIVE",

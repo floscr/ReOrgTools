@@ -113,7 +113,7 @@ let make =
                    xs =>
                      narrowToHeader
                      |> Option.flatMap(text =>
-                          Org.narrowToHeadlineWithText(~text, xs)
+                          OrgGlobals.Getters.Headline.findWithText(~text, xs)
                         )
                      |> Option.map((x: ReOrga.sectionAst) => [|x.parent|])
                      |> Option.getOrElse(xs)
