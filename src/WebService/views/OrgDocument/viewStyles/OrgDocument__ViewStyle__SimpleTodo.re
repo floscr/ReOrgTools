@@ -174,13 +174,16 @@ let make =
   xs
   |> OrgDocument__ListBuilder.Unfolded.Grouped.makeByDate
   |> (((_, xs)) => xs)
-  |> StringMap.foldLeft(
+  |> DateTime.Globals.DateMap.foldLeft(
        (acc, key, value) => {
          acc
          |> Array.append(
               <React.Fragment key>
-                {key |> s}
-                {value |> renderItems}
+                {key |> DateTime.toFormat("dd.MM.yy") |> s}
+                {value
+                 |> Array.map((x: ReOrga.sectionAst) => x.children)
+                 |> Array.map(renderItems)
+                 |> React.array}
               </React.Fragment>,
             )
        },
