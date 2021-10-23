@@ -95,5 +95,6 @@ print-%: ; @echo $*=$($*)
 
 clean:
 	$(BSB) -clean-world
+	cd ./src/ReOrga; bsb -clean-world
 
 .PHONY: bs bsdirs all clean
