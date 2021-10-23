@@ -123,61 +123,44 @@ let renderHeadline = (~properties, headline: OrgTypes.Headline.t) => {
   let {content, tags} = children |> makeHeadlineProps;
 
   let planning =
-    parent.children
-    |> Array.find(
-         getItem
-         >> (
-           fun
-           | Planning(_) => true
-           | _ => false
-         ),
-       )
-    |> Option.flatMap(
-         getItem
-         >> (
-           fun
-           | Planning({type_, start}) =>
-             Some(
-               <span className=Styles.timeStamp>
-                 {type_
-                  |> OrgTypes.Planning.Kind.(
-                       (
-                         fun
-                         | Scheduled => "schedule"
-                         | Deadline => "warning_amber"
-                       )
-                     )
-                  |> (id => <IconButton id style=Styles.timeStampIcon />)}
-                 {start
-                  |> Option.map(DateTime.fromJSDate)
-                  |> Option.map(x => {
-                       let date = x |> DateTime.toFormat("ccc, dd.MM.yyyy");
-                       // TODO: This is actually wrong as the scheduled time could be 00:00:00
-                       // But right now we don't have access to check if there is a timestamp supplied or not
-                       let hasTime =
-                         x##hour
-                         +
-                         x##minute
-                         +
-                         x##second
-                         +
-                         x##millisecond
-                         |> Int.notEq(0);
+    parent
+    |> OrgGlobals.Getters.Planning.get
+    |> Option.map(({type_, start}: OrgTypes.Planning.t) => {
+         <span className=Styles.timeStamp>
+           {type_
+            |> OrgTypes.Planning.Kind.(
+                 fun
+                 | Scheduled => "schedule"
+                 | Deadline => "warning_amber"
+               )
+            |> (id => <IconButton id style=Styles.timeStampIcon />)}
+           {start
+            |> Option.map(DateTime.fromJSDate)
+            |> Option.map(x => {
+                 let date = x |> DateTime.toFormat("ccc, dd.MM.yyyy");
+                 // TODO: This is actually wrong as the scheduled time could be 00:00:00
+                 // But right now we don't have access to check if there is a timestamp supplied or not
+                 let hasTime =
+                   x##hour
+                   +
+                   x##minute
+                   +
+                   x##second
+                   +
+                   x##millisecond
+                   |> Int.notEq(0);
 
-                       let hour =
-                         switch (hasTime) {
-                         | true => x |> DateTime.toFormat(" HH:mm")
-                         | _ => ""
-                         };
+                 let hour =
+                   switch (hasTime) {
+                   | true => x |> DateTime.toFormat(" HH:mm")
+                   | _ => ""
+                   };
 
-                       date ++ hour;
-                     })
-                  |> Option.fold(React.null, s)}
-               </span>,
-             )
-           | _ => None
-         ),
-       );
+                 date ++ hour;
+               })
+            |> Option.fold(React.null, s)}
+         </span>
+       });
 
   let atid = properties |> Relude.Option.flatMap(x => Js.Dict.get(x, "id"));
   let id = makeHeadlineKey(position);
