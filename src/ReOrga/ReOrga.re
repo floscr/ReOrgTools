@@ -1,3 +1,5 @@
 include ReOrga__Types;
 
-module Getters = ReOrga__Getters;
+module OrgGlobals = {
+  module Getters = ReOrga__Getters;
+};

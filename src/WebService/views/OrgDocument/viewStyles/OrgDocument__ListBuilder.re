@@ -118,11 +118,9 @@ module Unfolded = {
     };
 
     let makeByTodo =
-      make(~makeByT=MakeTodo, ~makeGroupStr=x =>
-        switch (x |> ReOrga.getItem) {
-        | Headline({keyword}) => keyword
-        | _ => None
-        }
+      make(
+        ~makeByT=MakeTodo,
+        ~makeGroupStr=OrgGlobals.Getters.Headline.getKeyword,
       );
 
     let makeByDate =
