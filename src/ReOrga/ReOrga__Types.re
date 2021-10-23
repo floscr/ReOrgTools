@@ -313,34 +313,6 @@ module Org = {
          );
   };
 
-  module Headline = {
-    type t = OrgTypes.Headline.t;
-
-    let getPlanning = ({parent}: t): option(OrgTypes.Planning.t) =>
-      parent
-      |> getItem
-      |> (
-        fun
-        | Section({children}) =>
-          children
-          |> Array.find(x =>
-               x
-               |> getItem
-               |> (
-                 fun
-                 | Planning(_) => true
-                 | _ => false
-               )
-             )
-          |> Option.flatMap(x =>
-               switch (getItem(x)) {
-               | Planning(x) => Some(x)
-               | _ => None
-               }
-             )
-      );
-  };
-
   let rec narrowToHeadlineWithText = (~text, xs: array(sectionAst)) =>
     xs
     |> Array.foldLeft(
