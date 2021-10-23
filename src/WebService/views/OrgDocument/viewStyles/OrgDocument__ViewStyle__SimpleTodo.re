@@ -171,26 +171,27 @@ let make =
   /*   ), */
   /* ); */
 
-  xs
-  |> OrgDocument__ListBuilder.Unfolded.Grouped.makeByDate
-  |> (((_, xs)) => xs)
-  |> DateTime.Globals.DateMap.foldLeft(
-       (acc, key, value) => {
-         acc
-         |> Array.append(
-              <React.Fragment key>
-                {key |> DateTime.toFormat("dd.MM.yy") |> s}
-                {value
-                 |> Array.map((x: ReOrga.sectionAst) => x.children)
-                 |> Array.map(renderItems)
-                 |> React.array}
-              </React.Fragment>,
-            )
-       },
-       [||],
-     )
-  |> React.array
-  |> Wrappers.paddedWrapper;
+  <FullCalendar.Component />;
+  /* xs */
+  /* |> OrgDocument__ListBuilder.Unfolded.Grouped.makeByDate */
+  /* |> (((_, xs)) => xs) */
+  /* |> DateTime.Globals.DateMap.foldLeft( */
+  /*      (acc, key, value) => { */
+  /*        acc */
+  /*        |> Array.append( */
+  /*             <React.Fragment key> */
+  /*               {key |> DateTime.toFormat("dd.MM.yy") |> s} */
+  /*               {value */
+  /*                |> Array.map((x: ReOrga.sectionAst) => x.children) */
+  /*                |> Array.map(renderItems) */
+  /*                |> React.array} */
+  /*             </React.Fragment>, */
+  /*           ) */
+  /*      }, */
+  /*      [||], */
+  /*    ) */
+  /* |> React.array */
+  /* |> Wrappers.paddedWrapper; */
   /* xs */
   /* |> OrgDocument__ListBuilder.Unfolded.Ungrouped.make( */
   /*      ~cond=((tags, headline)) => */
