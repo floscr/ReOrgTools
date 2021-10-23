@@ -98,8 +98,6 @@ type link = {
   search: string,
 };
 
-type tags = {tags: array(string)};
-
 type section = {
   children: array(sectionAst),
   level: int,
@@ -129,6 +127,14 @@ module OrgTypes = {
       actionable: item.actionable,
       parent: item.parent,
       keyword: item.keyword |> Js.Nullable.toOption,
+    };
+  };
+
+  module Tags = {
+    type t = {tags: array(string)};
+
+    let make = (item: sectionAst): t => {
+      tags: nullableOrEmptyArray(item.tags),
     };
   };
 
@@ -186,7 +192,7 @@ type orgItem =
       keyword: string,
       position: positionAst,
     })
-  | Tags(tags)
+  | Tags(OrgTypes.Tags.t)
   | Link(link)
   | List({
       children: array(sectionAst),
@@ -241,7 +247,7 @@ let getItem = (item: sectionAst) => {
       protocol: item.protocol |> Js.Nullable.toOption,
       search: nullableOrEmptyStr(item.description),
     })
-  | ["tags"] => Tags({tags: nullableOrEmptyArray(item.tags)})
+  | ["tags"] => Tags(item |> OrgTypes.Tags.make)
   | ["paragraph"] => Paragraph({children: item.children})
   | ["text", style] =>
     PlainText({
@@ -296,21 +302,8 @@ module Org = {
     | _ => None
     };
 
-  /* let getPlanning = (ast: sectionAst) => */
-  /*   ast */
-  /*   |> getSectionChildren */
-
   module Section = {
     type t = section;
-
-    let getTags = ({children}: t): option(array(string)) =>
-      Array.head(children)
-      |> Option.map(getItem)
-      |> Option.flatMap(
-           fun
-           | Headline({tags}) => Some(tags)
-           | _ => None,
-         );
   };
 
   let rec narrowToHeadlineWithText = (~text, xs: array(sectionAst)) =>

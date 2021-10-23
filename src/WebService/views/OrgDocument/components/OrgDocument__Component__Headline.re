@@ -104,7 +104,7 @@ module Heading = {
 type headlineProps = {
   stars: option(stars),
   content: array(sectionAst),
-  tags: option(tags),
+  tags: option(OrgTypes.Tags.t),
 };
 
 let makeHeadlineProps =

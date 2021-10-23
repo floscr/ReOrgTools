@@ -29,6 +29,19 @@ module Headline = {
   let getKeyword = get >> Option.flatMap(({keyword}: t) => keyword);
 };
 
+module Tags = {
+  type t = OrgTypes.Tags.t;
+
+  let get = (ast: sectionAst): option(t) => {
+    ast
+    |> Section.getChildren
+    |> Utils.findWithTypeString("tags")
+    |> Option.map(OrgTypes.Tags.make);
+  };
+
+  let getTags = get >> Option.map(({tags}: t) => tags);
+};
+
 module Planning = {
   type t = OrgTypes.Planning.t;
 
@@ -41,6 +54,6 @@ module Planning = {
 
   let getStartTime =
     get
-    >> Option.flatMap(({start}: OrgTypes.Planning.t) => start)
+    >> Option.flatMap(({start}: t) => start)
     >> Option.map(Js.Date.getTime);
 };

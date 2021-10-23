@@ -30,8 +30,8 @@ module Unfolded = {
                Array.append(child, childAcc)
              | Section({children} as x) =>
                let tags =
-                 x
-                 |> ReOrga.Org.Section.getTags
+                 child
+                 |> OrgGlobals.Getters.Tags.getTags
                  |> Option.getOrElse(inheritedTags);
 
                Array.concat(
@@ -99,8 +99,8 @@ module Unfolded = {
 
              | (_, Section({children} as x)) =>
                let tags =
-                 x
-                 |> ReOrga.Org.Section.getTags
+                 child
+                 |> OrgGlobals.Getters.Tags.getTags
                  |> Option.getOrElse(inheritedTags);
 
                make(
