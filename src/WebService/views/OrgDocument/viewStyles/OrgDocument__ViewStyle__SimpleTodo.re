@@ -170,8 +170,33 @@ let make =
   /*     makeByDate(~cond=((_tags, _headline)) => true, xs) |> print */
   /*   ), */
   /* ); */
+  let events =
+    OrgDocument__ListBuilder.Unfolded.(
+      xs
+      |> Grouped.makeByDate
+      |> (((_, xs)) => xs)
+      |> DateTime.Globals.DateMap.foldLeft(
+           (acc, key, value) =>
+             value
+             |> Array.foldLeft(
+                  (acc, cur) =>
+                    switch (cur |> OrgGlobals.Getters.Headline.get) {
+                    | Some(orgAst) =>
+                      let event: FullCalendar.Event.t = {
+                        title: orgAst.content,
+                        date: key |> DateTime.toJSDate,
+                        orgAst,
+                      };
+                      Array.append(event, acc);
+                    | _ => acc
+                    },
+                  acc,
+                ),
+           [||],
+         )
+    );
 
-  <FullCalendar.Component />;
+  <FullCalendar.Component events />;
   /* xs */
   /* |> OrgDocument__ListBuilder.Unfolded.Grouped.makeByDate */
   /* |> (((_, xs)) => xs) */
