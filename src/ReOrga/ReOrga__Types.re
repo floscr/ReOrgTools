@@ -226,17 +226,7 @@ let getItem = (item: sectionAst) => {
       position: item.position,
       properties: nullableOrEmptyDict(item.properties),
     })
-  | ["headline"] =>
-    Headline({
-      children: item.children,
-      content: nullableOrEmptyStr(item.content),
-      level: item.level,
-      position: item.position,
-      tags: nullableOrEmptyArray(item.tags),
-      actionable: item.actionable,
-      parent: item.parent,
-      keyword: item.keyword |> Js.Nullable.toOption,
-    })
+  | ["headline"] => Headline(item |> OrgTypes.Headline.make)
   | ["todo"] =>
     Todo({
       keyword: nullableOrEmptyStr(item.keyword),
