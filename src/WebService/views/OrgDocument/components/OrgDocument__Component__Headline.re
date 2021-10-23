@@ -118,8 +118,8 @@ let makeHeadlineProps =
     {stars: None, tags: None, content: [||]},
   );
 
-let renderHeadline = (~properties, headline: ReOrga.headline) => {
-  let {children, level, position, keyword, parent} = headline;
+let renderHeadline = (~properties, headline: OrgTypes.Headline.t) => {
+  let {children, level, position, keyword, parent}: OrgTypes.Headline.t = headline;
   let {content, tags} = children |> makeHeadlineProps;
 
   let planning =

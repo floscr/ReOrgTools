@@ -2,7 +2,8 @@ open Relude.Globals;
 open ReOrga;
 open OrgDocument__Utils;
 
-let keepItem = (~conds=[], ~tags: array(string), headline: ReOrga.headline) => {
+let keepItem =
+    (~conds=[], ~tags: array(string), headline: OrgTypes.Headline.t) => {
   conds |> List.find(cond => cond(tags, headline) === false) |> Option.isNone;
 };
 

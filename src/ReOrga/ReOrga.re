@@ -123,15 +123,30 @@ type section = {
   properties: Js.Dict.t(string),
 };
 
-type headline = {
-  children: array(sectionAst),
-  content: string,
-  level: int,
-  position: positionAst,
-  tags: array(string),
-  actionable: bool,
-  keyword: option(string),
-  parent: sectionAst,
+module OrgTypes = {
+  module Headline = {
+    type t = {
+      children: array(sectionAst),
+      content: string,
+      level: int,
+      position: positionAst,
+      tags: array(string),
+      actionable: bool,
+      keyword: option(string),
+      parent: sectionAst,
+    };
+
+    let make = (item: sectionAst): t => {
+      children: item.children,
+      content: nullableOrEmptyStr(item.content),
+      level: item.level,
+      position: item.position,
+      tags: nullableOrEmptyArray(item.tags),
+      actionable: item.actionable,
+      parent: item.parent,
+      keyword: item.keyword |> Js.Nullable.toOption,
+    };
+  };
 };
 
 type planning = {
@@ -144,7 +159,7 @@ type planning = {
 type orgItem =
   | Unmatched
   | Section(section)
-  | Headline(headline)
+  | Headline(OrgTypes.Headline.t)
   | Paragraph({children: array(sectionAst)})
   | PlainText(plainText)
   | Planning(planning)
@@ -289,6 +304,10 @@ module Org = {
     | _ => None
     };
 
+  /* let getPlanning = (ast: sectionAst) => */
+  /*   ast */
+  /*   |> getSectionChildren */
+
   module Section = {
     type t = section;
 
@@ -303,7 +322,7 @@ module Org = {
   };
 
   module Headline = {
-    type t = headline;
+    type t = OrgTypes.Headline.t;
 
     let getPlanning = ({parent}: t): option(planning) =>
       parent

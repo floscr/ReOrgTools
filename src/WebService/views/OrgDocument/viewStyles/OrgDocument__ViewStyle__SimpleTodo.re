@@ -136,11 +136,14 @@ let make =
   let conds =
     [
       // Only with TODO keyword
-      (true, (_, {keyword}: ReOrga.headline) => keyword |> Option.isSome),
+      (
+        true,
+        (_, {keyword}: OrgTypes.Headline.t) => keyword |> Option.isSome,
+      ),
       // Planning items
       (
         timerange |> Option.isSome,
-        (_, x: ReOrga.headline) => {
+        (_, x: OrgTypes.Headline.t) => {
           switch (
             timerange |> Option.flatMap(Result.toOption),
             Org.Headline.getPlanning(x),
@@ -153,7 +156,7 @@ let make =
       ),
       (
         tags |> Array.isNotEmpty,
-        (tags, {content}: ReOrga.headline) => {
+        (tags, {content}: OrgTypes.Headline.t) => {
           switch (tagAdds, tagRemoves) {
           | (adds, removes) =>
             tags
@@ -178,7 +181,7 @@ let make =
   /* ); */
 
   xs
-  |> OrgDocument__ListBuilder.Unfolded.Grouped.makeByTodo
+  |> OrgDocument__ListBuilder.Unfolded.Grouped.makeByDate
   |> (((_, xs)) => xs)
   |> StringMap.foldLeft(
        (acc, key, value) => {
