@@ -12,7 +12,7 @@ module Identifier = {
   };
 
   module Decode = {
-    module D = Decode.AsResult.OfParseError;
+    module D = DecodeUtils.D;
 
     let make = json =>
       D.Pipeline.(

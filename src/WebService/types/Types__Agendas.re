@@ -4,6 +4,10 @@ module Field = {
   type t =
     | Layout(Types__Org.Layout.t);
   type jsonT = (string, string);
+
+  let toString =
+    fun
+    | Layout(x) => ("Layout", x |> Types__Org.Layout.toString);
 };
 
 module Fields = {
@@ -122,6 +126,30 @@ module Time = {
   };
 };
 
+module Filter = {
+  type t =
+    | Add(string)
+    | Remove(string);
+
+  type tagFilter = t;
+  type todoFilter = t;
+
+  let getString: t => string =
+    fun
+    | Add(x) => x
+    | Remove(x) => x;
+
+  let toBool: t => bool =
+    fun
+    | Add(_) => true
+    | Remove(_) => false;
+
+  let eqString = (t, x: string): bool => t |> getString |> String.eq(x);
+
+  let needsTag = (xs: array(t)): bool =>
+    Array.find(toBool, xs) |> Option.isSome;
+};
+
 module Agenda = {
   type idT = string;
 
@@ -130,15 +158,27 @@ module Agenda = {
     files: array(Types__Files.Identifier.t),
     fields: array(Field.t),
     timerange: option(Time.t),
-    /* tags: option(array(Filter.tagFilter)), */
-    /* todos: option(array(Filter.todoFilter)), */
-    /* reverse: option(bool), */
+    tags: option(array(Filter.tagFilter)),
+    todos: option(array(Filter.todoFilter)),
+    reverse: option(bool),
   };
 
-  let make = (id, files, fields: array((string, string)), timerange) => {
+  let make =
+      (
+        id,
+        files,
+        fields: array((string, string)),
+        timerange,
+        tags,
+        todos,
+        reverse,
+      ) => {
     id,
     files,
     fields: fields |> Fields.make,
     timerange,
+    tags,
+    todos,
+    reverse,
   };
 };
