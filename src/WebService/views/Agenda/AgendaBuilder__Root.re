@@ -53,7 +53,7 @@ let reducer =
 module Validation = {
   type err =
     | JsonDecodeError
-    | DecodeError(State__Settings.Decode.R.error);
+    | DecodeError(DecodeUtils.R.error);
 
   type succ =
     | Ok;
@@ -67,8 +67,7 @@ module Validation = {
            (
              switch (err) {
              | JsonDecodeError => "Failed to decode json"
-             | DecodeError(err) =>
-               State__Settings.Decode.failureToDebugString(err)
+             | DecodeError(err) => DecodeUtils.failureToDebugString(err)
              }
            )
            |> (x => "Error: " ++ x),
