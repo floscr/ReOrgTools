@@ -96,7 +96,7 @@ let showMain = (~id=?, ~queryParams, ~workspaceIndex=0, ~isSidebarOpen, ()) => {
   <WithSidebar ?id isSidebarOpen>
     {switch (id) {
      | Some(id) =>
-       let identifier: State__OrgDocuments.File.identifier = {
+       let identifier: Types__Files.Identifier.t = {
          id,
          workspace: workspaceIndex,
        };

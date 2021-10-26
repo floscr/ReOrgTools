@@ -41,7 +41,7 @@ let make = (~workspaceIndex: int, ~id: string, ~layoutType) => {
   let title =
     file
     |> Option.flatMap(x =>
-         State__OrgDocuments.(
+         Types__Files.(
            switch ((x: File.t)) {
            | File.Fetched({ast})
            | File.Cached({ast}) => Some(ast)

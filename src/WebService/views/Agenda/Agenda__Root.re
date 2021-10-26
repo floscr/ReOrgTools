@@ -1,4 +1,5 @@
 open ReactUtils;
+
 open Relude.Globals;
 open State;
 
@@ -17,18 +18,18 @@ module Styles = {
 
 module OrgWrapper = {
   [@react.component]
-  let make = (~agenda: State__Settings.Agenda.t) => {
-    let {files, timerange, tags, fields, reverse}: State__Settings.Agenda.t = agenda;
+  let make = (~agenda: Types__Agendas.Agenda.t) => {
+    let {files, timerange, tags, fields, reverse}: Types__Agendas.Agenda.t = agenda;
 
     let layoutType =
       fields
       |> Array.find(
            fun
-           | State__Settings.Agenda.Layout(_) => true,
+           | Types__Agendas.Field.Layout(_) => true,
          )
       |> Option.map(
            fun
-           | State__Settings.Agenda.Layout(x) => x,
+           | Types__Agendas.Field.Layout(x) => x,
          );
 
     <Controller__OrgDocument
@@ -43,14 +44,14 @@ module OrgWrapper = {
 
 module Component = {
   [@react.component]
-  let make = (~id: State__Settings.Agenda.agendaId) => {
+  let make = (~id: Types__Agendas.Agenda.idT) => {
     let agendas = Store.useSelector(Selector.Settings.agendas);
 
     Js.log(agendas);
     Js.log(id);
 
     agendas
-    |> Array.find((agenda: State__Settings.Agenda.t) => agenda.id === id)
+    |> Array.find((agenda: Types__Agendas.Agenda.t) => agenda.id === id)
     |> Option.fold(React.null, agenda =>
          <div className=Styles.root> <OrgWrapper agenda /> </div>
        );

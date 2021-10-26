@@ -20,7 +20,7 @@ let make = () => {
     </div>
     <ul className=Styles.ul>
       {agendas
-       |> Array.map(({id} as agenda: State__Settings.Agenda.t) =>
+       |> Array.map(({id} as agenda: Types__Agendas.Agenda.t) =>
             <li className=Styles.li key={j|agenda-$id|j}>
               <button
                 className=Styles.button

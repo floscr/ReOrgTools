@@ -1,30 +1,8 @@
 open ReOrga;
 open Relude.Globals;
 
-module File = {
-  type identifier = {
-    id: string,
-    workspace: int,
-  };
-
-  type content = {
-    identifier,
-    text: string,
-    ast: ReOrga.orgAst,
-    mtimeMs: float,
-  };
-
-  type t =
-    | Cached(content)
-    | Fetched(content)
-    | InProgress
-    | Empty
-    | NotFound
-    | Forbidden;
-};
-
 module Store = {
-  type state = {filesCache: StringMap.t(File.t)};
+  type state = {filesCache: StringMap.t(Types__Files.File.t)};
 
   let initialState = {filesCache: StringMap.make()};
 
@@ -37,7 +15,7 @@ module Store = {
     switch (action) {
     | FetchSuccess(id, workspaceIndex, {text, mtimeMs}) =>
       let file =
-        File.Fetched({
+        Types__Files.File.Fetched({
           identifier: {
             id,
             workspace: workspaceIndex,
@@ -60,7 +38,7 @@ module Store = {
             Option.foldLazy(
               _ => Some(file),
               fun
-              | File.Fetched(_x) => Some(file)
+              | Types__Files.File.Fetched(_x) => Some(file)
               | _ => Some(file),
             ),
             state.filesCache,
@@ -74,8 +52,8 @@ module Store = {
           StringMap.update(
             id,
             Option.foldLazy(
-              _ => Some(File.InProgress),
-              _ => Some(File.InProgress),
+              _ => Some(Types__Files.File.InProgress),
+              _ => Some(Types__Files.File.InProgress),
             ),
             state.filesCache,
           ),

@@ -60,7 +60,7 @@ type orgRangeT =
 
 let isInTimeRange =
     (
-      ~timerange: State__Settings.Agenda.Time.timerangeT,
+      ~timerange: Types__Agendas.Time.timerangeT,
       ~start: option(Js.Date.t),
       ~end_: option(Js.Date.t),
     ) => {
@@ -72,8 +72,7 @@ let isInTimeRange =
     | _ => Error("Impossible Range")
     };
 
-  let timeRangeInterval =
-    State__Settings.Agenda.Time.timeRangeToInterval(timerange);
+  let timeRangeInterval = Types__Agendas.Time.timeRangeToInterval(timerange);
 
   orgRange
   |> Result.map(x =>
@@ -99,8 +98,8 @@ let rec renderItems = (~properties=?, xs) => {
 let make =
     (
       ~xs: array(ReOrga.sectionAst),
-      ~timerange: option(State__Settings.Agenda.Time.t)=?,
-      ~tags: array(State__Settings.Agenda.Filter.tagFilter)=[||],
+      ~timerange: option(Types__Agendas.Time.t)=?,
+      ~tags: array(Types__Agendas.Filter.tagFilter)=[||],
       ~reverse: option(bool)=?,
     ) => {
   let dateCompare =
@@ -114,7 +113,7 @@ let make =
     tags
     |> Array.foldLeft(
          ((adds, removes), cur) =>
-           State__Settings.Agenda.Filter.(
+           Types__Agendas.Filter.(
              switch (cur) {
              | Add(x) => (List.append(x, adds), removes)
              | Remove(x) => (adds, List.append(x, removes))

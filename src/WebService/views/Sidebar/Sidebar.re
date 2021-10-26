@@ -50,7 +50,7 @@ let make = (~id) => {
         <Sidebar__Agendas />
         <Sidebar__Bookmarks />
         {switch (state.mode, file) {
-         | (Outline, Some(State__OrgDocuments.File.Fetched({ast}))) =>
+         | (Outline, Some(Types__Files.File.Fetched({ast}))) =>
            <>
              <button onClick=onBackClick> {"<- Go back" |> s} </button>
              <Outline ast />

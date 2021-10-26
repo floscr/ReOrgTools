@@ -51,10 +51,10 @@ type t =
 [@react.component]
 let make =
     (
-      ~identifiers: array(State__OrgDocuments.File.identifier),
+      ~identifiers: array(Types__Files.Identifier.t),
       ~layoutType=Types__Org.Layout.default,
-      ~timerange: option(State__Settings.Agenda.Time.t)=?,
-      ~tags: option(array(State__Settings.Agenda.Filter.t))=?,
+      ~timerange: option(Types__Agendas.Time.t)=?,
+      ~tags: option(array(Types__Agendas.Filter.t))=?,
       ~reverse: option(bool)=?,
       ~narrowToHeader=None,
     ) => {
@@ -66,7 +66,7 @@ let make =
     StringMap.filter(
       (key, _value) =>
         identifiers
-        |> Array.find(({id}: State__OrgDocuments.File.identifier) =>
+        |> Array.find(({id}: Types__Files.Identifier.t) =>
              String.eq(id, key)
            )
         |> Option.isSome,
@@ -76,15 +76,10 @@ let make =
   ReludeReact.Effect.useEffect1WithEq(
     () =>
       identifiers
-      |> Array.forEach(
-           ({id, workspace}: State__OrgDocuments.File.identifier) =>
+      |> Array.forEach(({id, workspace}: Types__Files.Identifier.t) =>
            fetchDocument(~id, ~user, ~workspaceIndex=workspace, ~dispatch)
          ),
-    Array.eqBy(
-      (
-        a: State__OrgDocuments.File.identifier,
-        b: State__OrgDocuments.File.identifier,
-      ) =>
+    Array.eqBy((a: Types__Files.Identifier.t, b: Types__Files.Identifier.t) =>
       String.eq(a.id, b.id) && Int.eq(a.workspace, b.workspace)
     ),
     identifiers,
@@ -100,10 +95,10 @@ let make =
              switch (acc, cur) {
              // Wait for other files to be finished
              | (Loading, _) => Loading
-             | (_, File.InProgress) => Loading
+             | (_, Types__Files.File.InProgress) => Loading
              // File Fetched
-             | (AllFetched(xs), File.Fetched({ast}))
-             | (AllFetched(xs), File.Cached({ast})) =>
+             | (AllFetched(xs), Types__Files.File.Fetched({ast}))
+             | (AllFetched(xs), Types__Files.File.Cached({ast})) =>
                let {children}: ReOrga.orgAst = ast;
 
                let ys =

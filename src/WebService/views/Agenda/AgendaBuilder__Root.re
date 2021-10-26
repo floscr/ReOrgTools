@@ -20,7 +20,7 @@ module Styles = {
   let textArea = style([width(pct(100.))]);
 };
 
-module Agenda = State__Settings.Agenda;
+module Agenda = Types__Agendas.Agenda;
 
 type state = Agenda.t;
 
@@ -28,7 +28,10 @@ let initialState: Agenda.t = {
   id: "Example",
   files: [|{id: "inbox", workspace: 0}, {id: "work", workspace: 1}|],
   fields: [|Layout(Types__Org.Layout.SimpleTodo)|],
-  timerange: Some(Ok(Agenda.Time.CurrentOnly(Agenda.Time.CurrentWeek))),
+  timerange:
+    Some(
+      Ok(Types__Agendas.Time.CurrentOnly(Types__Agendas.Time.CurrentWeek)),
+    ),
   tags: None,
   todos: None,
   reverse: Some(true),
@@ -81,7 +84,7 @@ let make = (~id: option(string)=?) => {
     id
     |> Option.flatMap(editingId =>
          Store.useSelector(Selector.Settings.agendas)
-         |> Array.find(({id}: State__Settings.Agenda.t) =>
+         |> Array.find(({id}: Types__Agendas.Agenda.t) =>
               String.eq(id, editingId)
             )
        )
@@ -91,15 +94,15 @@ let make = (~id: option(string)=?) => {
   let (value, setValue) =
     React.useState(() =>
       initialStateOrEditingState
-      |> State__Settings.Encode.encodeAgendasJson
+      |> Types__Agendas__Translators.Agendas.Encode.make
       |> (x => Js.Json.stringifyWithSpace(x, 2))
     );
 
   let (validation, setValidation) =
     React.useState(() =>
       initialState
-      |> State__Settings.Encode.encodeAgendasJson
-      |> State__Settings.Decode.decodeAgendaJson
+      |> Types__Agendas__Translators.Agendas.Encode.make
+      |> Types__Agendas__Translators.Agendas.Decode.make
       |> Result.fold(
            err => Error(Validation.DecodeError(err)),
            _ => Ok(Validation.Ok),
@@ -124,11 +127,11 @@ let make = (~id: option(string)=?) => {
     fields
     |> Array.find(
          fun
-         | Agenda.Layout(_) => true,
+         | Types__Agendas.Field.Layout(_) => true,
        )
     |> Option.map(
          fun
-         | Agenda.Layout(x) => x,
+         | Types__Agendas.Field.Layout(x) => x,
        );
 
   <div className=Styles.root>
@@ -150,7 +153,7 @@ let make = (~id: option(string)=?) => {
             |> ReactUtils.JsonParser.parseIgnoreTrailing
             |> Option.map(x =>
                  x
-                 |> State__Settings.Decode.decodeAgendaJson
+                 |> Types__Agendas__Translators.Agendas.Decode.make
                  |> Result.tap(x => UpdateSettings(x) |> send)
                )
             |> Option.fold(Error(Validation.JsonDecodeError), x =>
