@@ -47,25 +47,6 @@ let reducer =
   | NoOp => NoUpdate
   };
 
-module FilePicker = {
-  let makeKey = ({id, workspace}: Agenda.File.t) => {j|$workspace-$id|j};
-
-  let make = (files: Agenda.filesT) => {
-    <div>
-      <ul>
-        {files
-         |> Array.map((({id, workspace}: Agenda.File.t) as file) =>
-              <li key={file |> makeKey}>
-                {workspace |> String.fromInt |> String.concat(id) |> s}
-              </li>
-            )
-         |> React.array}
-      </ul>
-      <button> {"Add file" |> s} </button>
-    </div>;
-  };
-};
-
 module Validation = {
   type err =
     | JsonDecodeError
