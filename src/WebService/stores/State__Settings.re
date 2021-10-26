@@ -12,14 +12,22 @@ module Agenda = {
   };
 
   module Time = {
-    // Complex type that is outlined in the make function, but in short accepts:
-    // A time range, An abstract time definition (for the current day/week etc. outlined in currentT) or a mixture of both
+    // Complex type that is outlined in the make function:
+    //
+    // It accepts:
+    // - A time range
+    // - An abstract time definition (for the current day/week etc. outlined in currentT)
+    // - A mixture of both
     //
     // Since we can't represent this in json without creating arrays of mixed object,
     // we store it as an object with holes in this format:
-    // Js Format: { current: nullable(currentTFromString), from: nullable(Js.Date.t), to_: nullable(Js.Date.t) }
+    // {
+    //   current: nullable(currentTFromString),
+    //   from: nullable(Js.Date.t),
+    //   to_: nullable(Js.Date.t)
+    // }
     //
-    // When the js format doesnt apply to our restrictions (see make) we return an Error
+    // When the js format doesnt apply to our restrictions we return an Error.
     type currentT =
       | CurrentDay
       | CurrentWeek
