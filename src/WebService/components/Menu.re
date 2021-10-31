@@ -50,7 +50,7 @@ module Styles = {
     style([
       fontSize(Fonts.small),
       fontWeight(medium),
-      color(var(ThemeKeys.baseGray13)),
+      color(var(ThemeKeys.baseGray12)),
       padding2(~h=paddingSize, ~v=Spacing.xsmall),
       borderBottom(px(1), solid, var(ThemeKeys.baseGray3)),
       backgroundColor(var(ThemeKeys.bgColor)),

@@ -17,9 +17,6 @@ let baseGray9 = "--theme-baseGray-9";
 let baseGray10 = "--theme-baseGray-10";
 let baseGray11 = "--theme-baseGray-11";
 let baseGray12 = "--theme-baseGray-12";
-let baseGray13 = "--theme-baseGray-13";
-let baseGray14 = "--theme-baseGray-14";
-let baseGray15 = "--theme-baseGray-15";
 
 let green1 = "--theme-green-1";
 let green2 = "--theme-green-2";
@@ -48,9 +45,6 @@ module type Colors = {
   let baseGray10: cssVar;
   let baseGray11: cssVar;
   let baseGray12: cssVar;
-  let baseGray13: cssVar;
-  let baseGray14: cssVar;
-  let baseGray15: cssVar;
 
   let green1: cssVar;
   let green2: cssVar;

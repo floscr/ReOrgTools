@@ -1,0 +1,12 @@
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate1: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate2: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate3: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate4: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate5: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate6: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate7: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate8: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate9: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate10: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate11: string;
+[@bs.module "@radix-ui/colors"] [@bs.scope "slate"] external slate12: string;

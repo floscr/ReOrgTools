@@ -144,7 +144,7 @@ module Form = {
           "input, textarea",
           [
             padding(Spacing.medium),
-            color(var(ThemeKeys.baseGray14)),
+            color(var(ThemeKeys.baseGray12)),
             borderRadius(BorderRadius.small),
             fontSize(rem(0.9)),
           ],

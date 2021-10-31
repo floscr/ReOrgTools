@@ -80,9 +80,6 @@ module Dom = {
          el |> setCssVar(ThemeModule.baseGray10);
          el |> setCssVar(ThemeModule.baseGray11);
          el |> setCssVar(ThemeModule.baseGray12);
-         el |> setCssVar(ThemeModule.baseGray13);
-         el |> setCssVar(ThemeModule.baseGray14);
-         el |> setCssVar(ThemeModule.baseGray15);
          el |> setCssVar(ThemeModule.green1);
          el |> setCssVar(ThemeModule.green2);
          el |> setCssVar(ThemeModule.green3);
