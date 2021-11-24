@@ -8,6 +8,8 @@ module Styles = {
     style([
       display(`flex),
       flexGrow(1.),
+      backgroundColor(var(ThemeKeys.baseGray1)),
+      borderRadius(FixedTheme.BorderRadius.small),
       justifyContent(spaceBetween),
       alignItems(center),
     ]);

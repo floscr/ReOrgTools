@@ -4,10 +4,14 @@ open State;
 
 module Styles = {
   open Css;
-  let innerSpacing = FixedTheme.Spacing.large;
+  let innerSpacing = FixedTheme.SpacingNew.px20;
 
   let root =
-    style([backgroundColor(var(ThemeKeys.baseGray1)), overflow(hidden)]);
+    style([
+      borderRight(px(1), `solid, var(ThemeKeys.baseGray7)),
+      backgroundColor(var(ThemeKeys.baseGray3)),
+      overflow(hidden),
+    ]);
 
   let scrollviewWrapper = style([padding(innerSpacing)]);
 
