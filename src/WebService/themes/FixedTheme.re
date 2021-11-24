@@ -27,6 +27,32 @@ module Spacing = {
   let scrollbarWidth = px(14);
 };
 
+module SpacingNew = {
+  open Css;
+
+  /*
+   Source: https://justrem.xyz/
+   Base: 16px
+   */
+  let px10 = rem(0.625);
+  let px15 = rem(0.938);
+  let px20 = rem(1.25);
+  let px25 = rem(1.563);
+  let px30 = rem(1.875);
+  let px35 = rem(2.188);
+  let px40 = rem(2.5);
+  let px45 = rem(2.813);
+  let px50 = rem(3.125);
+  let px55 = rem(3.438);
+  let px60 = rem(3.75);
+  let px65 = rem(4.063);
+  let px70 = rem(4.375);
+  let px75 = rem(4.688);
+  let px80 = rem(5.);
+  let px85 = rem(5.313);
+  let px90 = rem(5.625);
+};
+
 module BorderRadius = {
   open Css;
 
